@@ -170,8 +170,23 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            margin-bottom: 8px;
             word-break: break-word;
+        }
+
+        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username {
+            margin-bottom: 0;
+        }
+
+        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp {
+            opacity: 0.55;
+            margin-left: 12px;
         }
 
         #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text {
@@ -289,10 +304,16 @@
 
         #chat ul.hide-badges img.badge { display: none; }
 
+        #chat ul.hide-timestamps .timestamp { display: none; }
+
         #chat ul.align-center li     { margin-left: auto; margin-right: auto; }
         #chat ul.align-right li      { margin-left: auto; margin-right: 0; }
         #chat ul.align-alternate li:nth-child(odd)  { margin-left: 0; margin-right: auto; }
         #chat ul.align-alternate li:nth-child(even) { margin-left: auto; margin-right: 0; }
+
+        #chat ul.align-center li, #chat ul.align-right li, #chat ul.align-alternate li {
+            width: fit-content;
+        }
 
         #tuner {
             position: fixed;
@@ -375,6 +396,10 @@
             <label for="tuner-badges">Badges</label>
             <button id="tuner-badges" class="tuner-toggle">On</button>
         </div>
+        <div class="tuner-row">
+            <label for="tuner-timestamps">Timestamps</label>
+            <button id="tuner-timestamps" class="tuner-toggle">Off</button>
+        </div>
     </div>
     <script>
     var chat = document.querySelector("#chat>ul");
@@ -405,10 +430,7 @@
             windowBorder: 0,
             drawMode: null,
             userRows: null,
-            mapApostrophe: false,
-            badgesDefault: true,
-            dimDefault: true,
-            modeDefault: 0
+            mapApostrophe: false
         },
         ff8: {
             key: "ff8",
@@ -418,10 +440,7 @@
             windowBorder: 2,
             drawMode: "border",
             userRows: { broadcaster: 60, mod: 48, sub: 36, vip: 12 },
-            mapApostrophe: true,
-            badgesDefault: false,
-            dimDefault: true,
-            modeDefault: 0
+            mapApostrophe: true
         },
         ct: {
             key: "ct",
@@ -431,12 +450,11 @@
             windowBorder: 8,
             drawMode: "style",
             userRows: null,
-            mapApostrophe: false,
-            badgesDefault: true,
-            dimDefault: true,
-            modeDefault: 0
+            mapApostrophe: false
         }
     };
+
+    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false };
 
     function loadThemeData(data) {
         GLYPHS = {};
@@ -488,12 +506,14 @@
             atlas = null;
             document.documentElement.style.setProperty("--ui-atlas", "none");
         }
-        tunerMode = t.modeDefault || 0;
-        dimOn = t.dimDefault !== false;
-        badgesOn = !!t.badgesDefault;
+        tunerMode = DEFAULT_OPTIONS.mode;
+        dimOn = DEFAULT_OPTIONS.dim;
+        badgesOn = DEFAULT_OPTIONS.badges;
+        timestampsOn = DEFAULT_OPTIONS.timestamps;
         applyTunerMode();
         applyDim();
         applyBadges();
+        applyTimestamps();
         themeLabel.textContent = t.label;
         applyTunerClass();
         renderAllHistory();
@@ -1188,6 +1208,17 @@
         blockquote.innerHTML = "";
 
         header.appendChild(username);
+
+        if (timestampsOn) {
+            var ts = document.createElement("span");
+            ts.className = "timestamp";
+            var now2 = new Date(record.ts || Date.now());
+            var hh2 = String(now2.getHours()).padStart(2, "0");
+            var mm2 = String(now2.getMinutes()).padStart(2, "0");
+            buildTextRuns(ts, hh2 + ":" + mm2, 0);
+            header.appendChild(ts);
+        }
+
         box.appendChild(header);
         box.appendChild(blockquote);
         newMessage.appendChild(bg);
@@ -1290,17 +1321,20 @@
     var THEME_ORDER = ["default", "ff8", "ct"];
     var themeIndex = 0;
     var TUNER_MODES = ["Left", "Center", "Right", "Alternate"];
-    var tunerMode = 0;
+    var tunerMode = DEFAULT_OPTIONS.mode;
     var tunerLabel = document.getElementById("tuner-mode");
-    var dimOn = true;
+    var dimOn = DEFAULT_OPTIONS.dim;
     var dimBtn = document.getElementById("tuner-dim");
-    var badgesOn = true;
+    var badgesOn = DEFAULT_OPTIONS.badges;
     var badgesBtn = document.getElementById("tuner-badges");
+    var timestampsOn = DEFAULT_OPTIONS.timestamps;
+    var timestampsBtn = document.getElementById("tuner-timestamps");
 
     function applyTunerClass() {
         chatBox.className = "theme-" + currentTheme.key;
         chat.className = (["", "align-center", "align-right", "align-alternate"][tunerMode] ||
-            "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges");
+            "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges") +
+            (timestampsOn ? "" : " hide-timestamps");
     }
 
     function applyTunerMode() {
@@ -1316,6 +1350,13 @@
     function applyBadges() {
         badgesBtn.textContent = badgesOn ? "On" : "Off";
         applyTunerClass();
+        renderAllHistory();
+    }
+
+    function applyTimestamps() {
+        timestampsBtn.textContent = timestampsOn ? "On" : "Off";
+        applyTunerClass();
+        renderAllHistory();
     }
 
     document.getElementById("theme-prev").addEventListener("click", function () {
@@ -1346,6 +1387,11 @@
     badgesBtn.addEventListener("click", function () {
         badgesOn = !badgesOn;
         applyBadges();
+    });
+
+    timestampsBtn.addEventListener("click", function () {
+        timestampsOn = !timestampsOn;
+        applyTimestamps();
     });
 
     applyTheme("default");
