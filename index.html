@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitch chat</title>
+    <title>Chat Overlay</title>
     <!-- Font: Zpix (最像素) by SolidZORO, free for personal use -- https://github.com/SolidZORO/zpix-pixel-font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -311,9 +311,10 @@
         #chat ul.align-alternate li:nth-child(odd)  { margin-left: 0; margin-right: auto; }
         #chat ul.align-alternate li:nth-child(even) { margin-left: auto; margin-right: 0; }
 
-        #chat ul.align-center li, #chat ul.align-right li, #chat ul.align-alternate li {
-            width: fit-content;
-        }
+        #chat ul.align-center .msg-content     { margin-left: auto; margin-right: auto; width: fit-content; }
+        #chat ul.align-right .msg-content      { margin-left: auto; margin-right: 0;    width: fit-content; }
+        #chat ul.align-alternate li:nth-child(odd)  .msg-content { margin-left: 0;    margin-right: auto; width: fit-content; }
+        #chat ul.align-alternate li:nth-child(even) .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; }
 
         #tuner {
             position: fixed;
@@ -382,6 +383,7 @@
             <output id="tuner-theme">Default</output>
             <button id="theme-next">▶</button>
         </div>
+        <div id="tuner-options"></div>
         <div class="tuner-row">
             <label for="tuner-mode">Alignment</label>
             <button id="tuner-prev">◀</button>
@@ -450,11 +452,52 @@
             windowBorder: 8,
             drawMode: "style",
             userRows: null,
-            mapApostrophe: false
+            mapApostrophe: false,
+            tuner: ["windowStyle"]
         }
     };
 
     var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false };
+
+    var themeOptionState = {};
+
+    var THEME_TUNER = {
+        windowStyle: {
+            label: "Window Style",
+            type: "cycle",
+            resolveValues: function () {
+                var ws = currentTheme && currentTheme.data &&
+                    currentTheme.data.overlays && currentTheme.data.overlays.window_style;
+                var vals = [];
+                if (ws && ws.options && typeof ws.options === "object") {
+                    Object.keys(ws.options).forEach(function (name) {
+                        vals.push({
+                            label: name.replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); }),
+                            name: name,
+                            value: WINDOW_STYLES.filter(function (s) { return s.name === name; })[0] || null
+                        });
+                    });
+                }
+                vals.push({ label: "Random", name: "random", value: null });
+                return vals;
+            },
+            resolveDefault: function () {
+                var ws = currentTheme && currentTheme.data &&
+                    currentTheme.data.overlays && currentTheme.data.overlays.window_style;
+                var d = ws && ws.default;
+                if (d) {
+                    var vals = THEME_TUNER.windowStyle.resolveValues();
+                    for (var i = 0; i < vals.length; i++) {
+                        if (vals[i].name === d) return i;
+                    }
+                }
+                return 0;
+            },
+            onChange: function () {
+                renderAllHistory();
+            }
+        }
+    };
 
     function loadThemeData(data) {
         GLYPHS = {};
@@ -473,7 +516,7 @@
                 Object.keys(ws.options).forEach(function (name) {
                     var o = ws.options[name];
                     if (o && "x" in o && "y" in o && "w" in o && "h" in o) {
-                        WINDOW_STYLES.push(o);
+                        WINDOW_STYLES.push({ name: name, x: o.x, y: o.y, w: o.w, h: o.h });
                     }
                 });
             }
@@ -515,6 +558,7 @@
         applyBadges();
         applyTimestamps();
         themeLabel.textContent = t.label;
+        buildTunerOptions();
         applyTunerClass();
         renderAllHistory();
     }
@@ -559,6 +603,21 @@
     function randomWindow() {
         if (!WINDOW_STYLES.length) return null;
         return WINDOW_STYLES[Math.floor(Math.random() * WINDOW_STYLES.length)];
+    }
+
+    function currentWindowStyle() {
+        var opt = THEME_TUNER.windowStyle;
+        if (!opt) return randomWindow();
+        var idx = themeOptionState["windowStyle"];
+        if (typeof idx === "number" && idx >= 0) {
+            var vals = opt.resolveValues();
+            var v = vals[idx];
+            if (v) {
+                if (v.value) return v.value;
+                return randomWindow();
+            }
+        }
+        return randomWindow();
     }
 
     function drawWindow(canvas, style, w, h) {
@@ -1171,7 +1230,10 @@
             timestamp.className = "timestamp";
             timestamp.innerText = hh + ":" + mm;
             blockquote.innerHTML = "";
-            newMessage.append(username, timestamp, blockquote);
+            var content = document.createElement("div");
+            content.className = "msg-content";
+            content.append(username, timestamp, blockquote);
+            newMessage.appendChild(content);
             newMessage._finish = function (animate) {
                 if (animate) typeMessage(blockquote, units);
                 else renderAll(blockquote, units);
@@ -1183,7 +1245,7 @@
         var header = document.createElement("div");
         var username = document.createElement("span");
         var bg = document.createElement("canvas");
-        var windowStyle = randomWindow();
+        var windowStyle = currentWindowStyle();
 
         box.className = "msg-box";
         header.className = "msg-header";
@@ -1329,6 +1391,48 @@
     var badgesBtn = document.getElementById("tuner-badges");
     var timestampsOn = DEFAULT_OPTIONS.timestamps;
     var timestampsBtn = document.getElementById("tuner-timestamps");
+    var tunerOptionsBox = document.getElementById("tuner-options");
+
+    function buildTunerOptions() {
+        tunerOptionsBox.innerHTML = "";
+        if (!currentTheme || !currentTheme.tuner) return;
+        currentTheme.tuner.forEach(function (key) {
+            var o = THEME_TUNER[key];
+            if (!o) return;
+            var vals = o.resolveValues();
+            var row = document.createElement("div");
+            row.className = "tuner-row";
+            var label = document.createElement("label");
+            label.textContent = o.label;
+            var prev = document.createElement("button");
+            prev.textContent = "◀";
+            var next = document.createElement("button");
+            next.textContent = "▶";
+            var out = document.createElement("output");
+            out.id = "tuner-option-" + key;
+            row.appendChild(label);
+            row.appendChild(prev);
+            row.appendChild(out);
+            row.appendChild(next);
+            tunerOptionsBox.appendChild(row);
+            themeOptionState[key] = o.resolveDefault();
+            function render() {
+                var idx = themeOptionState[key] || 0;
+                out.textContent = (vals[idx] && vals[idx].label) || "";
+            }
+            render();
+            prev.addEventListener("click", function () {
+                themeOptionState[key] = (themeOptionState[key] + vals.length - 1) % vals.length;
+                render();
+                o.onChange();
+            });
+            next.addEventListener("click", function () {
+                themeOptionState[key] = (themeOptionState[key] + 1) % vals.length;
+                render();
+                o.onChange();
+            });
+        });
+    }
 
     function applyTunerClass() {
         chatBox.className = "theme-" + currentTheme.key;
