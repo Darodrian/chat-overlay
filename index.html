@@ -1369,10 +1369,15 @@
         chat.appendChild(notice);
     }
 
-    var urlChannel = new URLSearchParams(location.search).get("channel");
+    var qs = new URLSearchParams(location.search);
+    var urlChannel = qs.get("channel");
     var channelName = urlChannel ? urlChannel.trim().replace(/^#/, "") : "";
     if (!channelName) {
-        configNotice("Add ?channel=yourname to the overlay URL");
+        qs.set("channel", "yourusername");
+        history.replaceState(null, "", "?" + qs.toString());
+        configNotice("Add ?channel=yourusername to the URL");
+    } else if (channelName.toLowerCase() === "yourusername") {
+        configNotice("Add ?channel=yourusername to the URL");
     } else {
         ComfyJS.Init(channelName);
     }
