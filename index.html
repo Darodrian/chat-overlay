@@ -306,6 +306,9 @@
 
         #chat ul.hide-timestamps .timestamp { display: none; }
 
+        #chat ul.fade-expire li { transition: opacity 0.8s ease; }
+        #chat ul.fade-expire li.expiring { opacity: 0 !important; }
+
         #chat ul.align-center li     { margin-left: auto; margin-right: auto; }
         #chat ul.align-right li      { margin-left: auto; margin-right: 0; }
         #chat ul.align-alternate li:nth-child(odd)  { margin-left: 0; margin-right: auto; }
@@ -367,6 +370,14 @@
         }
         #tuner button:active { transform: translate(2px, 2px); box-shadow: none; }
         #tuner .tuner-toggle { width: 60px; }
+        #tuner input[type="range"] {
+            flex: 1;
+            margin: 0 8px 0 0;
+            min-width: 0;
+        }
+        #tuner-fade-secs-out { min-width: 30px; text-align: center; }
+        #tuner input[type="range"] { flex: 1; margin: 0 8px 0 0; min-width: 0; }
+        #tuner #tuner-fade-secs-out { flex: initial; min-width: 36px; text-align: right; }
     </style>
 
 </head>
@@ -401,6 +412,15 @@
         <div class="tuner-row">
             <label for="tuner-timestamps">Timestamps</label>
             <button id="tuner-timestamps" class="tuner-toggle">Off</button>
+        </div>
+        <div class="tuner-row">
+            <label for="tuner-fade">Fade Out</label>
+            <button id="tuner-fade" class="tuner-toggle">Off</button>
+        </div>
+        <div class="tuner-row">
+            <label for="tuner-fade-secs">Seconds</label>
+            <input id="tuner-fade-secs" type="range" min="5" max="120" step="5" value="30">
+            <output id="tuner-fade-secs-out">30s</output>
         </div>
     </div>
     <script>
@@ -457,7 +477,7 @@
         }
     };
 
-    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false };
+    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false, fade: false, fadeSeconds: 30 };
 
     var themeOptionState = {};
 
@@ -553,10 +573,14 @@
         dimOn = DEFAULT_OPTIONS.dim;
         badgesOn = DEFAULT_OPTIONS.badges;
         timestampsOn = DEFAULT_OPTIONS.timestamps;
+        fadeOn = DEFAULT_OPTIONS.fade;
+        fadeSeconds = DEFAULT_OPTIONS.fadeSeconds;
         applyTunerMode();
         applyDim();
         applyBadges();
         applyTimestamps();
+        applyFade();
+        applyFadeSeconds();
         themeLabel.textContent = t.label;
         buildTunerOptions();
         applyTunerClass();
@@ -1205,6 +1229,7 @@
 
     function renderMessage(record, animate) {
         var newMessage = buildMessageNode(record);
+        record.node = newMessage;
         chat.append(newMessage);
         if (newMessage._finish) newMessage._finish(animate);
     }
@@ -1396,6 +1421,13 @@
     var badgesBtn = document.getElementById("tuner-badges");
     var timestampsOn = DEFAULT_OPTIONS.timestamps;
     var timestampsBtn = document.getElementById("tuner-timestamps");
+    var fadeOn = DEFAULT_OPTIONS.fade;
+    var fadeBtn = document.getElementById("tuner-fade");
+    var fadeSeconds = DEFAULT_OPTIONS.fadeSeconds;
+    var fadeSecsInput = document.getElementById("tuner-fade-secs");
+    var fadeSecsOut = document.getElementById("tuner-fade-secs-out");
+    var FADE_MS = 800;
+    var expireTimer = null;
     var tunerOptionsBox = document.getElementById("tuner-options");
 
     function buildTunerOptions() {
@@ -1443,7 +1475,7 @@
         chatBox.className = "theme-" + currentTheme.key;
         chat.className = (["", "align-center", "align-right", "align-alternate"][tunerMode] ||
             "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges") +
-            (timestampsOn ? "" : " hide-timestamps");
+            (timestampsOn ? "" : " hide-timestamps") + (fadeOn ? " fade-expire" : "");
     }
 
     function applyTunerMode() {
@@ -1466,6 +1498,50 @@
         timestampsBtn.textContent = timestampsOn ? "On" : "Off";
         applyTunerClass();
         renderAllHistory();
+    }
+
+    function applyFade() {
+        fadeBtn.textContent = fadeOn ? "On" : "Off";
+        applyTunerClass();
+        syncExpireTimer();
+    }
+
+    function applyFadeSeconds() {
+        fadeSecsInput.value = fadeSeconds;
+        fadeSecsOut.textContent = fadeSeconds + "s";
+    }
+
+    function syncExpireTimer() {
+        if (fadeOn && !expireTimer) {
+            expireTimer = setInterval(expireLoop, 250);
+        } else if (!fadeOn && expireTimer) {
+            clearInterval(expireTimer);
+            expireTimer = null;
+        }
+    }
+
+    function expireLoop() {
+        var limit = fadeSeconds * 1000;
+        var now = Date.now();
+        for (var i = chatHistory.length - 1; i >= 0; i--) {
+            if (now - (chatHistory[i].ts || now) >= limit) {
+                expireMessage(chatHistory[i]);
+            }
+        }
+    }
+
+    function expireMessage(record) {
+        if (record.expiring) return;
+        record.expiring = true;
+        var node = record.node;
+        if (node) {
+            node.classList.add("expiring");
+            setTimeout(function () {
+                if (node.parentNode) node.parentNode.removeChild(node);
+            }, FADE_MS);
+        }
+        var i = chatHistory.indexOf(record);
+        if (i >= 0) chatHistory.splice(i, 1);
     }
 
     document.getElementById("theme-prev").addEventListener("click", function () {
@@ -1501,6 +1577,16 @@
     timestampsBtn.addEventListener("click", function () {
         timestampsOn = !timestampsOn;
         applyTimestamps();
+    });
+
+    fadeBtn.addEventListener("click", function () {
+        fadeOn = !fadeOn;
+        applyFade();
+    });
+
+    fadeSecsInput.addEventListener("input", function () {
+        fadeSeconds = parseInt(fadeSecsInput.value, 10) || 30;
+        applyFadeSeconds();
     });
 
     applyTheme("default");
