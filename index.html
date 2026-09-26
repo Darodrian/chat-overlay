@@ -60,6 +60,16 @@
             padding: 20px;
         }
 
+        #chat:not(.no-bg) {
+            background-color: var(--ff-bg);
+            border: 6px solid var(--ff-border);
+        }
+
+        #chat.no-bg {
+            background-color: transparent;
+            border: 6px solid transparent;
+        }
+
         #chat ul {
             list-style-type: none;
             list-style-position: outside;
@@ -69,8 +79,6 @@
 
         /* ---- Default (Zpix webfont) theme ---- */
         #chat.theme-default {
-            background-color: var(--ff-bg);
-            border: 6px solid var(--ff-border);
             color: var(--ff-text);
         }
 
@@ -110,7 +118,6 @@
 
         /* ---- Atlas (crisp pixel font) themes ---- */
         #chat.theme-ff8, #chat.theme-ct {
-            background: transparent;
             color: #ffffff;
         }
 
@@ -414,6 +421,10 @@
             <button id="tuner-timestamps" class="tuner-toggle">Off</button>
         </div>
         <div class="tuner-row">
+            <label for="tuner-bg">Background</label>
+            <button id="tuner-bg" class="tuner-toggle">Off</button>
+        </div>
+        <div class="tuner-row">
             <label for="tuner-fade">Fade Out</label>
             <button id="tuner-fade" class="tuner-toggle">Off</button>
         </div>
@@ -477,7 +488,7 @@
         }
     };
 
-    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false, fade: false, fadeSeconds: 30 };
+    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false, bg: false, fade: false, fadeSeconds: 30 };
 
     var themeOptionState = {};
 
@@ -573,12 +584,14 @@
         dimOn = DEFAULT_OPTIONS.dim;
         badgesOn = DEFAULT_OPTIONS.badges;
         timestampsOn = DEFAULT_OPTIONS.timestamps;
+        bgOn = DEFAULT_OPTIONS.bg;
         fadeOn = DEFAULT_OPTIONS.fade;
         fadeSeconds = DEFAULT_OPTIONS.fadeSeconds;
         applyTunerMode();
         applyDim();
         applyBadges();
         applyTimestamps();
+        applyBg();
         applyFade();
         applyFadeSeconds();
         themeLabel.textContent = t.label;
@@ -1421,6 +1434,8 @@
     var badgesBtn = document.getElementById("tuner-badges");
     var timestampsOn = DEFAULT_OPTIONS.timestamps;
     var timestampsBtn = document.getElementById("tuner-timestamps");
+    var bgOn = DEFAULT_OPTIONS.bg;
+    var bgBtn = document.getElementById("tuner-bg");
     var fadeOn = DEFAULT_OPTIONS.fade;
     var fadeBtn = document.getElementById("tuner-fade");
     var fadeSeconds = DEFAULT_OPTIONS.fadeSeconds;
@@ -1472,7 +1487,7 @@
     }
 
     function applyTunerClass() {
-        chatBox.className = "theme-" + currentTheme.key;
+        chatBox.className = "theme-" + currentTheme.key + (bgOn ? "" : " no-bg");
         chat.className = (["", "align-center", "align-right", "align-alternate"][tunerMode] ||
             "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges") +
             (timestampsOn ? "" : " hide-timestamps") + (fadeOn ? " fade-expire" : "");
@@ -1498,6 +1513,11 @@
         timestampsBtn.textContent = timestampsOn ? "On" : "Off";
         applyTunerClass();
         renderAllHistory();
+    }
+
+    function applyBg() {
+        bgBtn.textContent = bgOn ? "On" : "Off";
+        applyTunerClass();
     }
 
     function applyFade() {
@@ -1577,6 +1597,11 @@
     timestampsBtn.addEventListener("click", function () {
         timestampsOn = !timestampsOn;
         applyTimestamps();
+    });
+
+    bgBtn.addEventListener("click", function () {
+        bgOn = !bgOn;
+        applyBg();
     });
 
     fadeBtn.addEventListener("click", function () {
