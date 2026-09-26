@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
     <script src="fonts/ff8.js"></script>
     <script src="fonts/ct.js"></script>
+    <script src="fonts/acww.js"></script>
 
     <style>
         :root {
@@ -117,11 +118,11 @@
         }
 
         /* ---- Atlas (crisp pixel font) themes ---- */
-        #chat.theme-ff8, #chat.theme-ct {
+        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww {
             color: #ffffff;
         }
 
-        #chat.theme-ff8 li, #chat.theme-ct li {
+        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li {
             display: flex;
             flex-direction: column;
             width: max-content;
@@ -134,7 +135,7 @@
             animation: pop 0.18s ease-out; /* keep in sync with POP_MS */
         }
 
-        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg {
+        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg {
             position: absolute;
             top: 0;
             left: 0;
@@ -143,7 +144,7 @@
             z-index: 0;
         }
 
-        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box {
+        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box {
             position: relative;
             z-index: 1;
             padding: 20px 24px 16px 24px;
@@ -155,11 +156,11 @@
             to   { transform: scale(1); opacity: 1; }
         }
 
-        #chat.theme-ff8 li + li, #chat.theme-ct li + li {
+        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li {
             margin-top: 20px;
         }
 
-        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice {
+        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice, #chat.theme-acww .config-notice {
             color: var(--ui-dim);
             font-size: 24px;
             padding: 12px 4px;
@@ -170,7 +171,7 @@
                 0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000;
         }
 
-        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username {
+        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username {
             color: var(--ui-username);
             font-size: 24px;
             line-height: var(--ui-lh, 32px);
@@ -180,29 +181,87 @@
             word-break: break-word;
         }
 
-        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header {
+        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             margin-bottom: 8px;
         }
 
-        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username {
+        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username {
             margin-bottom: 0;
         }
 
-        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp {
+        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp {
             opacity: 0.55;
             margin-left: 12px;
         }
 
-        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text {
+        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text {
             margin: 0;
             color: #ffffff;
             font-size: 24px;
             line-height: var(--ui-lh, 32px);
             white-space: normal;
             word-break: break-word;
+        }
+
+        #chat.theme-acww li { max-width: none; }
+
+        #chat.theme-acww .msg-box {
+            width: 512px;
+            box-sizing: border-box;
+            padding: 24px 0 32px 0;
+        }
+
+        #chat.theme-acww .msg-header {
+            position: relative;
+            height: 48px;
+            margin: 0;
+        }
+
+        #chat.theme-acww .name-tag {
+            position: absolute;
+            left: 56px;
+            top: -24px;
+            width: 178px;
+            height: 44px;
+            image-rendering: pixelated;
+            z-index: 1;
+        }
+
+        #chat.theme-acww .msg-header .username {
+            position: absolute;
+            left: 90px;
+            top: -15px;
+            z-index: 2;
+            line-height: 26px;
+            max-width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        #chat.theme-acww .msg-header .timestamp {
+            position: absolute;
+            right: 16px;
+            top: -12px;
+            z-index: 2;
+            opacity: 0.9;
+            margin-left: 0;
+        }
+
+        #chat.theme-acww .msg-box .message-text { margin: 4px 90px 0 90px; }
+
+        #chat.theme-acww .continue-arrow {
+            position: absolute;
+            right: 55px;
+            bottom: 20px;
+            width: 32px;
+            height: 34px;
+            image-rendering: pixelated;
+            z-index: 3;
+            opacity: 0.9;
         }
 
         /* ---- Shared ---- */
@@ -446,6 +505,11 @@
     var PIXEL_SCALE = 2;
     var POP_MS = 180;
     var GLYPH_H = 12;
+
+    function glyphHeight() {
+        var d = currentTheme && currentTheme.data && currentTheme.data.default;
+        return (d && d.h) || GLYPH_H;
+    }
     var GLYPHS = {};
     var WINDOW_STYLES = [];
     var atlas = null;
@@ -467,7 +531,7 @@
         },
         ff8: {
             key: "ff8",
-            label: "FF8",
+            label: "Final Fantasy VIII",
             atlas: "fonts/ff8-font.png",
             data: (typeof THEME_DATA_FF8 === "object" && THEME_DATA_FF8) ? THEME_DATA_FF8 : null,
             windowBorder: 2,
@@ -485,6 +549,27 @@
             userRows: null,
             mapApostrophe: false,
             tuner: ["windowStyle"]
+        },
+        acww: {
+            key: "acww",
+            label: "Animal Crossing: Wild World",
+            atlas: "fonts/acww-font.png",
+            data: (typeof THEME_DATA_ACWW === "object" && THEME_DATA_ACWW) ? THEME_DATA_ACWW : null,
+            windowBorder: 24,
+            drawMode: "style",
+            userRows: null,
+            mapApostrophe: false,
+            nameTag: true,
+            chromaKey: true,
+            chromaKeyRects: function (style) {
+                if (style && style.name === "thought") return [];
+                return [
+                    { x: 28, y: 0, w: 89, h: 20 },
+                    { x: 117, y: 10, w: 44, h: 1 }
+                ];
+            },
+            continueArrow: true,
+            tuner: ["windowStyle", "nameColor"]
         }
     };
 
@@ -492,13 +577,57 @@
 
     var themeOptionState = {};
 
+    function windowStyleOverlay() {
+        var o = currentTheme && currentTheme.data && currentTheme.data.overlays;
+        return (o && (o.window_style || o.type)) || null;
+    }
+
+    function continueArrowFrames() {
+        var o = currentTheme && currentTheme.data && currentTheme.data.overlays &&
+            currentTheme.data.overlays.arrow;
+        var frames = [];
+        if (o && o.options && typeof o.options === "object") {
+            Object.keys(o.options).forEach(function (name) {
+                var f = o.options[name];
+                if (f && f.w && f.h) frames.push(f);
+            });
+        }
+        return frames;
+    }
+
+    function drawArrowFrame(canvas, frame) {
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!atlasReady() || !frame) return;
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(atlas, frame.x, frame.y, frame.w, frame.h,
+            0, 0, frame.w * PIXEL_SCALE, frame.h * PIXEL_SCALE);
+    }
+
+    function blinkArrows() {
+        var list = document.querySelectorAll(".continue-arrow");
+        if (!currentTheme.continueArrow || !list.length) return;
+        for (var i = 0; i < list.length; i++) {
+            var c = list[i];
+            if (!c._frames || !c._frames.length) continue;
+            c._frame = ((c._frame || 0) + 1) % c._frames.length;
+            drawArrowFrame(c, c._frames[c._frame]);
+        }
+    }
+
+    var blinkTimer = null;
+
+    function startBlink() {
+        if (blinkTimer || !currentTheme.continueArrow) return;
+        blinkTimer = setInterval(blinkArrows, 700);
+    }
+
     var THEME_TUNER = {
         windowStyle: {
             label: "Window Style",
             type: "cycle",
             resolveValues: function () {
-                var ws = currentTheme && currentTheme.data &&
-                    currentTheme.data.overlays && currentTheme.data.overlays.window_style;
+                var ws = windowStyleOverlay();
                 var vals = [];
                 if (ws && ws.options && typeof ws.options === "object") {
                     Object.keys(ws.options).forEach(function (name) {
@@ -513,11 +642,44 @@
                 return vals;
             },
             resolveDefault: function () {
-                var ws = currentTheme && currentTheme.data &&
-                    currentTheme.data.overlays && currentTheme.data.overlays.window_style;
+                var ws = windowStyleOverlay();
                 var d = ws && ws.default;
                 if (d) {
                     var vals = THEME_TUNER.windowStyle.resolveValues();
+                    for (var i = 0; i < vals.length; i++) {
+                        if (vals[i].name === d) return i;
+                    }
+                }
+                return 0;
+            },
+            onChange: function () {
+                renderAllHistory();
+            }
+        },
+        nameColor: {
+            label: "Name Color",
+            type: "cycle",
+            resolveValues: function () {
+                var nc = currentTheme && currentTheme.data &&
+                    currentTheme.data.overlays && currentTheme.data.overlays.name_color;
+                var vals = [];
+                if (nc && nc.options && typeof nc.options === "object") {
+                    Object.keys(nc.options).forEach(function (name) {
+                        vals.push({
+                            label: name.replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); }),
+                            name: name,
+                            value: nc.options[name]
+                        });
+                    });
+                }
+                return vals;
+            },
+            resolveDefault: function () {
+                var nc = currentTheme && currentTheme.data &&
+                    currentTheme.data.overlays && currentTheme.data.overlays.name_color;
+                var d = nc && nc.default;
+                if (d) {
+                    var vals = THEME_TUNER.nameColor.resolveValues();
                     for (var i = 0; i < vals.length; i++) {
                         if (vals[i].name === d) return i;
                     }
@@ -542,7 +704,7 @@
             });
             if (GLYPHS[8221]) GLYPHS[34] = GLYPHS[8221];
             if (currentTheme && currentTheme.mapApostrophe && GLYPHS[8217]) GLYPHS[39] = GLYPHS[8217];
-            var ws = data.overlays && data.overlays.window_style;
+            var ws = data.overlays && (data.overlays.window_style || data.overlays.type);
             if (ws && ws.options && typeof ws.options === "object") {
                 Object.keys(ws.options).forEach(function (name) {
                     var o = ws.options[name];
@@ -560,6 +722,7 @@
         if (!t) return;
         currentTheme = t;
         themeLoaded = false;
+        startBlink();
         loadThemeData(t.data);
         if (t.atlas) {
             var img = atlasCache[t.key];
@@ -612,7 +775,7 @@
     function drawTextOnCanvas(canvas, text, row) {
         var top = uiVar("--ui-top");
         var bot = uiVar("--ui-bot");
-        var ih = Math.max(1, GLYPH_H - top - bot);
+        var ih = Math.max(1, glyphHeight() - top - bot);
         var total = 0;
         var i;
         for (i = 0; i < text.length; i++) {
@@ -664,6 +827,14 @@
         ctx.imageSmoothingEnabled = false;
         var img = atlas;
 
+        function removeMagenta() {
+            if (!currentTheme.chromaKeyRects) return;
+            currentTheme.chromaKeyRects(style).forEach(function (r) {
+                ctx.clearRect(r.x * PIXEL_SCALE, r.y * PIXEL_SCALE,
+                    r.w * PIXEL_SCALE, r.h * PIXEL_SCALE);
+            });
+        }
+
         if (currentTheme.drawMode === "style") {
             var b = currentTheme.windowBorder;
             var bs = b * PIXEL_SCALE;
@@ -682,6 +853,7 @@
             wp(sx, sy + b, b, edgeH, 0, bs, bs, intH);
             wp(sx + sw - b, sy + b, b, edgeH, w - bs, bs, bs, intH);
             wp(sx + b, sy + b, edgeW, edgeH, bs, bs, intW, intH);
+            removeMagenta();
             return;
         }
 
@@ -701,6 +873,7 @@
         part("bl", 0, h - cs, cs, cs);
         part("b", cs, h - cs, w - 2 * cs, cs);
         part("br", w - cs, h - cs, cs, cs);
+        removeMagenta();
     }
 
     function glyphOrTextUnit(ch, row) {
@@ -727,7 +900,7 @@
         if (!g) return null;
         row = row || 0;
         return "<span class=\"bglyph\" style=\"width:" + (g.w * PIXEL_SCALE) +
-            "px;height:" + (12 * PIXEL_SCALE) +
+            "px;height:" + (glyphHeight() * PIXEL_SCALE) +
             "px;background-position:-" + (g.x * PIXEL_SCALE) +
             "px -" + (row * PIXEL_SCALE) + "px\"></span>";
     }
@@ -1307,6 +1480,31 @@
         blockquote.className = "message-text";
         blockquote.innerHTML = "";
 
+        if (currentTheme.nameTag) {
+            var ncVals = THEME_TUNER.nameColor.resolveValues();
+            var ncIdx = themeOptionState["nameColor"];
+            var ncStyle = null;
+            if (typeof ncIdx === "number" && ncIdx >= 0 && ncVals[ncIdx]) ncStyle = ncVals[ncIdx].value;
+            if (!ncStyle) {
+                var ncDecl = currentTheme.data && currentTheme.data.overlays &&
+                    currentTheme.data.overlays.name_color;
+                if (ncDecl && ncDecl.options && ncDecl.default) ncStyle = ncDecl.options[ncDecl.default];
+            }
+            if (ncStyle) {
+                var tag = document.createElement("canvas");
+                tag.className = "name-tag";
+                tag.width = ncStyle.w * PIXEL_SCALE;
+                tag.height = ncStyle.h * PIXEL_SCALE;
+                var tctx = tag.getContext("2d");
+                tctx.clearRect(0, 0, tag.width, tag.height);
+                if (atlasReady()) {
+                    tctx.imageSmoothingEnabled = false;
+                    tctx.drawImage(atlas, ncStyle.x, ncStyle.y, ncStyle.w, ncStyle.h, 0, 0, tag.width, tag.height);
+                }
+                header.appendChild(tag);
+            }
+        }
+
         header.appendChild(username);
 
         if (timestampsOn) {
@@ -1323,6 +1521,18 @@
         box.appendChild(blockquote);
         newMessage.appendChild(bg);
         newMessage.appendChild(box);
+
+        var arrowFrames = continueArrowFrames();
+        if (arrowFrames.length) {
+            var arr = document.createElement("canvas");
+            arr.className = "continue-arrow";
+            arr.width = arrowFrames[0].w * PIXEL_SCALE;
+            arr.height = arrowFrames[0].h * PIXEL_SCALE;
+            arr._frames = arrowFrames;
+            arr._frame = 0;
+            drawArrowFrame(arr, arrowFrames[0]);
+            newMessage.appendChild(arr);
+        }
 
         function sizeWindow() {
             if (blockquote.offsetWidth) blockquote.style.minWidth = blockquote.offsetWidth + "px";
@@ -1381,7 +1591,11 @@
         chat.innerHTML = "";
         if (notice) chat.appendChild(notice);
         for (var i = 0; i < chatHistory.length; i++) {
-            renderMessage(chatHistory[i], false);
+            try {
+                renderMessage(chatHistory[i], false);
+            } catch (e) {
+                console.warn("renderAllHistory skipped message", i, e);
+            }
         }
     }
 
@@ -1423,7 +1637,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "ff8", "ct"];
+    var THEME_ORDER = ["default", "ff8", "ct", "acww"];
     var themeIndex = 0;
     var TUNER_MODES = ["Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
