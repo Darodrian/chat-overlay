@@ -14,6 +14,10 @@
     <script src="fonts/ff8.js"></script>
     <script src="fonts/ct.js"></script>
     <script src="fonts/acww.js"></script>
+    <script src="fonts/ff7.js"></script>
+    <script src="fonts/fft.js"></script>
+    <script src="fonts/minishcap.js"></script>
+    <script src="fonts/mmbn1.js"></script>
 
     <style>
         :root {
@@ -81,11 +85,13 @@
         /* ---- Default (Zpix webfont) theme ---- */
         #chat.theme-default {
             color: var(--ff-text);
+            text-shadow: 2px 0 0 rgba(0,0,0,0.85), -2px 0 0 rgba(0,0,0,0.85),
+                         0 2px 0 rgba(0,0,0,0.85), 0 -2px 0 rgba(0,0,0,0.85);
         }
 
         #chat.theme-default li {
             padding: 12px 4px;
-            font-size: 32px;
+            font-size: 24px;
             line-height: 1.6;
             white-space: pre-wrap;
             overflow-wrap: break-word;
@@ -93,7 +99,7 @@
         }
 
         #chat.theme-default .config-notice {
-            color: var(--ff-dim);
+            color: var(--ff-text);
             font-size: 24px;
             padding: 12px 4px;
         }
@@ -113,16 +119,16 @@
 
         #chat.theme-default .timestamp {
             color: var(--ff-timestamp);
-            font-size: 32px;
+            font-size: 24px;
             margin-left: 12px;
         }
 
         /* ---- Atlas (crisp pixel font) themes ---- */
-        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww {
+        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1 {
             color: #ffffff;
         }
 
-        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li {
+        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li {
             display: flex;
             flex-direction: column;
             width: max-content;
@@ -135,7 +141,7 @@
             animation: pop 0.18s ease-out; /* keep in sync with POP_MS */
         }
 
-        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg {
+        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg, #chat.theme-ff7 .window-bg, #chat.theme-fft .window-bg, #chat.theme-mc .window-bg, #chat.theme-mmbn1 .window-bg {
             position: absolute;
             top: 0;
             left: 0;
@@ -144,7 +150,7 @@
             z-index: 0;
         }
 
-        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box {
+        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box, #chat.theme-ff7 .msg-box, #chat.theme-fft .msg-box, #chat.theme-mc .msg-box, #chat.theme-mmbn1 .msg-box {
             position: relative;
             z-index: 1;
             padding: 20px 24px 16px 24px;
@@ -156,12 +162,12 @@
             to   { transform: scale(1); opacity: 1; }
         }
 
-        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li {
+        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li {
             margin-top: 20px;
         }
 
-        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice, #chat.theme-acww .config-notice {
-            color: var(--ui-dim);
+        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice, #chat.theme-acww .config-notice, #chat.theme-ff7 .config-notice, #chat.theme-fft .config-notice, #chat.theme-mc .config-notice, #chat.theme-mmbn1 .config-notice {
+            color: var(--ff-text);
             font-size: 24px;
             padding: 12px 4px;
             background: transparent;
@@ -171,7 +177,7 @@
                 0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000;
         }
 
-        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username {
+        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username {
             color: var(--ui-username);
             font-size: 24px;
             line-height: var(--ui-lh, 32px);
@@ -181,23 +187,23 @@
             word-break: break-word;
         }
 
-        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header {
+        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header, #chat.theme-ff7 .msg-header, #chat.theme-fft .msg-header, #chat.theme-mc .msg-header, #chat.theme-mmbn1 .msg-header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             margin-bottom: 8px;
         }
 
-        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username {
+        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username, #chat.theme-ff7 .msg-header .username, #chat.theme-fft .msg-header .username, #chat.theme-mc .msg-header .username, #chat.theme-mmbn1 .msg-header .username {
             margin-bottom: 0;
         }
 
-        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp {
+        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp {
             opacity: 0.55;
             margin-left: 12px;
         }
 
-        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text {
+        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text {
             margin: 0;
             color: #ffffff;
             font-size: 24px;
@@ -224,7 +230,7 @@
             position: absolute;
             left: 56px;
             top: -24px;
-            width: 178px;
+            min-width: 178px;
             height: 44px;
             image-rendering: pixelated;
             z-index: 1;
@@ -236,16 +242,14 @@
             top: -15px;
             z-index: 2;
             line-height: 26px;
-            max-width: 150px;
-            overflow: hidden;
             white-space: nowrap;
-            text-overflow: ellipsis;
+            flex-wrap: nowrap;
         }
 
         #chat.theme-acww .msg-header .timestamp {
             position: absolute;
-            right: 16px;
-            top: -12px;
+            right: 130px;
+            top: 20px;
             z-index: 2;
             opacity: 0.9;
             margin-left: 0;
@@ -262,6 +266,96 @@
             image-rendering: pixelated;
             z-index: 3;
             opacity: 0.9;
+        }
+
+        #chat.theme-ff7 .msg-box {
+            padding: 12px 24px 16px 16px;
+        }
+
+        #chat.theme-fft li {
+            max-width: 400px;
+            min-width: 280px;
+        }
+
+        #chat.theme-fft .msg-box {
+            padding: 36px 84px 12px 12px;
+            min-height: 116px;
+        }
+
+        #chat.theme-fft .msg-header {
+            margin: 0;
+        }
+
+        #chat.theme-fft .portrait {
+            position: absolute;
+            right: 20px;
+            top: 38px;
+            width: 64px;
+            height: 96px;
+            image-rendering: pixelated;
+            z-index: 2;
+        }
+
+        #chat.theme-fft .msg-box .message-text {
+            margin: 2px 0 0 0;
+        }
+
+        #chat.theme-mc li {
+            min-width: 320px;
+        }
+
+        #chat.theme-mc .msg-box {
+            padding: 16px 28px 16px 16px;
+            min-height: 96px;
+        }
+
+        #chat.theme-mc .continue-arrow {
+            position: absolute;
+            right: 32px;
+            bottom: 0;
+            width: 14px;
+            height: 12px;
+            image-rendering: pixelated;
+            z-index: 3;
+            opacity: 0.9;
+        }
+
+        #chat.theme-mc .msg-box img.badge {
+            vertical-align: 4px;
+        }
+
+        #chat.theme-mmbn1 li {
+            min-width: 320px;
+        }
+
+        #chat.theme-mmbn1 .msg-box {
+            padding: 24px 16px 16px 106px;
+            min-height: 128px;
+        }
+
+        #chat.theme-mmbn1 .portrait {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            width: 80px;
+            height: 96px;
+            image-rendering: pixelated;
+            z-index: 2;
+        }
+
+        #chat.theme-mmbn1 .continue-arrow {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 26px;
+            height: 26px;
+            image-rendering: pixelated;
+            z-index: 3;
+            opacity: 0.9;
+        }
+
+        #chat.theme-mmbn1 .msg-box img.badge {
+            vertical-align: 4px;
         }
 
         /* ---- Shared ---- */
@@ -368,7 +462,9 @@
             opacity: 0.6;
         }
 
-        #chat ul.hide-badges img.badge { display: none; }
+        #chat ul.hide-badges img.badge-other { display: none; }
+
+        #chat ul.hide-role-badges img.badge-role { display: none; }
 
         #chat ul.hide-timestamps .timestamp { display: none; }
 
@@ -472,6 +568,10 @@
             <button id="tuner-dim" class="tuner-toggle">On</button>
         </div>
         <div class="tuner-row">
+            <label for="tuner-role-badges">Role Badges</label>
+            <button id="tuner-role-badges" class="tuner-toggle">On</button>
+        </div>
+        <div class="tuner-row">
             <label for="tuner-badges">Badges</label>
             <button id="tuner-badges" class="tuner-toggle">On</button>
         </div>
@@ -512,11 +612,15 @@
     }
     var GLYPHS = {};
     var WINDOW_STYLES = [];
+    var PORTRAITS = [];
     var atlas = null;
+    var boxImg = null;
     var atlasCache = {};
+    var boxCache = {};
     var themeLoaded = false;
     var currentTheme = null;
     var chatHistory = [];
+    var MAX_HISTORY = 30;
 
     var THEMES = {
         default: {
@@ -570,10 +674,62 @@
             },
             continueArrow: true,
             tuner: ["windowStyle", "nameColor"]
+        },
+        ff7: {
+            key: "ff7",
+            label: "Final Fantasy VII",
+            atlas: "fonts/ff7-font.png",
+            data: (typeof THEME_DATA_FF7 === "object" && THEME_DATA_FF7) ? THEME_DATA_FF7 : null,
+            windowBorder: 4,
+            drawMode: "border",
+            userRows: null,
+            mapApostrophe: true
+        },
+        fft: {
+            key: "fft",
+            label: "Final Fantasy Tactics",
+            atlas: "fonts/fft-font.png",
+            boxAtlas: "fonts/fft-blank.png",
+            data: (typeof THEME_DATA_FFT === "object" && THEME_DATA_FFT) ? THEME_DATA_FFT : null,
+            windowBorder: 0,
+            drawMode: "box",
+            userRows: null,
+            mapApostrophe: false,
+            portrait: true,
+            nameRow: 14
+        },
+        mc: {
+            key: "mc",
+            label: "The Legend of Zelda: The Minish Cap",
+            atlas: "fonts/minishcap-font.png",
+            boxAtlas: "fonts/minishcap-blank.png",
+            data: (typeof THEME_DATA_MINISHCAP === "object" && THEME_DATA_MINISHCAP) ? THEME_DATA_MINISHCAP : null,
+            windowBorder: 0,
+            drawMode: "box",
+            userRows: { broadcaster: 0, mod: 15, sub: 30, vip: 45 },
+            mapApostrophe: true,
+            continueArrow: true,
+            inlineName: true,
+            boxBands: { top: 5 / 48, bot: 5 / 48 }
+        },
+        mmbn1: {
+            key: "mmbn1",
+            label: "Mega Man Battle Network 1",
+            atlas: "fonts/mmbn1-font.png",
+            boxAtlas: "fonts/mmbn1-blank.png",
+            data: (typeof THEME_DATA_MMBN1 === "object" && THEME_DATA_MMBN1) ? THEME_DATA_MMBN1 : null,
+            windowBorder: 0,
+            drawMode: "box",
+            userRows: null,
+            mapApostrophe: true,
+            portrait: true,
+            continueArrow: true,
+            inlineName: true,
+            boxBands: { top: 6 / 64, bot: 4 / 64 }
         }
     };
 
-    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, timestamps: false, bg: false, fade: false, fadeSeconds: 30 };
+    var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, roleBadges: false, timestamps: false, bg: false, fade: false, fadeSeconds: 30 };
 
     var themeOptionState = {};
 
@@ -695,6 +851,7 @@
     function loadThemeData(data) {
         GLYPHS = {};
         WINDOW_STYLES = [];
+        PORTRAITS = [];
         if (data && typeof data === "object") {
             Object.keys(data).forEach(function (k) {
                 var v = data[k];
@@ -704,12 +861,29 @@
             });
             if (GLYPHS[8221]) GLYPHS[34] = GLYPHS[8221];
             if (currentTheme && currentTheme.mapApostrophe && GLYPHS[8217]) GLYPHS[39] = GLYPHS[8217];
+            if (GLYPHS[39]) {
+                if (!GLYPHS[8216]) GLYPHS[8216] = GLYPHS[39];
+                if (!GLYPHS[8217]) GLYPHS[8217] = GLYPHS[39];
+            }
+            if (GLYPHS[34]) {
+                if (!GLYPHS[8220]) GLYPHS[8220] = GLYPHS[34];
+                if (!GLYPHS[8221]) GLYPHS[8221] = GLYPHS[34];
+            }
             var ws = data.overlays && (data.overlays.window_style || data.overlays.type);
             if (ws && ws.options && typeof ws.options === "object") {
                 Object.keys(ws.options).forEach(function (name) {
                     var o = ws.options[name];
                     if (o && "x" in o && "y" in o && "w" in o && "h" in o) {
                         WINDOW_STYLES.push({ name: name, x: o.x, y: o.y, w: o.w, h: o.h });
+                    }
+                });
+            }
+            var po = data.overlays && data.overlays.portrait;
+            if (po && po.options && typeof po.options === "object") {
+                Object.keys(po.options).forEach(function (name) {
+                    var o = po.options[name];
+                    if (o && "x" in o && "y" in o && "w" in o && "h" in o) {
+                        PORTRAITS.push({ name: name, x: o.x, y: o.y, w: o.w, h: o.h });
                     }
                 });
             }
@@ -743,6 +917,20 @@
             atlas = null;
             document.documentElement.style.setProperty("--ui-atlas", "none");
         }
+        if (t.boxAtlas) {
+            if (!boxCache[t.key]) {
+                var bimg = new Image();
+                bimg.onload = function () {
+                    if (currentTheme === t) renderAllHistory();
+                };
+                bimg.onerror = function () {};
+                bimg.src = t.boxAtlas;
+                boxCache[t.key] = bimg;
+            }
+            boxImg = boxCache[t.key];
+        } else {
+            boxImg = null;
+        }
         tunerMode = DEFAULT_OPTIONS.mode;
         dimOn = DEFAULT_OPTIONS.dim;
         badgesOn = DEFAULT_OPTIONS.badges;
@@ -753,6 +941,7 @@
         applyTunerMode();
         applyDim();
         applyBadges();
+        applyRoleBadges();
         applyTimestamps();
         applyBg();
         applyFade();
@@ -801,7 +990,7 @@
     }
 
     function randomWindow() {
-        if (!WINDOW_STYLES.length) return null;
+        if (!WINDOW_STYLES.length) return { name: "base", x: 0, y: 0, w: 1, h: 1 };
         return WINDOW_STYLES[Math.floor(Math.random() * WINDOW_STYLES.length)];
     }
 
@@ -835,6 +1024,28 @@
             });
         }
 
+        if (currentTheme.drawMode === "box") {
+            if (boxImg && boxImg.complete && boxImg.naturalWidth > 0) {
+                var nw = boxImg.naturalWidth, nh = boxImg.naturalHeight;
+                var bb = currentTheme.boxBands || {};
+                var topFrac = (typeof bb.top === "number" ? bb.top : 0.2);
+                var botFrac = (typeof bb.bot === "number" ? bb.bot : 0.2);
+                var topBand = Math.round(nh * topFrac);
+                var botBand = Math.round(nh * botFrac);
+                var tDest = topBand * PIXEL_SCALE;
+                var bDest = botBand * PIXEL_SCALE;
+                if (h > tDest + bDest) {
+                    ctx.drawImage(boxImg, 0, 0, nw, topBand, 0, 0, w, tDest);
+                    ctx.drawImage(boxImg, 0, nh - botBand, nw, botBand, 0, h - bDest, w, bDest);
+                    ctx.drawImage(boxImg, 0, topBand, nw, nh - topBand - botBand, 0, tDest, w, h - tDest - bDest);
+                } else {
+                    ctx.drawImage(boxImg, 0, 0, w, h);
+                }
+            }
+            removeMagenta();
+            return;
+        }
+
         if (currentTheme.drawMode === "style") {
             var b = currentTheme.windowBorder;
             var bs = b * PIXEL_SCALE;
@@ -858,21 +1069,23 @@
         }
 
         var bd = currentTheme.data.border || {};
-        var cs = currentTheme.windowBorder * PIXEL_SCALE;
+        var cw = (bd.tl ? bd.tl.w : currentTheme.windowBorder) * PIXEL_SCALE;
+        var eh = (bd.t ? bd.t.h : currentTheme.windowBorder) * PIXEL_SCALE;
+        var ew = (bd.l ? bd.l.w : currentTheme.windowBorder) * PIXEL_SCALE;
         function part(name, dx, dy, dw, dh) {
             var p = bd[name];
             if (!p) return;
             if (dw > 0 && dh > 0) ctx.drawImage(img, p.x, p.y, p.w, p.h, dx, dy, dw, dh);
         }
-        part("tl", 0, 0, cs, cs);
-        part("t", cs, 0, w - 2 * cs, cs);
-        part("tr", w - cs, 0, cs, cs);
-        part("l", 0, cs, cs, h - 2 * cs);
-        part("c", cs, cs, w - 2 * cs, h - 2 * cs);
-        part("r", w - cs, cs, cs, h - 2 * cs);
-        part("bl", 0, h - cs, cs, cs);
-        part("b", cs, h - cs, w - 2 * cs, cs);
-        part("br", w - cs, h - cs, cs, cs);
+        part("c", ew, eh, w - 2 * ew, h - 2 * eh);
+        part("t", ew, 0, w - 2 * ew, eh);
+        part("b", ew, h - eh, w - 2 * ew, eh);
+        part("l", 0, eh, ew, h - 2 * eh);
+        part("r", w - ew, eh, ew, h - 2 * eh);
+        part("tl", 0, 0, cw, cw);
+        part("tr", w - cw, 0, cw, cw);
+        part("bl", 0, h - cw, cw, cw);
+        part("br", w - cw, h - cw, cw, cw);
         removeMagenta();
     }
 
@@ -1053,10 +1266,12 @@
     function badgeImages(userBadges) {
         var html = "";
         if (!userBadges) return html;
+        var roleSets = { broadcaster: 1, moderator: 1, subscriber: 1, vip: 1 };
         Object.keys(userBadges).forEach(function (setId) {
             var url = badges[setId + "/" + userBadges[setId]];
             if (!url && setId === "subscriber") url = badgeSubFallback;
-            if (url) html += "<img class=\"badge\" src=\"" + url + "\" alt=\"\">";
+            if (url) html += "<img class=\"badge " + (roleSets[setId] ? "badge-role" : "badge-other") +
+                "\" src=\"" + url + "\" alt=\"\">";
         });
         return html;
     }
@@ -1408,9 +1623,18 @@
         return units;
     }
 
+    function dropOldestMessage() {
+        var rec = chatHistory[0];
+        if (!rec) return;
+        var node = rec.node;
+        if (node && node.parentNode) node.parentNode.removeChild(node);
+        chatHistory.shift();
+    }
+
     function appendMessage(record) {
         chatHistory.push(record);
         renderMessage(record, true);
+        while (chatHistory.length > MAX_HISTORY) dropOldestMessage();
     }
 
     function renderMessage(record, animate) {
@@ -1418,6 +1642,56 @@
         record.node = newMessage;
         chat.append(newMessage);
         if (newMessage._finish) newMessage._finish(animate);
+    }
+
+    function nameRowFor(flags) {
+        if (currentTheme.nameRow != null) return currentTheme.nameRow;
+        var rows = currentTheme.userRows;
+        if (rows && rows.broadcaster != null) {
+            if (flags.broadcaster) return rows.broadcaster;
+            if (flags.mod) return rows.mod;
+            if (flags.vip) return rows.vip;
+            if (flags.subscriber) return rows.sub;
+        }
+        return 0;
+    }
+
+    function buildNamePrefix(record, nameRow) {
+        var prefix = [];
+        var bhtml = resolveBadgeHtml(record.extra, record.flags);
+        if (bhtml) prefix.push({ html: bhtml });
+        var user = record.user;
+        var i;
+        for (i = 0; i < user.length; i++) prefix.push(glyphOrTextUnit(user[i], nameRow));
+        if (timestampsOn) {
+            var now = new Date(record.ts || Date.now());
+            var hh = String(now.getHours()).padStart(2, "0");
+            var mm = String(now.getMinutes()).padStart(2, "0");
+            var tsText = " (" + hh + ":" + mm + ")";
+            for (i = 0; i < tsText.length; i++) prefix.push(glyphOrTextUnit(tsText[i], nameRow));
+        }
+        var suffix = ": ";
+        for (i = 0; i < suffix.length; i++) prefix.push(glyphOrTextUnit(suffix[i], nameRow));
+        prefix.push({ html: "\u200b" });
+        return prefix;
+    }
+
+    function fitNameTag(tag, style, cssWidth) {
+        var ctx = tag.getContext("2d");
+        var minW = style.w * PIXEL_SCALE;
+        tag.width = Math.max(minW, cssWidth);
+        tag.height = style.h * PIXEL_SCALE;
+        ctx.clearRect(0, 0, tag.width, tag.height);
+        if (!atlasReady()) return;
+        ctx.imageSmoothingEnabled = false;
+        var L = 20, R = 10;
+        var sh = style.h;
+        var leftW = L * PIXEL_SCALE;
+        var rightW = R * PIXEL_SCALE;
+        var stretch = tag.width - leftW - rightW;
+        ctx.drawImage(atlas, style.x, style.y, L, sh, 0, 0, leftW, tag.height);
+        ctx.drawImage(atlas, style.x + L, style.y, style.w - L - R, sh, leftW, 0, stretch, tag.height);
+        ctx.drawImage(atlas, style.x + style.w - R, style.y, R, sh, tag.width - rightW, 0, rightW, tag.height);
     }
 
     function buildMessageNode(record) {
@@ -1453,71 +1727,83 @@
         }
 
         var box = document.createElement("div");
-        var header = document.createElement("div");
-        var username = document.createElement("span");
         var bg = document.createElement("canvas");
         var windowStyle = currentWindowStyle();
+        var nameTagEl = null;
+        var nameTagStyle = null;
 
         box.className = "msg-box";
-        header.className = "msg-header";
         bg.className = "window-bg";
-
-        username.className = "user username";
-        var nameRow = 0;
-        var rows = currentTheme.userRows;
-        if (rows && rows.broadcaster != null) {
-            if (flags.broadcaster) nameRow = rows.broadcaster;
-            else if (flags.mod) nameRow = rows.mod;
-            else if (flags.vip) nameRow = rows.vip;
-            else if (flags.subscriber) nameRow = rows.sub;
-        }
-
-        buildTextRuns(username, user, nameRow);
-
-        var badgesHtml = resolveBadgeHtml(extra, flags);
-        if (badgesHtml) username.insertAdjacentHTML("afterbegin", badgesHtml);
 
         blockquote.className = "message-text";
         blockquote.innerHTML = "";
 
-        if (currentTheme.nameTag) {
-            var ncVals = THEME_TUNER.nameColor.resolveValues();
-            var ncIdx = themeOptionState["nameColor"];
-            var ncStyle = null;
-            if (typeof ncIdx === "number" && ncIdx >= 0 && ncVals[ncIdx]) ncStyle = ncVals[ncIdx].value;
-            if (!ncStyle) {
-                var ncDecl = currentTheme.data && currentTheme.data.overlays &&
-                    currentTheme.data.overlays.name_color;
-                if (ncDecl && ncDecl.options && ncDecl.default) ncStyle = ncDecl.options[ncDecl.default];
-            }
-            if (ncStyle) {
-                var tag = document.createElement("canvas");
-                tag.className = "name-tag";
-                tag.width = ncStyle.w * PIXEL_SCALE;
-                tag.height = ncStyle.h * PIXEL_SCALE;
-                var tctx = tag.getContext("2d");
-                tctx.clearRect(0, 0, tag.width, tag.height);
-                if (atlasReady()) {
-                    tctx.imageSmoothingEnabled = false;
-                    tctx.drawImage(atlas, ncStyle.x, ncStyle.y, ncStyle.w, ncStyle.h, 0, 0, tag.width, tag.height);
+        if (currentTheme.inlineName) {
+            units = buildNamePrefix(record, nameRowFor(flags)).concat(units);
+        } else {
+            var header = document.createElement("div");
+            var username = document.createElement("span");
+            header.className = "msg-header";
+            username.className = "user username";
+            var nameRow = nameRowFor(flags);
+
+            buildTextRuns(username, user, nameRow);
+
+            var badgesHtml = resolveBadgeHtml(extra, flags);
+            if (badgesHtml) username.insertAdjacentHTML("afterbegin", badgesHtml);
+
+            if (currentTheme.nameTag) {
+                var ncVals = THEME_TUNER.nameColor.resolveValues();
+                var ncIdx = themeOptionState["nameColor"];
+                var ncStyle = null;
+                if (typeof ncIdx === "number" && ncIdx >= 0 && ncVals[ncIdx]) ncStyle = ncVals[ncIdx].value;
+                if (!ncStyle) {
+                    var ncDecl = currentTheme.data && currentTheme.data.overlays &&
+                        currentTheme.data.overlays.name_color;
+                    if (ncDecl && ncDecl.options && ncDecl.default) ncStyle = ncDecl.options[ncDecl.default];
                 }
-                header.appendChild(tag);
+                if (ncStyle) {
+                    var tag = document.createElement("canvas");
+                    tag.className = "name-tag";
+                    tag.width = ncStyle.w * PIXEL_SCALE;
+                    tag.height = ncStyle.h * PIXEL_SCALE;
+                    nameTagEl = tag;
+                    nameTagStyle = ncStyle;
+                    header.appendChild(tag);
+                }
             }
+
+            header.appendChild(username);
+
+            if (timestampsOn) {
+                var ts = document.createElement("span");
+                ts.className = "timestamp";
+                var now2 = new Date(record.ts || Date.now());
+                var hh2 = String(now2.getHours()).padStart(2, "0");
+                var mm2 = String(now2.getMinutes()).padStart(2, "0");
+                buildTextRuns(ts, hh2 + ":" + mm2, 0);
+                header.appendChild(ts);
+            }
+
+            box.appendChild(header);
         }
 
-        header.appendChild(username);
-
-        if (timestampsOn) {
-            var ts = document.createElement("span");
-            ts.className = "timestamp";
-            var now2 = new Date(record.ts || Date.now());
-            var hh2 = String(now2.getHours()).padStart(2, "0");
-            var mm2 = String(now2.getMinutes()).padStart(2, "0");
-            buildTextRuns(ts, hh2 + ":" + mm2, 0);
-            header.appendChild(ts);
+        if (currentTheme.portrait && PORTRAITS.length) {
+            var portrait = record._portrait || PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
+            record._portrait = portrait;
+            var pic = document.createElement("canvas");
+            pic.className = "portrait";
+            pic.width = portrait.w * PIXEL_SCALE;
+            pic.height = portrait.h * PIXEL_SCALE;
+            var pctx = pic.getContext("2d");
+            pctx.clearRect(0, 0, pic.width, pic.height);
+            if (atlasReady()) {
+                pctx.imageSmoothingEnabled = false;
+                pctx.drawImage(atlas, portrait.x, portrait.y, portrait.w, portrait.h, 0, 0, pic.width, pic.height);
+            }
+            box.appendChild(pic);
         }
 
-        box.appendChild(header);
         box.appendChild(blockquote);
         newMessage.appendChild(bg);
         newMessage.appendChild(box);
@@ -1541,6 +1827,12 @@
                 bg.width = box.offsetWidth;
                 bg.height = box.offsetHeight;
                 drawWindow(bg, windowStyle, bg.width, bg.height);
+            }
+            if (nameTagEl && nameTagStyle && username && username.offsetWidth) {
+                var target = (username.offsetLeft - nameTagEl.offsetLeft) + username.offsetWidth +
+                     (username.offsetLeft - nameTagEl.offsetLeft);
+                fitNameTag(nameTagEl, nameTagStyle, target);
+                nameTagEl.style.width = nameTagEl.width + "px";
             }
         }
 
@@ -1590,7 +1882,8 @@
     function renderAllHistory() {
         chat.innerHTML = "";
         if (notice) chat.appendChild(notice);
-        for (var i = 0; i < chatHistory.length; i++) {
+        var start = Math.max(0, chatHistory.length - MAX_HISTORY);
+        for (var i = start; i < chatHistory.length; i++) {
             try {
                 renderMessage(chatHistory[i], false);
             } catch (e) {
@@ -1637,7 +1930,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "ff8", "ct", "acww"];
+    var THEME_ORDER = ["default", "acww", "ct", "ff7", "ff8", "fft", "mc", "mmbn1"];
     var themeIndex = 0;
     var TUNER_MODES = ["Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
@@ -1646,6 +1939,8 @@
     var dimBtn = document.getElementById("tuner-dim");
     var badgesOn = DEFAULT_OPTIONS.badges;
     var badgesBtn = document.getElementById("tuner-badges");
+    var roleBadgesOn = DEFAULT_OPTIONS.roleBadges;
+    var roleBadgesBtn = document.getElementById("tuner-role-badges");
     var timestampsOn = DEFAULT_OPTIONS.timestamps;
     var timestampsBtn = document.getElementById("tuner-timestamps");
     var bgOn = DEFAULT_OPTIONS.bg;
@@ -1704,6 +1999,7 @@
         chatBox.className = "theme-" + currentTheme.key + (bgOn ? "" : " no-bg");
         chat.className = (["", "align-center", "align-right", "align-alternate"][tunerMode] ||
             "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges") +
+            (roleBadgesOn ? "" : " hide-role-badges") +
             (timestampsOn ? "" : " hide-timestamps") + (fadeOn ? " fade-expire" : "");
     }
 
@@ -1719,6 +2015,12 @@
 
     function applyBadges() {
         badgesBtn.textContent = badgesOn ? "On" : "Off";
+        applyTunerClass();
+        renderAllHistory();
+    }
+
+    function applyRoleBadges() {
+        roleBadgesBtn.textContent = roleBadgesOn ? "On" : "Off";
         applyTunerClass();
         renderAllHistory();
     }
@@ -1806,6 +2108,11 @@
     badgesBtn.addEventListener("click", function () {
         badgesOn = !badgesOn;
         applyBadges();
+    });
+
+    roleBadgesBtn.addEventListener("click", function () {
+        roleBadgesOn = !roleBadgesOn;
+        applyRoleBadges();
     });
 
     timestampsBtn.addEventListener("click", function () {
