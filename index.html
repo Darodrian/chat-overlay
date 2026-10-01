@@ -1789,8 +1789,14 @@
         }
 
         if (currentTheme.portrait && PORTRAITS.length) {
-            var portrait = record._portrait || PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
-            record._portrait = portrait;
+            var portrait = null;
+            if (record._portraitName) {
+                for (var pi = 0; pi < PORTRAITS.length; pi++) {
+                    if (PORTRAITS[pi].name === record._portraitName) { portrait = PORTRAITS[pi]; break; }
+                }
+            }
+            if (!portrait) portrait = PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
+            record._portraitName = portrait.name;
             var pic = document.createElement("canvas");
             pic.className = "portrait";
             pic.width = portrait.w * PIXEL_SCALE;
