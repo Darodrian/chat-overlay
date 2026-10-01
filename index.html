@@ -540,6 +540,20 @@
         #tuner-fade-secs-out { min-width: 30px; text-align: center; }
         #tuner input[type="range"] { flex: 1; margin: 0 8px 0 0; min-width: 0; }
         #tuner #tuner-fade-secs-out { flex: initial; min-width: 36px; text-align: right; }
+        #tuner .portrait-row select.tuner-select {
+            flex: 1;
+            width: 0;
+            min-width: 0;
+            margin: 0 8px 0 0;
+            background: #54514a;
+            border: 2px solid #33312c;
+            color: #f4f1ea;
+            font-family: inherit;
+            font-size: 12px;
+            height: 28px;
+            cursor: pointer;
+        }
+        #tuner .portrait-row select.tuner-select:last-child { margin-right: 0; }
     </style>
 
 </head>
@@ -621,6 +635,74 @@
     var currentTheme = null;
     var chatHistory = [];
     var MAX_HISTORY = 30;
+    var userPortraits = {};
+    var PORTRAIT_STORE_KEY = "chatOverlayUserPortraits";
+
+    function saveUserPortraits() {
+        try {
+            localStorage.setItem(PORTRAIT_STORE_KEY, JSON.stringify(userPortraits));
+        } catch (e) {}
+    }
+
+    function loadUserPortraits() {
+        try {
+            var raw = localStorage.getItem(PORTRAIT_STORE_KEY);
+            if (!raw) return;
+            var parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+                Object.keys(parsed).forEach(function (tk) {
+                    var m = parsed[tk];
+                    if (m && typeof m === "object") {
+                        userPortraits[tk] = userPortraits[tk] || {};
+                        Object.keys(m).forEach(function (uk) {
+                            if (typeof m[uk] === "string") userPortraits[tk][uk] = m[uk];
+                        });
+                    }
+                });
+            }
+        } catch (e) {}
+    }
+
+    function userPortraitMap() {
+        if (!currentTheme) return {};
+        if (!userPortraits[currentTheme.key]) userPortraits[currentTheme.key] = {};
+        return userPortraits[currentTheme.key];
+    }
+
+    function setUserPortrait(user, portraitName) {
+        var u = String(user || "").toLowerCase();
+        if (!u || !currentTheme) return false;
+        if (portraitName !== "none" && portraitName !== "__hidden__") {
+            var found = false;
+            for (var i = 0; i < PORTRAITS.length; i++) {
+                if (PORTRAITS[i].name === portraitName) { found = true; break; }
+            }
+            if (!found) {
+                console.warn("Portrait \"" + portraitName + "\" not in theme \"" + currentTheme.key + "\"");
+                return false;
+            }
+        }
+        userPortraitMap()[u] = portraitName;
+        saveUserPortraits();
+        renderAllHistory();
+        return true;
+    }
+
+    function clearUserPortrait(user) {
+        var u = String(user || "").toLowerCase();
+        if (!u || !currentTheme) return;
+        var m = userPortraitMap();
+        if (m[u]) delete m[u];
+        saveUserPortraits();
+        renderAllHistory();
+    }
+
+    window.setUserPortrait = setUserPortrait;
+    window.clearUserPortrait = clearUserPortrait;
+    window.getUserPortrait = function (user) {
+        if (!currentTheme) return null;
+        return userPortraitMap()[String(user || "").toLowerCase()] || null;
+    };
 
     var THEMES = {
         default: {
@@ -696,7 +778,8 @@
             userRows: null,
             mapApostrophe: false,
             portrait: true,
-            nameRow: 14
+            nameRow: 14,
+            tuner: ["userPortrait"]
         },
         mc: {
             key: "mc",
@@ -725,7 +808,8 @@
             portrait: true,
             continueArrow: true,
             inlineName: true,
-            boxBands: { top: 6 / 64, bot: 4 / 64 }
+            boxBands: { top: 6 / 64, bot: 4 / 64 },
+            tuner: ["userPortrait"]
         }
     };
 
@@ -845,6 +929,10 @@
             onChange: function () {
                 renderAllHistory();
             }
+        },
+        userPortrait: {
+            label: "Portrait",
+            type: "userPortrait"
         }
     };
 
@@ -1634,6 +1722,7 @@
     function appendMessage(record) {
         chatHistory.push(record);
         renderMessage(record, true);
+        refreshPortraitUserList();
         while (chatHistory.length > MAX_HISTORY) dropOldestMessage();
     }
 
@@ -1790,24 +1879,55 @@
 
         if (currentTheme.portrait && PORTRAITS.length) {
             var portrait = null;
-            if (record._portraitName) {
-                for (var pi = 0; pi < PORTRAITS.length; pi++) {
-                    if (PORTRAITS[pi].name === record._portraitName) { portrait = PORTRAITS[pi]; break; }
+            var userKey = String(record.user || "").toLowerCase();
+            var assignedName = userKey ? userPortraitMap()[userKey] : "";
+            if (assignedName === "__hidden__") {
+                record._portraitName = "__hidden__";
+            } else {
+                if (assignedName) {
+                    for (var pi = 0; pi < PORTRAITS.length; pi++) {
+                        if (PORTRAITS[pi].name === assignedName) { portrait = PORTRAITS[pi]; break; }
+                    }
                 }
+                if (!portrait && record._portraitName && record._portraitName !== "__hidden__") {
+                    for (var pi = 0; pi < PORTRAITS.length; pi++) {
+                        if (PORTRAITS[pi].name === record._portraitName) { portrait = PORTRAITS[pi]; break; }
+                    }
+                }
+                if (!portrait) {
+                    if (userKey) {
+                        var used = {};
+                        Object.keys(userPortraitMap()).forEach(function (u) {
+                            var n = userPortraitMap()[u];
+                            if (n !== "none" && n !== "__hidden__") used[n] = true;
+                        });
+                        var pool = [];
+                        for (var pi = 0; pi < PORTRAITS.length; pi++) {
+                            var pc = PORTRAITS[pi];
+                            if (pc.name !== "none" && !used[pc.name]) pool.push(pc);
+                        }
+                        portrait = pool.length ? pool[Math.floor(Math.random() * pool.length)] : PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
+                        if (portrait.name !== "none") {
+                            userPortraitMap()[userKey] = portrait.name;
+                            saveUserPortraits();
+                        }
+                    } else {
+                        portrait = PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
+                    }
+                }
+                record._portraitName = portrait.name;
+                var pic = document.createElement("canvas");
+                pic.className = "portrait";
+                pic.width = portrait.w * PIXEL_SCALE;
+                pic.height = portrait.h * PIXEL_SCALE;
+                var pctx = pic.getContext("2d");
+                pctx.clearRect(0, 0, pic.width, pic.height);
+                if (atlasReady()) {
+                    pctx.imageSmoothingEnabled = false;
+                    pctx.drawImage(atlas, portrait.x, portrait.y, portrait.w, portrait.h, 0, 0, pic.width, pic.height);
+                }
+                box.appendChild(pic);
             }
-            if (!portrait) portrait = PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
-            record._portraitName = portrait.name;
-            var pic = document.createElement("canvas");
-            pic.className = "portrait";
-            pic.width = portrait.w * PIXEL_SCALE;
-            pic.height = portrait.h * PIXEL_SCALE;
-            var pctx = pic.getContext("2d");
-            pctx.clearRect(0, 0, pic.width, pic.height);
-            if (atlasReady()) {
-                pctx.imageSmoothingEnabled = false;
-                pctx.drawImage(atlas, portrait.x, portrait.y, portrait.w, portrait.h, 0, 0, pic.width, pic.height);
-            }
-            box.appendChild(pic);
         }
 
         box.appendChild(blockquote);
@@ -1966,6 +2086,10 @@
         currentTheme.tuner.forEach(function (key) {
             var o = THEME_TUNER[key];
             if (!o) return;
+            if (o.type === "userPortrait") {
+                buildUserPortraitRow();
+                return;
+            }
             var vals = o.resolveValues();
             var row = document.createElement("div");
             row.className = "tuner-row";
@@ -1999,6 +2123,97 @@
                 o.onChange();
             });
         });
+    }
+
+    function humanizeName(name) {
+        return name.replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    }
+
+    function knownChatters() {
+        var seen = {};
+        var list = [];
+        for (var i = 0; i < chatHistory.length; i++) {
+            var u = String(chatHistory[i].user || "").toLowerCase();
+            if (u && !seen[u]) { seen[u] = true; list.push(chatHistory[i].user); }
+        }
+        list.sort(function (a, b) { return a.toLowerCase().localeCompare(b.toLowerCase()); });
+        return list;
+    }
+
+    var portraitUserSel = null;
+    var portraitPortSel = null;
+
+    function buildUserPortraitRow() {
+        var row = document.createElement("div");
+        row.className = "tuner-row portrait-row";
+        var label = document.createElement("label");
+        label.textContent = "Portrait";
+        portraitUserSel = document.createElement("select");
+        portraitUserSel.className = "tuner-select";
+        portraitPortSel = document.createElement("select");
+        portraitPortSel.className = "tuner-select";
+        row.appendChild(label);
+        row.appendChild(portraitUserSel);
+        row.appendChild(portraitPortSel);
+        tunerOptionsBox.appendChild(row);
+        portraitUserSel.addEventListener("change", populatePortraitOptions);
+        portraitPortSel.addEventListener("change", function () {
+            var user = portraitUserSel.value;
+            if (!user) return;
+            var name = portraitPortSel.value;
+            if (name === "__auto__") clearUserPortrait(user);
+            else setUserPortrait(user, name);
+            populatePortraitOptions();
+        });
+        refreshPortraitUserList();
+    }
+
+    function refreshPortraitUserList() {
+        if (!portraitUserSel || !portraitUserSel.parentNode) return;
+        var current = portraitUserSel.value;
+        var users = knownChatters();
+        portraitUserSel.innerHTML = "";
+        var ph = document.createElement("option");
+        ph.value = "";
+        ph.textContent = "— pick user —";
+        portraitUserSel.appendChild(ph);
+        users.forEach(function (u) {
+            var opt = document.createElement("option");
+            opt.value = u;
+            opt.textContent = u;
+            portraitUserSel.appendChild(opt);
+        });
+        if (current) {
+            var match = null;
+            for (var i = 0; i < portraitUserSel.options.length; i++) {
+                if (portraitUserSel.options[i].value === current) { match = portraitUserSel.options[i]; break; }
+            }
+            if (match) portraitUserSel.value = current;
+        }
+        populatePortraitOptions();
+    }
+
+    function populatePortraitOptions() {
+        if (!portraitPortSel) return;
+        var user = portraitUserSel ? portraitUserSel.value : "";
+        var assigned = user ? (userPortraitMap()[user.toLowerCase()] || "__auto__") : "__auto__";
+        portraitPortSel.innerHTML = "";
+        var auto = document.createElement("option");
+        auto.value = "__auto__";
+        auto.textContent = "Auto (default)";
+        portraitPortSel.appendChild(auto);
+        var none = document.createElement("option");
+        none.value = "__hidden__";
+        none.textContent = "None";
+        portraitPortSel.appendChild(none);
+        PORTRAITS.forEach(function (p) {
+            if (p.name === "none") return;
+            var opt = document.createElement("option");
+            opt.value = p.name;
+            opt.textContent = humanizeName(p.name);
+            portraitPortSel.appendChild(opt);
+        });
+        portraitPortSel.value = assigned;
     }
 
     function applyTunerClass() {
@@ -2141,6 +2356,7 @@
         applyFadeSeconds();
     });
 
+    loadUserPortraits();
     applyTheme("default");
 
     document.addEventListener("keydown", function (e) {
