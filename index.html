@@ -6,18 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Overlay</title>
-    <!-- Font: Zpix (最像素) by SolidZORO, free for personal use -- https://github.com/SolidZORO/zpix-pixel-font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
-    <script src="fonts/ff8.js"></script>
-    <script src="fonts/ct.js"></script>
-    <script src="fonts/acww.js"></script>
-    <script src="fonts/ff7.js"></script>
-    <script src="fonts/fft.js"></script>
-    <script src="fonts/minishcap.js"></script>
-    <script src="fonts/mmbn1.js"></script>
+    <script src="assets/themes/ff8/ff8.js"></script>
+    <script src="assets/themes/ct/ct.js"></script>
+    <script src="assets/themes/acww/acww.js"></script>
+    <script src="assets/themes/ff7/ff7.js"></script>
+    <script src="assets/themes/fft/fft.js"></script>
+    <script src="assets/themes/minishcap/minishcap.js"></script>
+    <script src="assets/themes/mmbn1/mmbn1.js"></script>
 
     <style>
         :root {
@@ -46,17 +44,43 @@
 
         @font-face {
             font-family: 'Zpix';
-            src: url("fonts/zpix.woff2") format("woff2");
+            src: url("assets/fonts/zpix.woff2") format("woff2");
             font-display: swap;
         }
+
+        /* Per-theme webfonts, selected by theme.fontFamily in THEMES. */
+        @font-face {
+            font-family: 'ChronoType';
+            src: url("assets/fonts/ChronoType.woff2") format("woff2");
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Altima';
+            src: url("assets/fonts/Altima.woff2") format("woff2");
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'MinishType';
+            src: url("assets/fonts/MinishType.woff2") format("woff2");
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'SF3FontThin';
+            src: url("assets/fonts/SF3FontThin.woff2") format("woff2");
+            font-display: swap;
+        }
+
         html, body {
             margin: 0;
-            font-family: 'Zpix', 'SeedComputer', 'Press Start 2P', monospace;
+            font-family: 'Zpix', monospace;
         }
 
         #chat {
             width: 600px;
-            height: 800px;
+            height: 1200px;
             overflow-x: hidden;
             overflow-y: hidden;
             display: flex;
@@ -125,7 +149,7 @@
 
         /* ---- Atlas (crisp pixel font) themes ---- */
         #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1 {
-            color: #ffffff;
+            color: var(--ui-body-color, #ffffff);
         }
 
         #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li {
@@ -178,8 +202,8 @@
         }
 
         #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username {
-            color: var(--ui-username);
-            font-size: 24px;
+            color: var(--ui-user-color, var(--ui-username));
+            font-size: var(--ui-fs, 24px);
             line-height: var(--ui-lh, 32px);
             display: flex;
             flex-wrap: wrap;
@@ -199,18 +223,37 @@
         }
 
         #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp {
+            font-size: var(--ui-fs, 24px);
+            line-height: var(--ui-lh, 32px);
             opacity: 0.55;
             margin-left: 12px;
         }
 
         #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text {
             margin: 0;
-            color: #ffffff;
-            font-size: 24px;
+            color: var(--ui-body-color, #ffffff);
+            font-size: var(--ui-fs, 24px);
             line-height: var(--ui-lh, 32px);
             white-space: normal;
             word-break: break-word;
         }
+
+        /* ---- Webfont themes: fixed per-theme size, nearest-neighbour pixel glyphs ---- */
+        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1 {
+            font-family: var(--ui-font, inherit);
+            text-shadow: var(--ui-text-shadow, none);
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: geometricPrecision;
+        }
+
+        /* Role colours for inlineName themes (mc, mmbn1), which no longer have
+           per-role atlas rows. The span's own declaration always beats the
+           colour it would otherwise inherit from .message-text. */
+        #chat .user.mod { color: var(--ui-mod); }
+        #chat .user.sub { color: var(--ui-sub); }
+        #chat .user.vip { color: var(--ui-vip); }
+        #chat .user.broadcaster { color: var(--ui-broadcaster); }
 
         #chat.theme-acww li { max-width: none; }
 
@@ -278,7 +321,7 @@
         }
 
         #chat.theme-fft .msg-box {
-            padding: 36px 84px 12px 12px;
+            padding: 30px 12px 12px 84px;
             min-height: 116px;
         }
 
@@ -288,8 +331,8 @@
 
         #chat.theme-fft .portrait {
             position: absolute;
-            right: 20px;
-            top: 38px;
+            left: 12px;
+            top: 32px;
             width: 64px;
             height: 96px;
             image-rendering: pixelated;
@@ -335,8 +378,8 @@
 
         #chat.theme-mmbn1 .portrait {
             position: absolute;
-            left: 16px;
-            top: 16px;
+            left: 18px;
+            top: 20px;
             width: 80px;
             height: 96px;
             image-rendering: pixelated;
@@ -624,6 +667,12 @@
         var d = currentTheme && currentTheme.data && currentTheme.data.default;
         return (d && d.h) || GLYPH_H;
     }
+
+    /* True when the theme renders text with a woff2 webfont instead of atlas glyphs. */
+    function usesWebfont() {
+        return !!(currentTheme && currentTheme.fontFamily);
+    }
+
     var GLYPHS = {};
     var WINDOW_STYLES = [];
     var PORTRAITS = [];
@@ -718,7 +767,7 @@
         ff8: {
             key: "ff8",
             label: "Final Fantasy VIII",
-            atlas: "fonts/ff8-font.png",
+            atlas: "assets/themes/ff8/ff8-font.png",
             data: (typeof THEME_DATA_FF8 === "object" && THEME_DATA_FF8) ? THEME_DATA_FF8 : null,
             windowBorder: 2,
             drawMode: "border",
@@ -728,18 +777,22 @@
         ct: {
             key: "ct",
             label: "Chrono Trigger",
-            atlas: "fonts/ct-font.png",
+            atlas: "assets/themes/ct/ct-font.png",
             data: (typeof THEME_DATA_CT === "object" && THEME_DATA_CT) ? THEME_DATA_CT : null,
             windowBorder: 8,
             drawMode: "style",
             userRows: null,
             mapApostrophe: false,
+            fontFamily: "ChronoType",
+            fontSize: 32,
+            lineHeight: 32,
+            textShadow: "2px 2px 0 #000",
             tuner: ["windowStyle"]
         },
         acww: {
             key: "acww",
             label: "Animal Crossing: Wild World",
-            atlas: "fonts/acww-font.png",
+            atlas: "assets/themes/acww/acww-font.png",
             data: (typeof THEME_DATA_ACWW === "object" && THEME_DATA_ACWW) ? THEME_DATA_ACWW : null,
             windowBorder: 24,
             drawMode: "style",
@@ -760,7 +813,7 @@
         ff7: {
             key: "ff7",
             label: "Final Fantasy VII",
-            atlas: "fonts/ff7-font.png",
+            atlas: "assets/themes/ff7/ff7-font.png",
             data: (typeof THEME_DATA_FF7 === "object" && THEME_DATA_FF7) ? THEME_DATA_FF7 : null,
             windowBorder: 4,
             drawMode: "border",
@@ -770,27 +823,38 @@
         fft: {
             key: "fft",
             label: "Final Fantasy Tactics",
-            atlas: "fonts/fft-font.png",
-            boxAtlas: "fonts/fft-blank.png",
+            atlas: "assets/themes/fft/fft-font.png",
+            boxAtlas: "assets/themes/fft/fft-blank.png",
             data: (typeof THEME_DATA_FFT === "object" && THEME_DATA_FFT) ? THEME_DATA_FFT : null,
             windowBorder: 0,
             drawMode: "box",
             userRows: null,
             mapApostrophe: false,
+            fontFamily: "Altima",
+            fontSize: 36,
+            lineHeight: 32,
+            letterSpacing: 1,
+            textShadow: "2px 2px 0 #6f6959",
+            bodyColor: "#312921",
+            usernameColor: "#6b2910",
             portrait: true,
-            nameRow: 14,
             tuner: ["userPortrait"]
         },
         mc: {
             key: "mc",
             label: "The Legend of Zelda: The Minish Cap",
-            atlas: "fonts/minishcap-font.png",
-            boxAtlas: "fonts/minishcap-blank.png",
+            atlas: "assets/themes/minishcap/minishcap-font.png",
+            boxAtlas: "assets/themes/minishcap/minishcap-blank.png",
             data: (typeof THEME_DATA_MINISHCAP === "object" && THEME_DATA_MINISHCAP) ? THEME_DATA_MINISHCAP : null,
             windowBorder: 0,
             drawMode: "box",
-            userRows: { broadcaster: 0, mod: 15, sub: 30, vip: 45 },
+            userRows: null,
             mapApostrophe: true,
+            fontFamily: "MinishType",
+            fontStack: "'Zpix', monospace",
+            fontSize: 16,
+            lineHeight: 26,
+            wordSpacing: "0.3em",
             continueArrow: true,
             inlineName: true,
             boxBands: { top: 5 / 48, bot: 5 / 48 }
@@ -798,13 +862,18 @@
         mmbn1: {
             key: "mmbn1",
             label: "Mega Man Battle Network 1",
-            atlas: "fonts/mmbn1-font.png",
-            boxAtlas: "fonts/mmbn1-blank.png",
+            atlas: "assets/themes/mmbn1/mmbn1-font.png",
+            boxAtlas: "assets/themes/mmbn1/mmbn1-blank.png",
             data: (typeof THEME_DATA_MMBN1 === "object" && THEME_DATA_MMBN1) ? THEME_DATA_MMBN1 : null,
             windowBorder: 0,
             drawMode: "box",
             userRows: null,
             mapApostrophe: true,
+            fontFamily: "SF3FontThin",
+            fontSize: 34,
+            lineHeight: 32,
+            bodyColor: "#2e3434",
+            usernameColor: "#2e3434",
             portrait: true,
             continueArrow: true,
             inlineName: true,
@@ -1037,7 +1106,26 @@
         themeLabel.textContent = t.label;
         buildTunerOptions();
         applyTunerClass();
+        applyThemeFonts(t);
         renderAllHistory();
+    }
+
+    function applyThemeFonts(t) {
+        var root = document.documentElement.style;
+        var fs = t.fontSize || 24;
+        root.setProperty("--ui-font", t.fontFamily ? "'" + t.fontFamily + "', " + (t.fontStack || "monospace") : "inherit");
+        root.setProperty("--ui-fs", fs + "px");
+        root.setProperty("--ui-lh", (t.lineHeight || Math.round(fs * 1.35)) + "px");
+        root.setProperty("--ui-body-color", t.bodyColor || "#ffffff");
+        root.setProperty("--ui-user-color", t.usernameColor || "#f4f1ea");
+        root.setProperty("--ui-text-shadow", t.textShadow || "none");
+        /* Window backgrounds are sized from measured text, so re-render once the
+           webfont is actually available rather than measuring the swap fallback. */
+        if (!t.fontFamily || !document.fonts || !document.fonts.load) return;
+        if (document.fonts.check("16px " + t.fontFamily)) return;
+        document.fonts.load("16px " + t.fontFamily).then(function () {
+            if (currentTheme === t) renderAllHistory();
+        }, function () {});
     }
 
     function atlasReady() {
@@ -1178,7 +1266,7 @@
     }
 
     function glyphOrTextUnit(ch, row) {
-        if (atlasReady() && GLYPHS[ch.charCodeAt(0)]) return { glyph: ch, row: row };
+        if (!usesWebfont() && atlasReady() && GLYPHS[ch.charCodeAt(0)]) return { glyph: ch, row: row };
         return { html: escapeHtml(ch) };
     }
 
@@ -1219,6 +1307,10 @@
 
     function buildTextRuns(container, text, row) {
         container.innerHTML = "";
+        if (usesWebfont()) {
+            container.textContent = text;
+            return;
+        }
         if (!atlasReady()) {
             container.innerHTML = textToHtml(text, row);
             return;
@@ -1518,7 +1610,7 @@
     }
 
     function buildUnits(message, messageEmotes) {
-        if (!currentTheme.atlas) return buildDefaultUnits(message, messageEmotes);
+        if (!currentTheme.atlas || usesWebfont()) return buildDefaultUnits(message, messageEmotes);
         var twitchRanges = parseTwitchRanges(messageEmotes);
         var units = [];
         var i = 0;
@@ -1705,7 +1797,11 @@
                 i = wordEnd;
                 continue;
             }
-            for (var c = i; c < wordEnd; c++) units.push({ html: escapeHtml(message[c]) });
+            for (var c = i; c < wordEnd; c++) {
+                var ch = message[c];
+                if (currentTheme && currentTheme.mapApostrophe) ch = resolveQuote(ch, message, c);
+                units.push({ html: escapeHtml(ch) });
+            }
             i = wordEnd;
         }
         return units;
@@ -1751,7 +1847,13 @@
         if (bhtml) prefix.push({ html: bhtml });
         var user = record.user;
         var i;
-        for (i = 0; i < user.length; i++) prefix.push(glyphOrTextUnit(user[i], nameRow));
+        if (usesWebfont()) {
+            var f = record.flags || {};
+            var role = f.broadcaster ? " broadcaster" : f.mod ? " mod" : f.vip ? " vip" : f.subscriber ? " sub" : "";
+            prefix.push({ html: '<span class="user' + role + '">' + escapeHtml(user) + "</span>" });
+        } else {
+            for (i = 0; i < user.length; i++) prefix.push(glyphOrTextUnit(user[i], nameRow));
+        }
         if (timestampsOn) {
             var now = new Date(record.ts || Date.now());
             var hh = String(now.getHours()).padStart(2, "0");
