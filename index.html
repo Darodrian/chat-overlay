@@ -86,6 +86,12 @@
             font-display: swap;
         }
 
+        @font-face {
+            font-family: 'PMDFont';
+            src: url("assets/fonts/pmd.woff2") format("woff2");
+            font-display: swap;
+        }
+
         html, body {
             margin: 0;
             font-family: 'Zpix', monospace;
@@ -161,11 +167,11 @@
         }
 
         /* ---- Atlas (crisp pixel font) themes ---- */
-        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1 {
+        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-pmd {
             color: var(--ui-body-color, #ffffff);
         }
 
-        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li {
+        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li, #chat.theme-pmd li {
             display: flex;
             flex-direction: column;
             width: max-content;
@@ -178,7 +184,7 @@
             animation: pop 0.18s ease-out; /* keep in sync with POP_MS */
         }
 
-        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg, #chat.theme-ff7 .window-bg, #chat.theme-fft .window-bg, #chat.theme-mc .window-bg, #chat.theme-mmbn1 .window-bg {
+        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg, #chat.theme-ff7 .window-bg, #chat.theme-fft .window-bg, #chat.theme-mc .window-bg, #chat.theme-mmbn1 .window-bg, #chat.theme-pmd .window-bg {
             position: absolute;
             top: 0;
             left: 0;
@@ -187,7 +193,7 @@
             z-index: 0;
         }
 
-        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box, #chat.theme-ff7 .msg-box, #chat.theme-fft .msg-box, #chat.theme-mc .msg-box, #chat.theme-mmbn1 .msg-box {
+        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box, #chat.theme-ff7 .msg-box, #chat.theme-fft .msg-box, #chat.theme-mc .msg-box, #chat.theme-mmbn1 .msg-box, #chat.theme-pmd .msg-box {
             position: relative;
             z-index: 1;
             padding: 20px 24px 16px 24px;
@@ -199,11 +205,11 @@
             to   { transform: scale(1); opacity: 1; }
         }
 
-        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li {
+        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li, #chat.theme-pmd li + li {
             margin-top: 20px;
         }
 
-        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice, #chat.theme-acww .config-notice, #chat.theme-ff7 .config-notice, #chat.theme-fft .config-notice, #chat.theme-mc .config-notice, #chat.theme-mmbn1 .config-notice {
+        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice, #chat.theme-acww .config-notice, #chat.theme-ff7 .config-notice, #chat.theme-fft .config-notice, #chat.theme-mc .config-notice, #chat.theme-mmbn1 .config-notice, #chat.theme-pmd .config-notice {
             color: var(--ff-text);
             font-size: 24px;
             padding: 12px 4px;
@@ -214,7 +220,7 @@
                 0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000;
         }
 
-        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username {
+        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username, #chat.theme-pmd .msg-box .username {
             color: var(--ui-user-color, var(--ui-username));
             font-size: var(--ui-fs, 24px);
             line-height: var(--ui-lh, 32px);
@@ -224,25 +230,25 @@
             word-break: break-word;
         }
 
-        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header, #chat.theme-ff7 .msg-header, #chat.theme-fft .msg-header, #chat.theme-mc .msg-header, #chat.theme-mmbn1 .msg-header {
+        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header, #chat.theme-ff7 .msg-header, #chat.theme-fft .msg-header, #chat.theme-mc .msg-header, #chat.theme-mmbn1 .msg-header, #chat.theme-pmd .msg-header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             margin-bottom: 8px;
         }
 
-        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username, #chat.theme-ff7 .msg-header .username, #chat.theme-fft .msg-header .username, #chat.theme-mc .msg-header .username, #chat.theme-mmbn1 .msg-header .username {
+        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username, #chat.theme-ff7 .msg-header .username, #chat.theme-fft .msg-header .username, #chat.theme-mc .msg-header .username, #chat.theme-mmbn1 .msg-header .username, #chat.theme-pmd .msg-header .username {
             margin-bottom: 0;
         }
 
-        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp {
+        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp, #chat.theme-pmd .msg-header .timestamp {
             font-size: var(--ui-fs, 24px);
             line-height: var(--ui-lh, 32px);
             opacity: 0.55;
             margin-left: 12px;
         }
 
-        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text {
+        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text, #chat.theme-pmd .msg-box .message-text {
             margin: 0;
             color: var(--ui-body-color, #ffffff);
             font-size: var(--ui-fs, 24px);
@@ -268,7 +274,7 @@
         }
 
         /* ---- Webfont themes: fixed per-theme size, nearest-neighbour pixel glyphs ---- */
-        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-ff7 {
+        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-ff7, #chat.theme-pmd {
             font-family: var(--ui-font, inherit);
             text-shadow: var(--ui-text-shadow, none);
             -webkit-font-smoothing: none;
@@ -456,6 +462,29 @@
             vertical-align: 0px;
         }
 
+        #chat.theme-pmd li {
+            flex-direction: row;
+            align-items: flex-start;
+            max-width: 480px;
+        }
+
+        #chat.theme-pmd .msg-box {
+            padding: 16px 24px 20px 22px;
+            min-height: 60px;
+        }
+
+        #chat.theme-pmd .icon-box {
+            flex: 0 0 auto;
+            margin-right: 8px;
+            image-rendering: pixelated;
+            z-index: 2;
+        }
+
+        #chat.theme-pmd .msg-box img.badge {
+            height: 0.8em;
+            vertical-align: 0px;
+        }
+
         /* ---- Shared ---- */
 
         #chat img.badge {
@@ -579,6 +608,9 @@
 
         #chat ul.fade-expire li { transition: opacity 0.8s ease; }
         #chat ul.fade-expire li.expiring { opacity: 0 !important; }
+
+        #chat ul.align-default li { width: 100%; max-width: none; }
+        #chat.theme-pmd ul.align-default .msg-box { flex: 1 1 auto; }
 
         #chat ul.align-center li     { margin-left: auto; margin-right: auto; }
         #chat ul.align-right li      { margin-left: auto; margin-right: 0; }
@@ -741,6 +773,8 @@
         #tuner .portrait-tile:active { transform: none; box-shadow: none; }
         #tuner .portrait-tile:hover { border-color: #8b8578; }
         #tuner .portrait-tile.selected { border-color: #f0c040; }
+        /* Square-portrait themes (pmd) fit a square thumb, so the cell hugs it. */
+        #tuner .portrait-grid.square .portrait-tile { height: 52px; }
         #tuner .portrait-tile.selected::after {
             content: "";
             position: absolute;
@@ -803,7 +837,7 @@
         <div class="tuner-row">
             <label for="tuner-mode">Alignment</label>
             <button id="tuner-prev">◀</button>
-            <output id="tuner-mode">Left</output>
+            <output id="tuner-mode">Default</output>
             <button id="tuner-next">▶</button>
         </div>
         <div class="tuner-row">
@@ -886,8 +920,12 @@
     var PORTRAITS = [];
     var atlas = null;
     var boxImg = null;
+    var iconImg = null;
+    var portraitImg = null;
     var atlasCache = {};
     var boxCache = {};
+    var iconCache = {};
+    var portraitCache = {};
     var themeLoaded = false;
     var currentTheme = null;
     var chatHistory = [];
@@ -926,16 +964,31 @@
         return userPortraits[currentTheme.key];
     }
 
+    var SHINY_SUFFIX = "@shiny";
+    var SHINY_CHANCE = 0.01;
+
+    function stripShinyName(value) {
+        value = value == null ? "" : String(value);
+        return value.slice(-SHINY_SUFFIX.length) === SHINY_SUFFIX ?
+            value.slice(0, -SHINY_SUFFIX.length) : value;
+    }
+
+    function isShinyName(value) {
+        value = value == null ? "" : String(value);
+        return value.slice(-SHINY_SUFFIX.length) === SHINY_SUFFIX;
+    }
+
     function setUserPortrait(user, portraitName) {
         var u = String(user || "").toLowerCase();
         if (!u || !currentTheme) return false;
         if (portraitName !== "none" && portraitName !== "__hidden__") {
+            var lookup = stripShinyName(portraitName);
             var found = false;
             for (var i = 0; i < PORTRAITS.length; i++) {
-                if (PORTRAITS[i].name === portraitName) { found = true; break; }
+                if (PORTRAITS[i].name === lookup) { found = true; break; }
             }
             if (!found) {
-                console.warn("Portrait \"" + portraitName + "\" not in theme \"" + currentTheme.key + "\"");
+                console.warn("Portrait \"" + lookup + "\" not in theme \"" + currentTheme.key + "\"");
                 return false;
             }
         }
@@ -1095,12 +1148,104 @@
             inlineName: true,
             boxBands: { top: 6 / 64, bot: 4 / 64 },
             tuner: ["userPortrait"]
+        },
+        pmd: {
+            key: "pmd",
+            label: "Pokémon Mystery Dungeon",
+            atlas: null,
+            data: null,
+            boxAtlas: "assets/themes/pmd/box/classic/classicbox.png",
+            boxSlices: { l: 40, r: 40, t: 30, b: 30 },
+            boxScale: 0.4,
+            fontFamily: "PMDFont",
+            fontStack: "'Zpix', monospace",
+            fontSize: 18,
+            lineHeight: 32,
+            mapApostrophe: false,
+            bodyColor: "#ffffff",
+            usernameColor: "#f4f1ea",
+            textShadow: "2px 2px 0 #000",
+            drawMode: "box",
+            windowBorder: 0,
+            userRows: null,
+            inlineName: true,
+            iconImage: "assets/themes/pmd/box/classic/classicicon.png",
+            portraitImage: "assets/themes/pmd/portrait/0001/Normal.png",
+            portrait: true,
+            portraitFiles: true,
+            squarePortrait: true,
+            iconBoxPortrait: true,
+            defaultBoxStyle: "classic",
+            boxStyles: {
+                classic: {
+                    box: "assets/themes/pmd/box/classic/classicbox.png",
+                    icon: "assets/themes/pmd/box/classic/classicicon.png"
+                },
+                classicgray: {
+                    box: "assets/themes/pmd/box/classicgray/classicgraybox.png",
+                    icon: "assets/themes/pmd/box/classicgray/classicgrayicon.png"
+                },
+                classicgreen: {
+                    box: "assets/themes/pmd/box/classicgreen/classicgreenbox.png",
+                    icon: "assets/themes/pmd/box/classicgreen/classicgreenicon.png"
+                },
+                classicindigo: {
+                    box: "assets/themes/pmd/box/classicindigo/classicindigobox.png",
+                    icon: "assets/themes/pmd/box/classicindigo/classicindigoicon.png"
+                },
+                classicorange: {
+                    box: "assets/themes/pmd/box/classicorange/classicorangebox.png",
+                    icon: "assets/themes/pmd/box/classicorange/classicorangeicon.png"
+                },
+                classicpink: {
+                    box: "assets/themes/pmd/box/classicpink/classicpinkbox.png",
+                    icon: "assets/themes/pmd/box/classicpink/classicpinkicon.png"
+                },
+                classicpurple: {
+                    box: "assets/themes/pmd/box/classicpurple/classicpurplebox.png",
+                    icon: "assets/themes/pmd/box/classicpurple/classicpurpleicon.png"
+                },
+                classicred: {
+                    box: "assets/themes/pmd/box/classicred/classicredbox.png",
+                    icon: "assets/themes/pmd/box/classicred/classicredicon.png"
+                },
+                classicteal: {
+                    box: "assets/themes/pmd/box/classicteal/classictealbox.png",
+                    icon: "assets/themes/pmd/box/classicteal/classictealicon.png"
+                },
+                classicyellow: {
+                    box: "assets/themes/pmd/box/classicyellow/classicyellowbox.png",
+                    icon: "assets/themes/pmd/box/classicyellow/classicyellowicon.png"
+                },
+                special1: {
+                    box: "assets/themes/pmd/box/special1/special1box.png",
+                    icon: "assets/themes/pmd/box/special1/special1icon.png"
+                },
+                special2: {
+                    box: "assets/themes/pmd/box/special2/special2box.png",
+                    icon: "assets/themes/pmd/box/special2/special2icon.png"
+                }
+            },
+            tuner: ["boxStyle", "userPortrait"]
         }
     };
 
     var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, roleBadges: false, timestamps: false, bg: false, fade: false, fadeSeconds: 30 };
 
     var themeOptionState = {};
+    var themeOptionPersist = {};
+
+    function persistThemeOption(key) {
+        if (!currentTheme) return;
+        if (!themeOptionPersist[currentTheme.key]) themeOptionPersist[currentTheme.key] = {};
+        themeOptionPersist[currentTheme.key][key] = themeOptionState[key];
+    }
+
+    function restoreThemeOption(key, fallback) {
+        return (themeOptionPersist[currentTheme.key] &&
+            themeOptionPersist[currentTheme.key][key] !== undefined) ?
+            themeOptionPersist[currentTheme.key][key] : fallback;
+    }
 
     function windowStyleOverlay() {
         var o = currentTheme && currentTheme.data && currentTheme.data.overlays;
@@ -1181,6 +1326,39 @@
                 renderAllHistory();
             }
         },
+        boxStyle: {
+            label: "Box Style",
+            type: "cycle",
+            resolveValues: function () {
+                var bs = currentTheme && currentTheme.boxStyles;
+                var vals = [];
+                if (bs && typeof bs === "object") {
+                    Object.keys(bs).forEach(function (name) {
+                        vals.push({
+                            label: boxStyleLabel(name),
+                            name: name,
+                            value: bs[name]
+                        });
+                    });
+                }
+                vals.push({ label: "Random", name: "random", value: null });
+                return vals;
+            },
+            resolveDefault: function () {
+                var bs = currentTheme && currentTheme.boxStyles;
+                var d = (currentTheme && currentTheme.defaultBoxStyle) || "classic";
+                if (d && bs) {
+                    var keys = Object.keys(bs);
+                    for (var i = 0; i < keys.length; i++) {
+                        if (keys[i] === d) return i;
+                    }
+                }
+                return 0;
+            },
+            onChange: function () {
+                applyBoxStyle();
+            }
+        },
         nameColor: {
             label: "Name Color",
             type: "cycle",
@@ -1220,6 +1398,37 @@
             type: "userPortrait"
         }
     };
+
+    /* Gen 1 National Dex names in folder order: index i -> portrait/(i+1)/. Used to
+       build the file-based portrait deck (each folder also has a shiny at 0000/0001). */
+    var PMD_PORTRAIT_NAMES = [
+        "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
+        "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
+        "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot",
+        "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok",
+        "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina",
+        "Nidoqueen", "Nidoran♂", "Nidorino", "Nidoking", "Clefairy", "Clefable",
+        "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat",
+        "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat",
+        "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck",
+        "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag",
+        "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop",
+        "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool",
+        "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash",
+        "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo",
+        "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder",
+        "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee",
+        "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute",
+        "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung",
+        "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela",
+        "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu",
+        "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar",
+        "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto",
+        "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte",
+        "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno",
+        "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo",
+        "Mew"
+    ];
 
     function loadThemeData(data) {
         GLYPHS = {};
@@ -1261,7 +1470,36 @@
                 });
             }
         }
+        /* File-based portrait themes (pmd) list every root folder's Normal.png;
+           the shiny variant lives one level deeper at 0000/0001/Normal.png. */
+        if (currentTheme && currentTheme.portraitFiles && PMD_PORTRAIT_NAMES) {
+            PORTRAITS = [];
+            for (var pfi = 0; pfi < PMD_PORTRAIT_NAMES.length; pfi++) {
+                var pnum = String(pfi + 1);
+                while (pnum.length < 4) pnum = "0" + pnum;
+                PORTRAITS.push({
+                    name: PMD_PORTRAIT_NAMES[pfi],
+                    src: "assets/themes/pmd/portrait/" + pnum + "/Normal.png",
+                    shinySrc: "assets/themes/pmd/portrait/" + pnum + "/0000/0001/Normal.png",
+                    w: 40,
+                    h: 40
+                });
+            }
+        }
         themeLoaded = true;
+    }
+
+    function applyBoxStyle() {
+        if (!currentTheme || !currentTheme.boxStyles) return;
+        var name = boxStyleSelectionName();
+        if (name === "random") {
+            renderAllHistory();
+            return;
+        }
+        var imgs = boxStyleImage(name);
+        boxImg = imgs.box;
+        iconImg = imgs.icon;
+        renderAllHistory();
     }
 
     function applyTheme(key) {
@@ -1307,6 +1545,34 @@
         } else {
             boxImg = null;
         }
+        if (t.iconImage) {
+            if (!iconCache[t.key]) {
+                var iimg = new Image();
+                iimg.onload = function () {
+                    if (currentTheme === t) renderAllHistory();
+                };
+                iimg.onerror = function () {};
+                iimg.src = t.iconImage;
+                iconCache[t.key] = iimg;
+            }
+            iconImg = iconCache[t.key];
+        } else {
+            iconImg = null;
+        }
+        if (t.portraitImage) {
+            if (!portraitCache[t.key]) {
+                var pimg = new Image();
+                pimg.onload = function () {
+                    if (currentTheme === t) renderAllHistory();
+                };
+                pimg.onerror = function () {};
+                pimg.src = t.portraitImage;
+                portraitCache[t.key] = pimg;
+            }
+            portraitImg = portraitCache[t.key];
+        } else {
+            portraitImg = null;
+        }
         tunerMode = DEFAULT_OPTIONS.mode;
         dimOn = DEFAULT_OPTIONS.dim;
         badgesOn = DEFAULT_OPTIONS.badges;
@@ -1325,6 +1591,7 @@
         themeLabel.textContent = t.label;
         tuner.classList.toggle("wide", !!t.portrait);
         buildTunerOptions();
+        if (currentTheme && currentTheme.boxStyles) applyBoxStyle();
         applyTunerClass();
         applyThemeFonts(t);
         renderAllHistory();
@@ -1405,10 +1672,62 @@
         return randomWindow();
     }
 
-    function drawWindow(canvas, style, w, h) {
+    /* Pixel-art 9-slice: per-side source slices are scaled by a fixed factor
+       and every edge/center band is TILED (never stretched) so the box keeps
+       crisp art at any width/height. The center band is drawn too (transparent
+       source regions stay transparent), so frames like the icon can reuse it. */
+    function drawNineSlice(ctx, img, slices, scale, w, h) {
+        var nw = img.naturalWidth, nh = img.naturalHeight;
+        var dl = Math.max(1, Math.round(slices.l * scale));
+        var dr = Math.max(1, Math.round(slices.r * scale));
+        var dt = Math.max(1, Math.round(slices.t * scale));
+        var db = Math.max(1, Math.round(slices.b * scale));
+        var iw = w - dl - dr;
+        var ih = h - dt - db;
+        if (iw > 0 && ih > 0) {
+            var ew = nw - slices.l - slices.r;
+            var eh = nh - slices.t - slices.b;
+
+            function drawTiledH(sx, sy, sw2, sh, dx, dy, dw, dh) {
+                var tw = Math.max(1, Math.round(sw2 * scale));
+                for (var x = dx; x < dx + dw; x += tw) {
+                    var dw2 = Math.min(tw, dx + dw - x);
+                    ctx.drawImage(img, sx, sy, sw2, sh, x, dy, dw2, dh);
+                }
+            }
+
+            function drawTiledV(sx, sy, sw2, sh, dx, dy, dw, dh) {
+                var th = Math.max(1, Math.round(sh * scale));
+                for (var y = dy; y < dy + dh; y += th) {
+                    var dh2 = Math.min(th, dy + dh - y);
+                    ctx.drawImage(img, sx, sy, sw2, sh, dx, y, dw, dh2);
+                }
+            }
+
+            ctx.drawImage(img, 0, 0, slices.l, slices.t, 0, 0, dl, dt);
+            ctx.drawImage(img, nw - slices.r, 0, slices.r, slices.t, w - dr, 0, dr, dt);
+            ctx.drawImage(img, 0, nh - slices.b, slices.l, slices.b, 0, h - db, dl, db);
+            ctx.drawImage(img, nw - slices.r, nh - slices.b, slices.r, slices.b, w - dr, h - db, dr, db);
+            drawTiledH(slices.l, 0, ew, slices.t, dl, 0, iw, dt);
+            drawTiledH(slices.l, nh - slices.b, ew, slices.b, dl, h - db, iw, db);
+            drawTiledV(0, slices.t, slices.l, eh, 0, dt, dl, ih);
+            drawTiledV(nw - slices.r, slices.t, slices.r, eh, w - dr, dt, dr, ih);
+            for (var cy = dt; cy < dt + ih; cy += Math.max(1, Math.round(eh * scale))) {
+                for (var cx = dl; cx < dl + iw; cx += Math.max(1, Math.round(ew * scale))) {
+                    var cw2 = Math.min(Math.max(1, Math.round(ew * scale)), dl + iw - cx);
+                    var ch2 = Math.min(Math.max(1, Math.round(eh * scale)), dt + ih - cy);
+                    ctx.drawImage(img, slices.l, slices.t, ew, eh, cx, cy, cw2, ch2);
+                }
+            }
+        } else {
+            ctx.drawImage(img, 0, 0, w, h);
+        }
+    }
+
+    function drawWindow(canvas, style, w, h, boxOverride) {
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, w, h);
-        if (!atlasReady() || !style || w <= 0 || h <= 0) return;
+        if (!style || w <= 0 || h <= 0) return;
         ctx.imageSmoothingEnabled = false;
         var img = atlas;
 
@@ -1421,26 +1740,52 @@
         }
 
         if (currentTheme.drawMode === "box") {
-            if (boxImg && boxImg.complete && boxImg.naturalWidth > 0) {
-                var nw = boxImg.naturalWidth, nh = boxImg.naturalHeight;
+            var srcBox = boxOverride || boxImg;
+            if (srcBox && srcBox.complete && srcBox.naturalWidth > 0) {
+                var nw = srcBox.naturalWidth, nh = srcBox.naturalHeight;
                 var bb = currentTheme.boxBands || {};
-                var topFrac = (typeof bb.top === "number" ? bb.top : 0.2);
-                var botFrac = (typeof bb.bot === "number" ? bb.bot : 0.2);
-                var topBand = Math.round(nh * topFrac);
-                var botBand = Math.round(nh * botFrac);
-                var tDest = topBand * PIXEL_SCALE;
-                var bDest = botBand * PIXEL_SCALE;
-                if (h > tDest + bDest) {
-                    ctx.drawImage(boxImg, 0, 0, nw, topBand, 0, 0, w, tDest);
-                    ctx.drawImage(boxImg, 0, nh - botBand, nw, botBand, 0, h - bDest, w, bDest);
-                    ctx.drawImage(boxImg, 0, topBand, nw, nh - topBand - botBand, 0, tDest, w, h - tDest - bDest);
+                var slices = currentTheme.boxSlices;
+                var slice = currentTheme.boxSlice;
+                if (slices) {
+                    drawNineSlice(ctx, srcBox, slices, currentTheme.boxScale || 0.5, w, h);
+                } else if (slice && nw > 4 * slice && nh > 2 * slice) {
+                    var c = slice * PIXEL_SCALE;
+                    var ih = h - 2 * c;
+                    var iw = w - 2 * c;
+                    var eh = nh - 2 * slice;
+                    var ew = nw - 2 * slice;
+                    if (iw > 0 && ih > 0) {
+                        ctx.drawImage(srcBox, 0, 0, slice, slice, 0, 0, c, c);
+                        ctx.drawImage(srcBox, nw - slice, 0, slice, slice, w - c, 0, c, c);
+                        ctx.drawImage(srcBox, 0, nh - slice, slice, slice, 0, h - c, c, c);
+                        ctx.drawImage(srcBox, nw - slice, nh - slice, slice, slice, w - c, h - c, c, c);
+                        ctx.drawImage(srcBox, slice, 0, ew, slice, c, 0, iw, c);
+                        ctx.drawImage(srcBox, slice, nh - slice, ew, slice, c, h - c, iw, c);
+                        ctx.drawImage(srcBox, 0, slice, slice, eh, 0, c, c, ih);
+                        ctx.drawImage(srcBox, nw - slice, slice, slice, eh, w - c, c, c, ih);
+                        ctx.drawImage(srcBox, slice, slice, ew, eh, c, c, iw, ih);
+                    }
                 } else {
-                    ctx.drawImage(boxImg, 0, 0, w, h);
+                    var topBend = (typeof bb.top === "number" ? bb.top : 0.2);
+                    var botBend = (typeof bb.bot === "number" ? bb.bot : 0.2);
+                    var topBand = Math.round(nh * topBend);
+                    var botBand = Math.round(nh * botBend);
+                    var tDest = topBand * PIXEL_SCALE;
+                    var bDest = botBand * PIXEL_SCALE;
+                    if (h > tDest + bDest) {
+                        ctx.drawImage(srcBox, 0, 0, nw, topBand, 0, 0, w, tDest);
+                        ctx.drawImage(srcBox, 0, nh - botBand, nw, botBand, 0, h - bDest, w, bDest);
+                        ctx.drawImage(srcBox, 0, topBand, nw, nh - topBand - botBand, 0, tDest, w, h - tDest - bDest);
+                    } else {
+                        ctx.drawImage(srcBox, 0, 0, w, h);
+                    }
                 }
             }
             removeMagenta();
             return;
         }
+
+        if (!atlasReady()) return;
 
         if (currentTheme.drawMode === "style") {
             var b = currentTheme.windowBorder;
@@ -2136,7 +2481,7 @@
 
     function buildMessageNode(record) {
         var user = record.user, message = record.message, flags = record.flags, extra = record.extra;
-        var useAtlas = !!currentTheme.atlas;
+        var useAtlas = !!(currentTheme.atlas || currentTheme.boxAtlas);
         var newMessage = document.createElement("li");
         var blockquote = document.createElement("blockquote");
         var units = buildUnits(message, extra && extra.messageEmotes);
@@ -2171,6 +2516,9 @@
         var windowStyle = currentWindowStyle();
         var nameTagEl = null;
         var nameTagStyle = null;
+        var msgPortrait = null;
+        var boxStyleName = effectiveBoxStyleName(record);
+        var boxStyleImages = boxStyleName ? boxStyleImage(boxStyleName) : null;
 
         box.className = "msg-box";
         bg.className = "window-bg";
@@ -2230,27 +2578,35 @@
 
         if (currentTheme.portrait && PORTRAITS.length) {
             var portrait = null;
+            var portraitShiny = false;
             var userKey = String(record.user || "").toLowerCase();
             var assignedName = userKey ? userPortraitMap()[userKey] : "";
             if (assignedName === "__hidden__") {
                 record._portraitName = "__hidden__";
             } else {
                 if (assignedName) {
+                    var assignedBase = stripShinyName(assignedName);
                     for (var pi = 0; pi < PORTRAITS.length; pi++) {
-                        if (PORTRAITS[pi].name === assignedName) { portrait = PORTRAITS[pi]; break; }
+                        if (PORTRAITS[pi].name === assignedBase) { portrait = PORTRAITS[pi]; break; }
                     }
+                    if (portrait) portraitShiny = isShinyName(assignedName);
                 }
                 if (!portrait && record._portraitName && record._portraitName !== "__hidden__") {
+                    var prevBase = stripShinyName(record._portraitName);
                     for (var pi = 0; pi < PORTRAITS.length; pi++) {
-                        if (PORTRAITS[pi].name === record._portraitName) { portrait = PORTRAITS[pi]; break; }
+                        if (PORTRAITS[pi].name === prevBase) { portrait = PORTRAITS[pi]; break; }
                     }
+                    if (portrait) portraitShiny = isShinyName(record._portraitName);
                 }
                 if (!portrait) {
+                    portraitShiny = false;
                     if (userKey) {
+                        /* Dedupe on the base name so a shiny and a normal of the
+                           same species can never both be handed out. */
                         var used = {};
                         Object.keys(userPortraitMap()).forEach(function (u) {
-                            var n = userPortraitMap()[u];
-                            if (n !== "none" && n !== "__hidden__") used[n] = true;
+                            var n = stripShinyName(userPortraitMap()[u]);
+                            if (n && n !== "none" && n !== "__hidden__") used[n] = true;
                         });
                         var pool = [];
                         for (var pi = 0; pi < PORTRAITS.length; pi++) {
@@ -2259,22 +2615,36 @@
                         }
                         portrait = pool.length ? pool[Math.floor(Math.random() * pool.length)] : PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
                         if (portrait.name !== "none") {
-                            userPortraitMap()[userKey] = portrait.name;
+                            portraitShiny = !!(portrait.shinySrc && Math.random() < SHINY_CHANCE);
+                            userPortraitMap()[userKey] = portrait.name + (portraitShiny ? SHINY_SUFFIX : "");
                             saveUserPortraits();
                         }
                     } else {
                         portrait = PORTRAITS[Math.floor(Math.random() * PORTRAITS.length)];
                     }
                 }
-                record._portraitName = portrait.name;
-                var pic = document.createElement("canvas");
-                pic.className = "portrait";
-                drawPortrait(portrait, pic, PIXEL_SCALE);
-                box.appendChild(pic);
+                record._portraitName = portrait.name + (portraitShiny ? SHINY_SUFFIX : "");
+                if (currentTheme.iconBoxPortrait) {
+                    msgPortrait = (portraitShiny && portrait.shinySrc) ?
+                        { name: portrait.name, src: portrait.shinySrc, w: portrait.w, h: portrait.h } :
+                        portrait;
+                } else {
+                    var pic = document.createElement("canvas");
+                    pic.className = "portrait";
+                    drawPortrait(portrait, pic, PIXEL_SCALE);
+                    box.appendChild(pic);
+                }
             }
         }
 
         box.appendChild(blockquote);
+        if (record._portraitName !== "__hidden__" &&
+            portraitImg && (iconImg || (boxStyleImages && boxStyleImages.icon))) {
+            var iconEl = document.createElement("canvas");
+            iconEl.className = "icon-box";
+            drawIconBox(iconEl, boxStyleImages ? boxStyleImages.icon : null, msgPortrait);
+            newMessage.appendChild(iconEl);
+        }
         newMessage.appendChild(bg);
         newMessage.appendChild(box);
 
@@ -2294,9 +2664,12 @@
             if (blockquote.offsetWidth) blockquote.style.minWidth = blockquote.offsetWidth + "px";
             if (blockquote.offsetHeight) blockquote.style.minHeight = blockquote.offsetHeight + "px";
             if (windowStyle && box.offsetWidth && box.offsetHeight) {
+                bg.style.left = box.offsetLeft + "px";
+                bg.style.top = box.offsetTop + "px";
                 bg.width = box.offsetWidth;
                 bg.height = box.offsetHeight;
-                drawWindow(bg, windowStyle, bg.width, bg.height);
+                drawWindow(bg, windowStyle, bg.width, bg.height,
+                    boxStyleImages ? boxStyleImages.box : null);
             }
             if (nameTagEl && nameTagStyle && username && username.offsetWidth) {
                 var target = (username.offsetLeft - nameTagEl.offsetLeft) + username.offsetWidth +
@@ -2400,9 +2773,9 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "acww", "ct", "ff7", "ff8", "fft", "mc", "mmbn1"];
+    var THEME_ORDER = ["default", "acww", "ct", "ff7", "ff8", "fft", "mc", "mmbn1", "pmd"];
     var themeIndex = 0;
-    var TUNER_MODES = ["Left", "Center", "Right", "Alternate"];
+    var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
     var tunerLabel = document.getElementById("tuner-mode");
     var dimOn = DEFAULT_OPTIONS.dim;
@@ -2450,7 +2823,9 @@
             row.appendChild(out);
             row.appendChild(next);
             tunerOptionsBox.appendChild(row);
-            themeOptionState[key] = o.resolveDefault();
+            var restored = restoreThemeOption(key, o.resolveDefault());
+            if (typeof restored !== "number" || restored < 0 || restored >= vals.length) restored = 0;
+            themeOptionState[key] = restored;
             function render() {
                 var idx = themeOptionState[key] || 0;
                 out.textContent = (vals[idx] && vals[idx].label) || "";
@@ -2458,11 +2833,13 @@
             render();
             prev.addEventListener("click", function () {
                 themeOptionState[key] = (themeOptionState[key] + vals.length - 1) % vals.length;
+                persistThemeOption(key);
                 render();
                 o.onChange();
             });
             next.addEventListener("click", function () {
                 themeOptionState[key] = (themeOptionState[key] + 1) % vals.length;
+                persistThemeOption(key);
                 render();
                 o.onChange();
             });
@@ -2470,10 +2847,95 @@
     }
 
     function humanizeName(name) {
-        return name.replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        return name.replace(/_/g, " ").replace(/(^|[^\w'’])(\w)/g, function (m, p, c) { return p + c.toUpperCase(); });
     }
 
-    /* Paints one atlas portrait into a canvas at the given scale. Callers size
+    function boxStyleLabel(name) {
+        var s = name.replace(/^classic/, "").replace(/^special(\d)$/, "Special $1");
+        if (!s) s = "Blue";
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    var lastRandomBoxStyleName = "";
+
+    function boxStyleSelectionName() {
+        var vals = THEME_TUNER.boxStyle.resolveValues();
+        var idx = themeOptionState["boxStyle"];
+        var entry = (typeof idx === "number" && vals[idx]) ? vals[idx] : null;
+        return (entry && entry.name) || "random";
+    }
+
+    function boxStyleImage(name) {
+        var t = currentTheme;
+        var boxKey = t.key + "::" + name;
+        var iconKey = t.key + "::icon::" + name;
+        if (!boxCache[boxKey]) {
+            var bimg = new Image();
+            bimg._pmdStyle = boxKey;
+            bimg.onload = function () {
+                if (currentTheme === t) renderAllHistory();
+            };
+            bimg.onerror = function () {};
+            bimg.src = t.boxStyles[name].box;
+            boxCache[boxKey] = bimg;
+        }
+        if (!iconCache[iconKey]) {
+            var iimg = new Image();
+            iimg._pmdStyle = iconKey;
+            iimg.onload = function () {
+                if (currentTheme === t) renderAllHistory();
+            };
+            iimg.onerror = function () {};
+            iimg.src = t.boxStyles[name].icon;
+            iconCache[iconKey] = iimg;
+        }
+        return { box: boxCache[boxKey], icon: iconCache[iconKey] };
+    }
+
+    function effectiveBoxStyleName(record) {
+        if (!currentTheme || !currentTheme.boxStyles) return null;
+        var name = boxStyleSelectionName();
+        if (name === "random") {
+            if (record._boxStyleName) return record._boxStyleName;
+            var keys = Object.keys(currentTheme.boxStyles);
+            var pool = (keys.length > 1 && lastRandomBoxStyleName) ?
+                keys.filter(function (k) { return k !== lastRandomBoxStyleName; }) : keys;
+            name = pool[Math.floor(Math.random() * pool.length)];
+            record._boxStyleName = name;
+            lastRandomBoxStyleName = name;
+            return name;
+        }
+        return name;
+    }
+
+    /* File-portrait themes (pmd) load their PNGs on demand; repaint the picker and
+       the chat once loading settles so we don't re-render per image. */
+    var portraitFileCache = {};
+    var portraitRepaintTimer = null;
+
+    function schedulePortraitRepaint() {
+        if (!currentTheme || !currentTheme.portraitFiles) return;
+        if (portraitRepaintTimer) clearTimeout(portraitRepaintTimer);
+        portraitRepaintTimer = setTimeout(function () {
+            portraitRepaintTimer = null;
+            if (!currentTheme || !currentTheme.portraitFiles) return;
+            paintPortraitThumbs();
+            renderAllHistory();
+        }, 50);
+    }
+
+    function filePortraitImage(src) {
+        if (!portraitFileCache[src]) {
+            var img = new Image();
+            img.onload = function () { schedulePortraitRepaint(); };
+            img.onerror = function () {};
+            img.src = src;
+            portraitFileCache[src] = img;
+        }
+        return portraitFileCache[src];
+    }
+
+    /* Paints one portrait into a canvas at the given scale. Callers size
        the canvas themselves so the tile grid can pre-measure at 1:1. */
     function drawPortrait(p, canvas, scale) {
         if (!p || !canvas) return false;
@@ -2483,9 +2945,51 @@
         canvas.height = h;
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, w, h);
+        if (p.src) {
+            var img = filePortraitImage(p.src);
+            if (!img.complete || !img.naturalWidth) return false;
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(img, 0, 0, w, h);
+            return true;
+        }
         if (!atlasReady()) return false;
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(atlas, p.x, p.y, p.w, p.h, 0, 0, w, h);
+        return true;
+    }
+
+    /* Draws the file-based portrait icon box left of the message box for themes
+       that have no atlas (pmd): the frame PNG is downscaled to a fixed CSS size
+       and the 40px portrait is painted 2x (80 css px), slightly inset. */
+    var ICON_BOX_CSS = 96;
+    var PORTRAIT_CSS = 80;
+
+    function drawIconBox(canvas, iconOverride, portraitOverride) {
+        if (!canvas) return false;
+        canvas.width = ICON_BOX_CSS * PIXEL_SCALE;
+        canvas.height = ICON_BOX_CSS * PIXEL_SCALE;
+        canvas.style.width = ICON_BOX_CSS + "px";
+        canvas.style.height = ICON_BOX_CSS + "px";
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var srcIcon = iconOverride || iconImg;
+        if (!srcIcon || !srcIcon.complete || !srcIcon.naturalWidth) return false;
+        ctx.imageSmoothingEnabled = false;
+        var boxScale = (currentTheme.boxScale || 0.5) * PIXEL_SCALE;
+        drawNineSlice(ctx, srcIcon, { l: 20, r: 20, t: 20, b: 20 }, boxScale,
+            canvas.width, canvas.height);
+        var pw = PORTRAIT_CSS * PIXEL_SCALE;
+        var ph = PORTRAIT_CSS * PIXEL_SCALE;
+        var px = Math.round((canvas.width - pw) / 2);
+        var py = Math.round((canvas.height - ph) / 2);
+        if (portraitOverride) {
+            var pv = document.createElement("canvas");
+            if (!drawPortrait(portraitOverride, pv, PIXEL_SCALE)) return false;
+            ctx.drawImage(pv, px, py, pw, ph);
+            return true;
+        }
+        if (!portraitImg || !portraitImg.complete || !portraitImg.naturalWidth) return false;
+        ctx.drawImage(portraitImg, 0, 0, 40, 40, px, py, pw, ph);
         return true;
     }
 
@@ -2579,7 +3083,8 @@
     function assignmentLabel(name) {
         if (!name || name === "__auto__") return "Auto (default)";
         if (name === "__hidden__" || name === "none") return "None";
-        return humanizeName(name);
+        var label = humanizeName(stripShinyName(name));
+        return isShinyName(name) ? label + " (Shiny)" : label;
     }
 
     /* Repaints every row's caption and moves the selected-state ring. Mutates
@@ -2599,10 +3104,14 @@
             row.assign.textContent = assignmentLabel(map[key]);
         }
         var current = sel ? (map[sel] || "__auto__") : "__auto__";
+        /* Tiles only hold base portraits; a shiny assignment still highlights
+           its base tile while the caption reports "(Shiny)". */
+        var currentTileValue = (current === "__auto__" || current === "__hidden__") ?
+            current : stripShinyName(current);
         for (key in portraitTiles) {
             if (!Object.prototype.hasOwnProperty.call(portraitTiles, key)) continue;
             var tile = portraitTiles[key];
-            var on = !!selectedPortraitUser && tile.dataset.value === current;
+            var on = !!selectedPortraitUser && tile.dataset.value === currentTileValue;
             if (on !== (tile.className.indexOf("selected") !== -1)) {
                 tile.className = "portrait-tile" + (on ? " selected" : "");
             }
@@ -2679,6 +3188,7 @@
     function paintPortraitThumbs() {
         if (!portraitGridBox) return;
         portraitGridBox.style.gridTemplateColumns = "repeat(4, " + TILE_W + "px)";
+        portraitGridBox.classList.toggle("square", !!(currentTheme && currentTheme.squarePortrait));
         portraitGridBox.innerHTML = "";
         portraitTiles = {};
 
@@ -2718,10 +3228,12 @@
                 var cv = document.createElement("canvas");
                 /* Intrinsic pixels match chat exactly (PIXEL_SCALE); CSS below
                    scales the canvas into the tile box, which reproduces chat's
-                   80:96 proportions including FFT's horizontal stretch. */
+                   proportions (80:96 for atlas portrait themes, square for the
+                   pmd icon-box portraits). */
                 if (!drawPortrait(p, cv, PIXEL_SCALE)) drawPortraitPlaceholder(cv, p, PIXEL_SCALE);
                 cv.style.width = TILE_INNER + "px";
-                cv.style.height = (TILE_INNER * CHAT_H / CHAT_W) + "px";
+                cv.style.height = (TILE_INNER *
+                    (currentTheme && currentTheme.squarePortrait ? 1 : CHAT_H / CHAT_W)) + "px";
                 tile.appendChild(cv);
             });
         });
@@ -2730,7 +3242,7 @@
 
     function applyTunerClass() {
         chatBox.className = "theme-" + currentTheme.key + (bgOn ? "" : " no-bg");
-        chat.className = (["", "align-center", "align-right", "align-alternate"][tunerMode] ||
+        chat.className = (["align-default", "", "align-center", "align-right", "align-alternate"][tunerMode] ||
             "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges") +
             (roleBadgesOn ? "" : " hide-role-badges") +
             (timestampsOn ? "" : " hide-timestamps") + (fadeOn ? " fade-expire" : "");
