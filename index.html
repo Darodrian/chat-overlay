@@ -25,16 +25,16 @@
             --ff-username: #5ca0f0;
             --ff-timestamp: #7a7a9a;
             --ff-dim: rgba(240, 230, 211, 0.35);
-            --ff-mod: #ff7b6b;
-            --ff-sub: #7bff9b;
-            --ff-vip: #ffb86b;
+            --ff-mod: #ce331d;
+            --ff-sub: #49a026;
+            --ff-vip: #c532ad;
 
             --ui-username: #f4f1ea;
             --ui-dim: rgba(244, 241, 234, 0.5);
-            --ui-mod: #ff7b6b;
-            --ui-sub: #7bff9b;
-            --ui-vip: #e800e8;
-            --ui-broadcaster: #d8d808;
+            --ui-mod: #ce331d;
+            --ui-sub: #49a026;
+            --ui-vip: #c532ad;
+            --ui-broadcaster: #e1b70b;
             --ui-lh: 32px;
             --ui-y: 0px;
             --ui-top: 0px;
@@ -68,8 +68,21 @@
         }
 
         @font-face {
-            font-family: 'SF3FontThin';
-            src: url("assets/fonts/SF3FontThin.woff2") format("woff2");
+            font-family: 'BN5DSEUFontThin';
+            src: url("assets/fonts/BN5DSEU Font Thin.woff2") format("woff2");
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'ZpixBig';
+            src: url("assets/fonts/zpix.woff2") format("woff2");
+            font-display: swap;
+            size-adjust: 150%;
+        }
+
+        @font-face {
+            font-family: 'Reactor7';
+            src: url("assets/fonts/Reactor7.woff2") format("woff2");
             font-display: swap;
         }
 
@@ -80,7 +93,7 @@
 
         #chat {
             width: 600px;
-            height: 1200px;
+            height: 1000px;
             overflow-x: hidden;
             overflow-y: hidden;
             display: flex;
@@ -238,13 +251,38 @@
             word-break: break-word;
         }
 
+        #chat.theme-ff8 .ui-zpix {
+            display: inline-block;
+            vertical-align: 6px;
+            color: #dcdcdc;
+            text-shadow: 1px 1px 0 #333;
+        }
+
+        #chat.theme-ff8 .msg-box .username {
+            display: inline-block;
+        }
+
+        #chat.theme-ff8 .msg-box img.badge {
+            height: 0.8em;
+            vertical-align: 6px;
+        }
+
         /* ---- Webfont themes: fixed per-theme size, nearest-neighbour pixel glyphs ---- */
-        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1 {
+        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-ff7 {
             font-family: var(--ui-font, inherit);
             text-shadow: var(--ui-text-shadow, none);
             -webkit-font-smoothing: none;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: geometricPrecision;
+        }
+
+        #chat.theme-ct .msg-box .username {
+            display: inline-block;
+        }
+
+        #chat.theme-ct .msg-box img.badge {
+            height: 0.6em;
+            vertical-align: 6px;
         }
 
         /* Role colours for inlineName themes (mc, mmbn1), which no longer have
@@ -287,6 +325,7 @@
             line-height: 26px;
             white-space: nowrap;
             flex-wrap: nowrap;
+            color: #000;
         }
 
         #chat.theme-acww .msg-header .timestamp {
@@ -315,14 +354,23 @@
             padding: 12px 24px 16px 16px;
         }
 
+        #chat.theme-ff7 .msg-box .username {
+            display: inline-block;
+        }
+
+        #chat.theme-ff7 .msg-box img.badge {
+            height: 0.6em;
+            vertical-align: 2px;
+        }
+
         #chat.theme-fft li {
             max-width: 400px;
             min-width: 280px;
         }
 
         #chat.theme-fft .msg-box {
-            padding: 30px 12px 12px 84px;
-            min-height: 116px;
+            padding: 30px 12px 12px 102px;
+            min-height: 102px;
         }
 
         #chat.theme-fft .msg-header {
@@ -333,7 +381,7 @@
             position: absolute;
             left: 12px;
             top: 32px;
-            width: 64px;
+            width: 80px;
             height: 96px;
             image-rendering: pixelated;
             z-index: 2;
@@ -343,13 +391,18 @@
             margin: 2px 0 0 0;
         }
 
+        #chat.theme-fft .msg-box img.badge {
+            height: 0.6em
+        }
+
         #chat.theme-mc li {
             min-width: 320px;
         }
 
         #chat.theme-mc .msg-box {
-            padding: 16px 28px 16px 16px;
+            padding: 16px 28px 16px 22px;
             min-height: 96px;
+            word-spacing: 0.25em;
         }
 
         #chat.theme-mc .continue-arrow {
@@ -364,7 +417,8 @@
         }
 
         #chat.theme-mc .msg-box img.badge {
-            vertical-align: 4px;
+            height: 1.4em;
+            vertical-align: 0px;
         }
 
         #chat.theme-mmbn1 li {
@@ -373,7 +427,7 @@
 
         #chat.theme-mmbn1 .msg-box {
             padding: 24px 16px 16px 106px;
-            min-height: 128px;
+            min-height: 92px;
         }
 
         #chat.theme-mmbn1 .portrait {
@@ -398,7 +452,8 @@
         }
 
         #chat.theme-mmbn1 .msg-box img.badge {
-            vertical-align: 4px;
+            height: 0.9em;
+            vertical-align: 0px;
         }
 
         /* ---- Shared ---- */
@@ -419,6 +474,17 @@
             top: var(--ui-y, 0px);
             left: var(--ui-hx, 0px);
         }
+
+        #chat.theme-mc .glyph-canvas {
+            vertical-align: -4px;
+        }
+
+        #chat.theme-mc .ui-zpix{
+            display: inline-block;
+            vertical-align: 2px;
+        }
+
+        
 
         #chat .bglyph {
             display: inline-block;
@@ -529,7 +595,7 @@
             top: 10px;
             right: 10px;
             z-index: 1000;
-            width: 210px;
+            width: 320px;
             padding: 12px;
             background: #14120f;
             border: 2px solid #54514a;
@@ -583,20 +649,140 @@
         #tuner-fade-secs-out { min-width: 30px; text-align: center; }
         #tuner input[type="range"] { flex: 1; margin: 0 8px 0 0; min-width: 0; }
         #tuner #tuner-fade-secs-out { flex: initial; min-width: 36px; text-align: right; }
-        #tuner .portrait-row select.tuner-select {
-            flex: 1;
-            width: 0;
-            min-width: 0;
-            margin: 0 8px 0 0;
-            background: #54514a;
+        /* Portrait themes swap the dropdowns for an in-page picker: CEF paints
+           native <select> popups to a separate texture OBS never composites, so
+           everything here is plain DOM. */
+        #tuner.wide { width: 440px; }
+        #tuner .portrait-picker {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            margin: 6px 0;
+        }
+        #tuner .portrait-users {
+            width: 190px;
+            max-height: 240px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #1e1b16;
             border: 2px solid #33312c;
+        }
+        #tuner .portrait-user {
+            display: block;
+            width: 100%;
+            height: auto;
+            padding: 3px 5px;
+            background: transparent;
+            border: 0;
+            border-bottom: 1px solid #2a2722;
+            box-shadow: none;
             color: #f4f1ea;
             font-family: inherit;
             font-size: 12px;
-            height: 28px;
+            line-height: 1.3;
+            text-align: left;
             cursor: pointer;
         }
-        #tuner .portrait-row select.tuner-select:last-child { margin-right: 0; }
+        #tuner .portrait-user:last-child { border-bottom: 0; }
+        #tuner .portrait-user:hover { background: #2a2722; }
+        #tuner .portrait-user.active { background: #54514a; color: #ffffff; }
+        #tuner .portrait-user .pu-name {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #tuner .portrait-user .pu-assign {
+            display: block;
+            color: var(--ui-dim);
+            font-size: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #tuner .portrait-user.active .pu-assign { color: #d8d2c4; }
+        #tuner .portrait-grid-wrap { flex: 1; min-width: 0; }
+        #tuner .portrait-grid-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        #tuner .portrait-grid-head .pg-title {
+            color: var(--ui-dim);
+            font-size: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #tuner .portrait-grid {
+            display: grid;
+            grid-template-columns: repeat(4, max-content);
+            gap: 4px;
+            max-height: 220px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 3px;
+            background: #1e1b16;
+            border: 2px solid #33312c;
+        }
+        #tuner .portrait-tile {
+            position: relative;
+            display: block;
+            box-sizing: border-box;
+            width: 52px;
+            height: 62px;
+            padding: 0;
+            background: #33312c;
+            border: 2px solid #33312c;
+            box-shadow: none;
+            cursor: pointer;
+        }
+        #tuner .portrait-tile:active { transform: none; box-shadow: none; }
+        #tuner .portrait-tile:hover { border-color: #8b8578; }
+        #tuner .portrait-tile.selected { border-color: #f0c040; }
+        #tuner .portrait-tile.selected::after {
+            content: "";
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+            width: 6px;
+            height: 6px;
+            background: #f0c040;
+        }
+        #tuner .portrait-tile canvas {
+            display: block;
+            image-rendering: pixelated;
+        }
+        #tuner .portrait-tile .tile-label {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 1px 0;
+            background: rgba(5, 5, 5, 0.75);
+            color: #f4f1ea;
+            font-size: 9px;
+            line-height: 1.1;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        /* AUTO / NONE fill the same footprint as a portrait tile, so their label
+           centres rather than hugging the bottom edge. */
+        #tuner .portrait-tile.plain {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #tuner .portrait-tile.plain .tile-label {
+            position: static;
+            padding: 0 2px;
+            background: none;
+            font-size: 11px;
+            line-height: 1.2;
+        }
     </style>
 
 </head>
@@ -673,6 +859,28 @@
         return !!(currentTheme && currentTheme.fontFamily);
     }
 
+    /* True when a webfont theme fills the webfont's gaps from its own atlas PNG.
+       Such a theme lists the characters the webfont lacks in `atlasFallback`;
+       pure-atlas themes omit the key and keep using the atlas for everything. */
+    function usesAtlasFallback() {
+        return !!(currentTheme && currentTheme.atlasFallback);
+    }
+
+    /* Should this character be drawn from the atlas rather than set as text?
+       Single source of truth for the message body and the name/timestamp runs. */
+    function useAtlasGlyph(ch) {
+        if (!atlasReady()) return false;
+        if (!GLYPHS[ch.charCodeAt(0)]) return false;
+        if (!usesWebfont()) return true;
+        return usesAtlasFallback() && currentTheme.atlasFallback.indexOf(ch) >= 0;
+    }
+
+    /* A theme webfont is generated from its own atlas PNG on a doubled pixel
+       grid, so a glyph borrowed from that atlas must be drawn at PIXEL_SCALE to
+       line up with the webfont text beside it. Verified against MinishType:
+       unitsPerEm 1024, sCapHeight 1408 -> 22px caps at font-size 16, matching
+       the atlas's 11px of cap ink doubled; all 56 letters and digits also match
+       on advance width once doubled. */
     var GLYPHS = {};
     var WINDOW_STYLES = [];
     var PORTRAITS = [];
@@ -772,7 +980,8 @@
             windowBorder: 2,
             drawMode: "border",
             userRows: { broadcaster: 60, mod: 48, sub: 36, vip: 12 },
-            mapApostrophe: true
+            mapApostrophe: true,
+            zpixFallback: "@\\^`|{}¨´ªº"
         },
         ct: {
             key: "ct",
@@ -818,7 +1027,12 @@
             windowBorder: 4,
             drawMode: "border",
             userRows: null,
-            mapApostrophe: true
+            mapApostrophe: true,
+            fontFamily: "Reactor7",
+            fontStack: "'Zpix', monospace",
+            fontSize: 32,
+            lineHeight: 32,
+            textShadow: "2px 2px 0 #000",
         },
         fft: {
             key: "fft",
@@ -851,10 +1065,11 @@
             userRows: null,
             mapApostrophe: true,
             fontFamily: "MinishType",
-            fontStack: "'Zpix', monospace",
+            fontStack: "'ZpixBig', monospace",
+            atlasFallback: "#$%&()*+/:;<=>?@[]^_`{|}~",
+            zpixFallback: "&\\",
             fontSize: 16,
-            lineHeight: 26,
-            wordSpacing: "0.3em",
+            lineHeight: 32,
             continueArrow: true,
             inlineName: true,
             boxBands: { top: 5 / 48, bot: 5 / 48 }
@@ -869,8 +1084,9 @@
             drawMode: "box",
             userRows: null,
             mapApostrophe: true,
-            fontFamily: "SF3FontThin",
-            fontSize: 34,
+            fontFamily: "BN5DSEUFontThin",
+            fontStack: "'Zpix', monospace",
+            fontSize: 24,
             lineHeight: 32,
             bodyColor: "#2e3434",
             usernameColor: "#2e3434",
@@ -1062,7 +1278,10 @@
                 img.onload = function () {
                     document.documentElement.style.setProperty("--ui-bg-size",
                         this.naturalWidth + "px " + this.naturalHeight + "px");
-                    if (currentTheme === t) renderAllHistory();
+                    if (currentTheme === t) {
+                        paintPortraitThumbs();
+                        renderAllHistory();
+                    }
                 };
                 img.onerror = function () {};
                 img.src = t.atlas;
@@ -1104,6 +1323,7 @@
         applyFade();
         applyFadeSeconds();
         themeLabel.textContent = t.label;
+        tuner.classList.toggle("wide", !!t.portrait);
         buildTunerOptions();
         applyTunerClass();
         applyThemeFonts(t);
@@ -1265,9 +1485,16 @@
         removeMagenta();
     }
 
+    /* Characters rendered as plain Zpix text (webfont/atlas gaps). Wrapped in
+       .ui-zpix so themes can nudge them vertically via CSS. */
+    function zpixFallbackChar(ch) {
+        var s = currentTheme && currentTheme.zpixFallback;
+        return !!(s && s.indexOf(ch) >= 0);
+    }
+
     function glyphOrTextUnit(ch, row) {
-        if (!usesWebfont() && atlasReady() && GLYPHS[ch.charCodeAt(0)]) return { glyph: ch, row: row };
-        return { html: escapeHtml(ch) };
+        if (useAtlasGlyph(ch)) return { glyph: ch, row: row };
+        return { html: zpixFallbackChar(ch) ? '<span class="ui-zpix">' + escapeHtml(ch) + "</span>" : escapeHtml(ch) };
     }
 
     function resolveQuote(ch, msg, i) {
@@ -1307,7 +1534,7 @@
 
     function buildTextRuns(container, text, row) {
         container.innerHTML = "";
-        if (usesWebfont()) {
+        if (usesWebfont() && !(usesAtlasFallback() && atlasReady())) {
             container.textContent = text;
             return;
         }
@@ -1317,6 +1544,7 @@
         }
         var out = document.createDocumentFragment();
         var buf = "";
+        var tbuf = "";
         function flush() {
             if (!buf) return;
             var c = document.createElement("canvas");
@@ -1325,18 +1553,34 @@
             out.appendChild(c);
             buf = "";
         }
+        function flushText() {
+            if (!tbuf) return;
+            out.appendChild(document.createTextNode(tbuf));
+            tbuf = "";
+        }
         for (var i = 0; i < text.length; i++) {
             if (text[i] === " ") {
                 flush();
+                flushText();
                 out.appendChild(document.createTextNode("\u200b"));
-            } else if (GLYPHS[text.charCodeAt(i)]) {
+            } else if (useAtlasGlyph(text[i])) {
+                flushText();
                 buf += text[i];
             } else {
                 flush();
-                out.appendChild(document.createTextNode(text[i]));
+                if (zpixFallbackChar(text[i])) {
+                    flushText();
+                    var zs = document.createElement("span");
+                    zs.className = "ui-zpix";
+                    zs.textContent = text[i];
+                    out.appendChild(zs);
+                } else {
+                    tbuf += text[i];
+                }
             }
         }
         flush();
+        flushText();
         container.appendChild(out);
     }
 
@@ -1610,7 +1854,12 @@
     }
 
     function buildUnits(message, messageEmotes) {
-        if (!currentTheme.atlas || usesWebfont()) return buildDefaultUnits(message, messageEmotes);
+        /* A theme can mix a webfont with atlas glyphs: mc renders letters as webfont
+           text but its atlasFallback characters as canvases, so it must use the same
+           unit builder as the pure-atlas themes. Other webfont themes still bail out,
+           since buildUnits would also start curly-quoting their text (buildDefaultUnits
+           only does that when the theme sets mapApostrophe). */
+        if (!currentTheme.atlas || (usesWebfont() && !usesAtlasFallback())) return buildDefaultUnits(message, messageEmotes);
         var twitchRanges = parseTwitchRanges(messageEmotes);
         var units = [];
         var i = 0;
@@ -1818,7 +2067,7 @@
     function appendMessage(record) {
         chatHistory.push(record);
         renderMessage(record, true);
-        refreshPortraitUserList();
+        syncPortraitUsers();
         while (chatHistory.length > MAX_HISTORY) dropOldestMessage();
     }
 
@@ -2020,14 +2269,7 @@
                 record._portraitName = portrait.name;
                 var pic = document.createElement("canvas");
                 pic.className = "portrait";
-                pic.width = portrait.w * PIXEL_SCALE;
-                pic.height = portrait.h * PIXEL_SCALE;
-                var pctx = pic.getContext("2d");
-                pctx.clearRect(0, 0, pic.width, pic.height);
-                if (atlasReady()) {
-                    pctx.imageSmoothingEnabled = false;
-                    pctx.drawImage(atlas, portrait.x, portrait.y, portrait.w, portrait.h, 0, 0, pic.width, pic.height);
-                }
+                drawPortrait(portrait, pic, PIXEL_SCALE);
                 box.appendChild(pic);
             }
         }
@@ -2189,7 +2431,7 @@
             var o = THEME_TUNER[key];
             if (!o) return;
             if (o.type === "userPortrait") {
-                buildUserPortraitRow();
+                buildPortraitPicker();
                 return;
             }
             var vals = o.resolveValues();
@@ -2231,6 +2473,46 @@
         return name.replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
     }
 
+    /* Paints one atlas portrait into a canvas at the given scale. Callers size
+       the canvas themselves so the tile grid can pre-measure at 1:1. */
+    function drawPortrait(p, canvas, scale) {
+        if (!p || !canvas) return false;
+        var w = Math.round(p.w * scale);
+        var h = Math.round(p.h * scale);
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, w, h);
+        if (!atlasReady()) return false;
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(atlas, p.x, p.y, p.w, p.h, 0, 0, w, h);
+        return true;
+    }
+
+    /* Tiles paint blank until the atlas finishes loading, so label the cell until
+       the real pixels land. */
+    function drawPortraitPlaceholder(canvas, p, scale) {
+        scale = scale || 1;
+        var w = Math.round(p.w * scale);
+        var h = Math.round(p.h * scale);
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#33312c";
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = "#8b8578";
+        ctx.font = Math.round(10 * scale) + "px " +
+            (currentTheme && currentTheme.fontFamily ? currentTheme.fontFamily : "monospace");
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        var words = humanizeName(p.name).split(" ");
+        var lines = words.length > 2 ? [words.slice(0, -1).join(" "), words[words.length - 1]] : words;
+        for (var i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], w / 2, h / 2 + (i - (lines.length - 1) / 2) * 10 * scale);
+        }
+    }
+
     function knownChatters() {
         var seen = {};
         var list = [];
@@ -2242,80 +2524,208 @@
         return list;
     }
 
-    var portraitUserSel = null;
-    var portraitPortSel = null;
+    var portraitUsersBox = null;
+    var portraitGridBox = null;
+    var portraitGridTitle = null;
+    var portraitRows = {};
+    var portraitTiles = {};
+    var selectedPortraitUser = "";
 
-    function buildUserPortraitRow() {
-        var row = document.createElement("div");
-        row.className = "tuner-row portrait-row";
-        var label = document.createElement("label");
-        label.textContent = "Portrait";
-        portraitUserSel = document.createElement("select");
-        portraitUserSel.className = "tuner-select";
-        portraitPortSel = document.createElement("select");
-        portraitPortSel.className = "tuner-select";
-        row.appendChild(label);
-        row.appendChild(portraitUserSel);
-        row.appendChild(portraitPortSel);
-        tunerOptionsBox.appendChild(row);
-        portraitUserSel.addEventListener("change", populatePortraitOptions);
-        portraitPortSel.addEventListener("change", function () {
-            var user = portraitUserSel.value;
-            if (!user) return;
-            var name = portraitPortSel.value;
-            if (name === "__auto__") clearUserPortrait(user);
-            else setUserPortrait(user, name);
-            populatePortraitOptions();
-        });
-        refreshPortraitUserList();
-    }
-
-    function refreshPortraitUserList() {
-        if (!portraitUserSel || !portraitUserSel.parentNode) return;
-        var current = portraitUserSel.value;
+    /* Called by appendMessage on every message, so it must be incremental:
+       appending only new chatters and rewriting nothing else. The grid itself is
+       built once per theme and never rebuilt here. */
+    function syncPortraitUsers() {
+        if (!portraitUsersBox || !portraitUsersBox.parentNode) return;
         var users = knownChatters();
-        portraitUserSel.innerHTML = "";
-        var ph = document.createElement("option");
-        ph.value = "";
-        ph.textContent = "— pick user —";
-        portraitUserSel.appendChild(ph);
+        var live = {};
         users.forEach(function (u) {
-            var opt = document.createElement("option");
-            opt.value = u;
-            opt.textContent = u;
-            portraitUserSel.appendChild(opt);
+            var key = u.toLowerCase();
+            live[key] = true;
+            if (portraitRows[key]) return;
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "portrait-user";
+            btn.dataset.user = u;
+            var name = document.createElement("span");
+            name.className = "pu-name";
+            name.textContent = u;
+            var assign = document.createElement("span");
+            assign.className = "pu-assign";
+            btn.appendChild(name);
+            btn.appendChild(assign);
+            btn.addEventListener("click", function () {
+                selectedPortraitUser = u;
+                updatePortraitSelection();
+            });
+            portraitUsersBox.appendChild(btn);
+            portraitRows[key] = { btn: btn, assign: assign };
         });
-        if (current) {
-            var match = null;
-            for (var i = 0; i < portraitUserSel.options.length; i++) {
-                if (portraitUserSel.options[i].value === current) { match = portraitUserSel.options[i]; break; }
-            }
-            if (match) portraitUserSel.value = current;
+        /* Drop chatters that have aged out of chatHistory. Their stored mapping
+           is left alone so it comes back if they reappear, but offering them here
+           would let you assign a portrait nothing can ever display. */
+        for (var key in portraitRows) {
+            if (!Object.prototype.hasOwnProperty.call(portraitRows, key) || live[key]) continue;
+            var stale = portraitRows[key];
+            if (stale.btn.parentNode) stale.btn.parentNode.removeChild(stale.btn);
+            delete portraitRows[key];
         }
-        populatePortraitOptions();
+        if (selectedPortraitUser && !portraitRows[selectedPortraitUser.toLowerCase()]) {
+            selectedPortraitUser = "";
+        }
+        if (!selectedPortraitUser && users.length) selectedPortraitUser = users[0];
+        updatePortraitSelection();
     }
 
-    function populatePortraitOptions() {
-        if (!portraitPortSel) return;
-        var user = portraitUserSel ? portraitUserSel.value : "";
-        var assigned = user ? (userPortraitMap()[user.toLowerCase()] || "__auto__") : "__auto__";
-        portraitPortSel.innerHTML = "";
-        var auto = document.createElement("option");
-        auto.value = "__auto__";
-        auto.textContent = "Auto (default)";
-        portraitPortSel.appendChild(auto);
-        var none = document.createElement("option");
-        none.value = "__hidden__";
-        none.textContent = "None";
-        portraitPortSel.appendChild(none);
+    function assignmentLabel(name) {
+        if (!name || name === "__auto__") return "Auto (default)";
+        if (name === "__hidden__" || name === "none") return "None";
+        return humanizeName(name);
+    }
+
+    /* Repaints every row's caption and moves the selected-state ring. Mutates
+       existing nodes only, so it is safe to call per chat message. */
+    function updatePortraitSelection() {
+        if (!portraitUsersBox) return;
+        var map = userPortraitMap();
+        var sel = selectedPortraitUser.toLowerCase();
+        var key;
+        for (key in portraitRows) {
+            if (!Object.prototype.hasOwnProperty.call(portraitRows, key)) continue;
+            var row = portraitRows[key];
+            var isActive = key === sel;
+            if (isActive !== (row.btn.className.indexOf("active") !== -1)) {
+                row.btn.className = isActive ? "portrait-user active" : "portrait-user";
+            }
+            row.assign.textContent = assignmentLabel(map[key]);
+        }
+        var current = sel ? (map[sel] || "__auto__") : "__auto__";
+        for (key in portraitTiles) {
+            if (!Object.prototype.hasOwnProperty.call(portraitTiles, key)) continue;
+            var tile = portraitTiles[key];
+            var on = !!selectedPortraitUser && tile.dataset.value === current;
+            if (on !== (tile.className.indexOf("selected") !== -1)) {
+                tile.className = "portrait-tile" + (on ? " selected" : "");
+            }
+        }
+        if (portraitGridTitle) {
+            portraitGridTitle.textContent = selectedPortraitUser
+                ? selectedPortraitUser + " — " + assignmentLabel(current)
+                : "no chatter yet";
+        }
+    }
+
+    function buildPortraitPicker() {
+        var row = document.createElement("div");
+        row.className = "portrait-picker";
+
+        portraitUsersBox = document.createElement("div");
+        portraitUsersBox.className = "portrait-users";
+        row.appendChild(portraitUsersBox);
+
+        var wrap = document.createElement("div");
+        wrap.className = "portrait-grid-wrap";
+        var head = document.createElement("div");
+        head.className = "portrait-grid-head";
+        portraitGridTitle = document.createElement("span");
+        portraitGridTitle.className = "pg-title";
+        head.appendChild(portraitGridTitle);
+        var pager = document.createElement("span");
+        var up = document.createElement("button");
+        up.type = "button";
+        up.textContent = "▲";
+        var down = document.createElement("button");
+        down.type = "button";
+        down.textContent = "▼";
+        pager.appendChild(up);
+        pager.appendChild(down);
+        head.appendChild(pager);
+        wrap.appendChild(head);
+
+        portraitGridBox = document.createElement("div");
+        portraitGridBox.className = "portrait-grid";
+        wrap.appendChild(portraitGridBox);
+        row.appendChild(wrap);
+        tunerOptionsBox.appendChild(row);
+
+        /* Wheel scrolling over a scrollable div is not dependable across CEF
+           builds, so page by row with buttons, which definitely work. */
+        up.addEventListener("click", function () {
+            portraitGridBox.scrollTop -= portraitGridBox.clientHeight / 3;
+        });
+        down.addEventListener("click", function () {
+            portraitGridBox.scrollTop += portraitGridBox.clientHeight / 3;
+        });
+
+        portraitRows = {};
+        portraitTiles = {};
+        selectedPortraitUser = "";
+        paintPortraitThumbs();
+        syncPortraitUsers();
+    }
+
+    /* Tile metrics. The chat renders portraits in an 80x96 box for both portrait
+       themes (see the .portrait rules), so thumbnails reuse that exact ratio and
+       stay a WYSIWYG preview. TILE_W is the grid track; the 2px borders sit
+       inside it, leaving TILE_INNER for the canvas. */
+    var TILE_W = 52;
+    var TILE_BORDER = 2;
+    var TILE_INNER = TILE_W - TILE_BORDER * 2;
+    var CHAT_W = 80;
+    var CHAT_H = 96;
+
+    /* Builds the AUTO / NONE / portrait tiles for the current theme. Runs on
+       theme change and again when the atlas finishes loading, since tiles paint
+       blank until atlasReady(). */
+    function paintPortraitThumbs() {
+        if (!portraitGridBox) return;
+        portraitGridBox.style.gridTemplateColumns = "repeat(4, " + TILE_W + "px)";
+        portraitGridBox.innerHTML = "";
+        portraitTiles = {};
+
+        function addTile(value, label, painter) {
+            var tile = document.createElement("button");
+            tile.type = "button";
+            tile.className = "portrait-tile";
+            tile.dataset.value = value;
+            tile.title = label;
+            painter(tile);
+            tile.addEventListener("click", function () {
+                if (!selectedPortraitUser) return;
+                if (value === "__auto__") clearUserPortrait(selectedPortraitUser);
+                else setUserPortrait(selectedPortraitUser, value);
+                updatePortraitSelection();
+            });
+            portraitGridBox.appendChild(tile);
+            portraitTiles[value] = tile;
+        }
+
+        /* AUTO / NONE share the portrait tile footprint so the grid reads as one
+           uniform matrix instead of two short stubs beside taller thumbnails. */
+        function plainTile(tile, text) {
+            tile.className += " plain";
+            var span = document.createElement("span");
+            span.className = "tile-label";
+            span.textContent = text;
+            tile.appendChild(span);
+        }
+
+        addTile("__auto__", "Auto (default)", function (tile) { plainTile(tile, "AUTO"); });
+        addTile("__hidden__", "None (no portrait)", function (tile) { plainTile(tile, "NONE"); });
+
         PORTRAITS.forEach(function (p) {
             if (p.name === "none") return;
-            var opt = document.createElement("option");
-            opt.value = p.name;
-            opt.textContent = humanizeName(p.name);
-            portraitPortSel.appendChild(opt);
+            addTile(p.name, humanizeName(p.name), function (tile) {
+                var cv = document.createElement("canvas");
+                /* Intrinsic pixels match chat exactly (PIXEL_SCALE); CSS below
+                   scales the canvas into the tile box, which reproduces chat's
+                   80:96 proportions including FFT's horizontal stretch. */
+                if (!drawPortrait(p, cv, PIXEL_SCALE)) drawPortraitPlaceholder(cv, p, PIXEL_SCALE);
+                cv.style.width = TILE_INNER + "px";
+                cv.style.height = (TILE_INNER * CHAT_H / CHAT_W) + "px";
+                tile.appendChild(cv);
+            });
         });
-        portraitPortSel.value = assigned;
+        updatePortraitSelection();
     }
 
     function applyTunerClass() {

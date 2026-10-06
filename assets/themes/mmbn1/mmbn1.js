@@ -23,6 +23,18 @@
 					"y": 62,
 					"w": 13,
 					"h": 13
+				},
+				/* Second blink frame. continueArrowFrames() treats every option as an
+					animation frame and blinkArrows cycles through them at 700ms, so with
+					only one option it redrew the same frame forever and the arrow never
+					blinked. mc and acww animate the same way, by swapping to a fully
+					transparent cell for half of each cycle. This cell is empty in
+					mmbn1-font.png and overlaps no other declared glyph or portrait rect. */
+				"blank": {
+					"x": 1013,
+					"y": 62,
+					"w": 13,
+					"h": 13
 				}
 			}
 		},
