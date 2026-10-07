@@ -125,6 +125,53 @@
             margin: 0;
         }
 
+        /* ---- Setup notice (shown until a channel is set) ---- */
+        #setup-notice {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            font-family: 'Zpix', monospace;
+        }
+        #setup-notice.show { display: flex; }
+
+        #setup-notice .setup-box {
+            box-sizing: border-box;
+            max-width: 480px;
+            margin: 16px;
+            padding: 24px 28px;
+            background: rgba(10, 10, 30, 0.92);
+            border: 4px solid #c8aa6e;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+            color: #f0e6d3;
+            text-align: center;
+        }
+
+        #setup-notice h1 {
+            margin: 0 0 16px 0;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: #c8aa6e;
+        }
+
+        #setup-notice p {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        #setup-notice p:last-child { margin-bottom: 0; }
+
+        #setup-notice b { color: #ffffff; }
+
+        #setup-notice code {
+            padding: 1px 5px;
+            background: rgba(200, 170, 110, 0.18);
+            border: 1px solid rgba(200, 170, 110, 0.45);
+            color: #f0e6d3;
+        }
+
         /* ---- Default (Zpix webfont) theme ---- */
         #chat.theme-default {
             color: var(--ff-text);
@@ -139,12 +186,6 @@
             white-space: pre-wrap;
             overflow-wrap: break-word;
             border-bottom: 2px dashed rgba(200, 170, 110, 0.35);
-        }
-
-        #chat.theme-default .config-notice {
-            color: var(--ff-text);
-            font-size: 24px;
-            padding: 12px 4px;
         }
 
         #chat.theme-default .user {
@@ -207,17 +248,6 @@
 
         #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li, #chat.theme-pmd li + li {
             margin-top: 20px;
-        }
-
-        #chat.theme-ff8 .config-notice, #chat.theme-ct .config-notice, #chat.theme-acww .config-notice, #chat.theme-ff7 .config-notice, #chat.theme-fft .config-notice, #chat.theme-mc .config-notice, #chat.theme-mmbn1 .config-notice, #chat.theme-pmd .config-notice {
-            color: var(--ff-text);
-            font-size: 24px;
-            padding: 12px 4px;
-            background: transparent;
-            box-shadow: none;
-            text-shadow:
-                2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000,
-                0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000;
         }
 
         #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username, #chat.theme-pmd .msg-box .username {
@@ -824,6 +854,14 @@
     <div id="chat" class="theme-default">
         <ul>
         </ul>
+    </div>
+    <div id="setup-notice">
+        <div class="setup-box">
+            <h1>Chat Overlay setup</h1>
+            <p>Add this page as a <b>Browser Source</b> in OBS — size <b>600 x 1000</b></p>
+            <p>Replace <code>yourusername</code> in the URL with your channel name</p>
+            <p>Open the <b>Interact</b> window and press <b>F</b> for the tuner menu</p>
+        </div>
     </div>
     <div id="tuner">
         <h1>Tuner <span>(F)</span></h1>
@@ -2724,7 +2762,6 @@
 
     function renderAllHistory() {
         chat.innerHTML = "";
-        if (notice) chat.appendChild(notice);
         var start = Math.max(0, chatHistory.length - MAX_HISTORY);
         for (var i = start; i < chatHistory.length; i++) {
             try {
@@ -2748,13 +2785,10 @@
         });
     }
 
-    var notice = null;
+    var setupNotice = document.getElementById("setup-notice");
 
-    function configNotice(message) {
-        notice = document.createElement("li");
-        notice.className = "config-notice";
-        notice.textContent = message;
-        chat.appendChild(notice);
+    function showSetupNotice() {
+        setupNotice.classList.add("show");
     }
 
     var qs = new URLSearchParams(location.search);
@@ -2763,9 +2797,9 @@
     if (!channelName) {
         qs.set("channel", "yourusername");
         history.replaceState(null, "", "?" + qs.toString());
-        configNotice("Add ?channel=yourusername to the URL");
+        showSetupNotice();
     } else if (channelName.toLowerCase() === "yourusername") {
-        configNotice("Add ?channel=yourusername to the URL");
+        showSetupNotice();
     } else {
         ComfyJS.Init(channelName);
     }
