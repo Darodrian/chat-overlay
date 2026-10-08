@@ -1,4 +1,4 @@
-# Chat Overlay
+chat-overlay
 
 A chat overlay for streaming with easy channel set up and multiple retro styled themes.
 
