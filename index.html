@@ -1016,6 +1016,102 @@
         return userPortraits[currentTheme.key];
     }
 
+    /* ---- Tuner config persistence (localStorage, per channel) ----
+       The overlay is a static browser source, so localStorage is the only place
+       to remember settings between sessions. Config is keyed by the ?channel=
+       value so two streamers sharing a machine don't clobber each other. */
+    var CONFIG_STORE_KEY = "chatOverlayConfig";
+    var CONFIG_VERSION = 1;
+    var configStore = null;
+    var configSaveTimer = null;
+
+    function configChannelKey() {
+        return channelName ? channelName.toLowerCase() : "_default";
+    }
+
+    function loadConfigStore() {
+        configStore = null;
+        try {
+            var raw = localStorage.getItem(CONFIG_STORE_KEY);
+            var parsed = raw ? JSON.parse(raw) : null;
+            if (parsed && typeof parsed === "object" &&
+                parsed.version === CONFIG_VERSION && parsed.channels &&
+                typeof parsed.channels === "object") {
+                configStore = parsed;
+            }
+        } catch (e) {}
+        if (!configStore) configStore = { version: CONFIG_VERSION, channels: {} };
+    }
+
+    function currentConfig() {
+        if (!configStore) loadConfigStore();
+        var k = configChannelKey();
+        if (!configStore.channels[k] || typeof configStore.channels[k] !== "object") {
+            configStore.channels[k] = {};
+        }
+        return configStore.channels[k];
+    }
+
+    function saveConfig() {
+        try {
+            localStorage.setItem(CONFIG_STORE_KEY, JSON.stringify(configStore));
+        } catch (e) {}
+    }
+
+    function scheduleConfigSave() {
+        if (configSaveTimer) clearTimeout(configSaveTimer);
+        configSaveTimer = setTimeout(saveConfig, 300);
+    }
+
+    /* Restores theme + appearance toggles + per-theme options for this channel.
+       Runs once at startup, before the first applyTheme. Invalid/absent data
+       silently falls back to the current in-code defaults. */
+    function hydrateConfig() {
+        loadConfigStore();
+        var c = currentConfig();
+        if (typeof c.theme === "string" && THEME_ORDER.indexOf(c.theme) !== -1) {
+            themeIndex = THEME_ORDER.indexOf(c.theme);
+        }
+        var t = c.toggles;
+        if (t && typeof t === "object") {
+            if (typeof t.mode === "number" && t.mode >= 0 && t.mode < TUNER_MODES.length) tunerMode = t.mode;
+            if (typeof t.dim === "boolean") dimOn = t.dim;
+            if (typeof t.roleBadges === "boolean") roleBadgesOn = t.roleBadges;
+            if (typeof t.badges === "boolean") badgesOn = t.badges;
+            if (typeof t.timestamps === "boolean") timestampsOn = t.timestamps;
+            if (typeof t.bg === "boolean") bgOn = t.bg;
+            if (typeof t.fade === "boolean") fadeOn = t.fade;
+            if (typeof t.fadeSeconds === "number") {
+                fadeSeconds = Math.min(120, Math.max(5, t.fadeSeconds));
+            }
+        }
+        if (!c.themeOptions || typeof c.themeOptions !== "object") c.themeOptions = {};
+        themeOptionPersist = c.themeOptions;
+    }
+
+    function writeTogglesToConfig() {
+        currentConfig().toggles = {
+            mode: tunerMode,
+            dim: dimOn,
+            roleBadges: roleBadgesOn,
+            badges: badgesOn,
+            timestamps: timestampsOn,
+            bg: bgOn,
+            fade: fadeOn,
+            fadeSeconds: fadeSeconds
+        };
+    }
+
+    function persistToggles() {
+        writeTogglesToConfig();
+        saveConfig();
+    }
+
+    function persistThemeSelection() {
+        currentConfig().theme = THEME_ORDER[themeIndex];
+        saveConfig();
+    }
+
     var SHINY_SUFFIX = "@shiny";
     var SHINY_CHANCE = 0.01;
 
@@ -1291,6 +1387,7 @@
         if (!currentTheme) return;
         if (!themeOptionPersist[currentTheme.key]) themeOptionPersist[currentTheme.key] = {};
         themeOptionPersist[currentTheme.key][key] = themeOptionState[key];
+        saveConfig();
     }
 
     function restoreThemeOption(key, fallback) {
@@ -1680,13 +1777,8 @@
         } else {
             portraitImg = null;
         }
-        tunerMode = DEFAULT_OPTIONS.mode;
-        dimOn = DEFAULT_OPTIONS.dim;
-        badgesOn = DEFAULT_OPTIONS.badges;
-        timestampsOn = DEFAULT_OPTIONS.timestamps;
-        bgOn = DEFAULT_OPTIONS.bg;
-        fadeOn = DEFAULT_OPTIONS.fade;
-        fadeSeconds = DEFAULT_OPTIONS.fadeSeconds;
+        /* Appearance toggles are global and persisted (hydrateConfig at startup),
+           so switching themes must not reset them. */
         applyTunerMode();
         applyDim();
         applyBadges();
@@ -3472,60 +3564,73 @@
     document.getElementById("theme-prev").addEventListener("click", function () {
         themeIndex = (themeIndex + THEME_ORDER.length - 1) % THEME_ORDER.length;
         applyTheme(THEME_ORDER[themeIndex]);
+        persistThemeSelection();
     });
 
     document.getElementById("theme-next").addEventListener("click", function () {
         themeIndex = (themeIndex + 1) % THEME_ORDER.length;
         applyTheme(THEME_ORDER[themeIndex]);
+        persistThemeSelection();
     });
 
     document.getElementById("tuner-prev").addEventListener("click", function () {
         tunerMode = (tunerMode + TUNER_MODES.length - 1) % TUNER_MODES.length;
         applyTunerMode();
+        persistToggles();
     });
 
     document.getElementById("tuner-next").addEventListener("click", function () {
         tunerMode = (tunerMode + 1) % TUNER_MODES.length;
         applyTunerMode();
+        persistToggles();
     });
 
     dimBtn.addEventListener("click", function () {
         dimOn = !dimOn;
         applyDim();
+        persistToggles();
     });
 
     badgesBtn.addEventListener("click", function () {
         badgesOn = !badgesOn;
         applyBadges();
+        persistToggles();
     });
 
     roleBadgesBtn.addEventListener("click", function () {
         roleBadgesOn = !roleBadgesOn;
         applyRoleBadges();
+        persistToggles();
     });
 
     timestampsBtn.addEventListener("click", function () {
         timestampsOn = !timestampsOn;
         applyTimestamps();
+        persistToggles();
     });
 
     bgBtn.addEventListener("click", function () {
         bgOn = !bgOn;
         applyBg();
+        persistToggles();
     });
 
     fadeBtn.addEventListener("click", function () {
         fadeOn = !fadeOn;
         applyFade();
+        persistToggles();
     });
 
     fadeSecsInput.addEventListener("input", function () {
         fadeSeconds = parseInt(fadeSecsInput.value, 10) || 30;
         applyFadeSeconds();
+        writeTogglesToConfig();
+        scheduleConfigSave();
     });
 
     loadUserPortraits();
-    applyTheme("default");
+    hydrateConfig();
+    applyTheme(THEME_ORDER[themeIndex]);
 
     document.addEventListener("keydown", function (e) {
         if (e.key === "f" || e.key === "F") {
