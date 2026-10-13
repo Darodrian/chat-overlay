@@ -92,6 +92,12 @@
             font-display: swap;
         }
 
+        @font-face {
+            font-family: 'GoldenSunItalics';
+            src: url("assets/fonts/GoldenSunItalics.woff2") format("woff2");
+            font-display: swap;
+        }
+
         html, body {
             margin: 0;
             font-family: 'Zpix', monospace;
@@ -208,11 +214,11 @@
         }
 
         /* ---- Atlas (crisp pixel font) themes ---- */
-        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-pmd {
+        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-pmd, #chat.theme-gs {
             color: var(--ui-body-color, #ffffff);
         }
 
-        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li, #chat.theme-pmd li {
+        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li, #chat.theme-pmd li, #chat.theme-gs li {
             display: flex;
             flex-direction: column;
             width: max-content;
@@ -225,7 +231,7 @@
             animation: pop 0.18s ease-out; /* keep in sync with POP_MS */
         }
 
-        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg, #chat.theme-ff7 .window-bg, #chat.theme-fft .window-bg, #chat.theme-mc .window-bg, #chat.theme-mmbn1 .window-bg, #chat.theme-pmd .window-bg {
+        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg, #chat.theme-ff7 .window-bg, #chat.theme-fft .window-bg, #chat.theme-mc .window-bg, #chat.theme-mmbn1 .window-bg, #chat.theme-pmd .window-bg, #chat.theme-gs .window-bg {
             position: absolute;
             top: 0;
             left: 0;
@@ -234,7 +240,7 @@
             z-index: 0;
         }
 
-        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box, #chat.theme-ff7 .msg-box, #chat.theme-fft .msg-box, #chat.theme-mc .msg-box, #chat.theme-mmbn1 .msg-box, #chat.theme-pmd .msg-box {
+        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box, #chat.theme-ff7 .msg-box, #chat.theme-fft .msg-box, #chat.theme-mc .msg-box, #chat.theme-mmbn1 .msg-box, #chat.theme-pmd .msg-box, #chat.theme-gs .msg-box {
             position: relative;
             z-index: 1;
             padding: 20px 24px 16px 24px;
@@ -246,11 +252,11 @@
             to   { transform: scale(1); opacity: 1; }
         }
 
-        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li, #chat.theme-pmd li + li {
+        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li, #chat.theme-pmd li + li, #chat.theme-gs li + li {
             margin-top: 20px;
         }
 
-        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username, #chat.theme-pmd .msg-box .username {
+        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username, #chat.theme-pmd .msg-box .username, #chat.theme-gs .msg-box .username {
             color: var(--ui-user-color, var(--ui-username));
             font-size: var(--ui-fs, 24px);
             line-height: var(--ui-lh, 32px);
@@ -260,25 +266,25 @@
             word-break: break-word;
         }
 
-        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header, #chat.theme-ff7 .msg-header, #chat.theme-fft .msg-header, #chat.theme-mc .msg-header, #chat.theme-mmbn1 .msg-header, #chat.theme-pmd .msg-header {
+        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header, #chat.theme-ff7 .msg-header, #chat.theme-fft .msg-header, #chat.theme-mc .msg-header, #chat.theme-mmbn1 .msg-header, #chat.theme-pmd .msg-header, #chat.theme-gs .msg-header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             margin-bottom: 8px;
         }
 
-        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username, #chat.theme-ff7 .msg-header .username, #chat.theme-fft .msg-header .username, #chat.theme-mc .msg-header .username, #chat.theme-mmbn1 .msg-header .username, #chat.theme-pmd .msg-header .username {
+        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username, #chat.theme-ff7 .msg-header .username, #chat.theme-fft .msg-header .username, #chat.theme-mc .msg-header .username, #chat.theme-mmbn1 .msg-header .username, #chat.theme-pmd .msg-header .username, #chat.theme-gs .msg-header .username {
             margin-bottom: 0;
         }
 
-        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp, #chat.theme-pmd .msg-header .timestamp {
+        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp, #chat.theme-pmd .msg-header .timestamp, #chat.theme-gs .msg-header .timestamp {
             font-size: var(--ui-fs, 24px);
             line-height: var(--ui-lh, 32px);
             opacity: 0.55;
             margin-left: 12px;
         }
 
-        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text, #chat.theme-pmd .msg-box .message-text {
+        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text, #chat.theme-pmd .msg-box .message-text, #chat.theme-gs .msg-box .message-text {
             margin: 0;
             color: var(--ui-body-color, #ffffff);
             font-size: var(--ui-fs, 24px);
@@ -304,7 +310,7 @@
         }
 
         /* ---- Webfont themes: fixed per-theme size, nearest-neighbour pixel glyphs ---- */
-        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-ff7, #chat.theme-pmd {
+        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-ff7, #chat.theme-pmd, #chat.theme-gs {
             font-family: var(--ui-font, inherit);
             text-shadow: var(--ui-text-shadow, none);
             -webkit-font-smoothing: none;
@@ -515,6 +521,29 @@
             vertical-align: 0px;
         }
 
+        #chat.theme-gs li {
+            flex-direction: row;
+            align-items: flex-start;
+            max-width: 480px;
+        }
+
+        #chat.theme-gs .msg-box {
+            padding: 16px 24px 20px 22px;
+            min-height: 44px;
+        }
+
+        #chat.theme-gs .icon-box {
+            flex: 0 0 auto;
+            margin-right: 8px;
+            image-rendering: pixelated;
+            z-index: 2;
+        }
+
+        #chat.theme-gs .msg-box img.badge {
+            height: 0.8em;
+            vertical-align: 0px;
+        }
+
         /* ---- Shared ---- */
 
         #chat img.badge {
@@ -640,7 +669,7 @@
         #chat ul.fade-expire li.expiring { opacity: 0 !important; }
 
         #chat ul.align-default li { width: 100%; max-width: none; }
-        #chat.theme-pmd ul.align-default .msg-box { flex: 1 1 auto; }
+        #chat.theme-pmd ul.align-default .msg-box, #chat.theme-gs ul.align-default .msg-box { flex: 1 1 auto; }
 
         #chat ul.align-center li     { margin-left: auto; margin-right: auto; }
         #chat ul.align-right li      { margin-left: auto; margin-right: 0; }
@@ -1255,6 +1284,56 @@
             portrait: true,
             tuner: ["userPortrait"]
         },
+        gs: {
+            key: "gs",
+            label: "Golden Sun",
+            atlas: null,
+            data: null,
+            boxAtlas: "assets/themes/gs/box/box.png",
+            boxSlices: { l: 7, r: 7, t: 7, b: 7 },
+            boxScale: 2,
+            fontFamily: "GoldenSunItalics",
+            fontStack: "'Zpix', monospace",
+            fontSize: 28,
+            lineHeight: 28,
+            bodyColor: "#ffffff",
+            usernameColor: "#f4f1ea",
+            textShadow: "2px 2px 0 #000",
+            drawMode: "box",
+            windowBorder: 0,
+            userRows: null,
+            mapApostrophe: false,
+            inlineName: true,
+            iconImage: "assets/themes/gs/box/icon.png",
+            iconSlices: { l: 4, r: 4, t: 4, b: 4 },
+            iconBoxCss: 80,
+            iconPortraitCss: 64,
+            portraitBase: "assets/themes/gs/portrait/",
+            portraitNames: [
+                "aaron", "agatio", "akafubu", "alex", "armorer-2", "armorer",
+                "babi", "briggs", "champan-general-store", "chaucha", "conservato",
+                "dodonpa", "donpa", "dora", "elder-of-madra", "elder-of-prox",
+                "eoleo", "faran", "feizhi", "felix-and-jennas-dad",
+                "felix-and-jennas-mom", "felix-w-mask", "felix", "garet",
+                "garets-grandma", "garets-grandpa", "great-healer", "healer",
+                "herbalist-2", "herbalist", "hsu", "innkeeper", "innkeepers-wife",
+                "iodem", "isaac", "ivan", "jenna", "jupiter-djinn", "kaja", "karst",
+                "kay", "kraden", "kushinada", "kyle", "lady-mccoy", "laurel",
+                "lord-hammet", "maha", "mars-djinn", "master-hama", "master-poi",
+                "mayor-of-alhafra", "mayor-of-madra", "menardi", "mercury-djinn",
+                "mia", "moapa", "mr-jerra", "ms-jerra", "nariwabes-teller", "nyumpa",
+                "obaba", "piers", "puelle", "riki", "saturos", "shaman-villages-teller",
+                "sheba", "sunshine", "susa", "tavi", "tret-1", "tret-2", "uzume",
+                "venus-djinn", "weaponeer-2", "weaponeer", "young-garet",
+                "young-isaac", "young-jenna"
+            ],
+            portraitImage: "assets/themes/gs/portrait/aaron.png",
+            portrait: true,
+            portraitFiles: true,
+            squarePortrait: true,
+            iconBoxPortrait: true,
+            tuner: ["userPortrait"]
+        },
         mc: {
             key: "mc",
             label: "The Legend of Zelda: The Minish Cap",
@@ -1321,6 +1400,7 @@
             portraitImage: "assets/themes/pmd/portrait/0001/Normal.png",
             portrait: true,
             portraitFiles: true,
+            portraitGen: true,
             squarePortrait: true,
             iconBoxPortrait: true,
             defaultBoxStyle: "classic",
@@ -1780,7 +1860,7 @@
         }
         /* File-based portrait themes (pmd) list every root folder's Normal.png;
            the shiny variant lives one level deeper at 0000/0001/Normal.png. */
-        if (currentTheme && currentTheme.portraitFiles && PMD_PORTRAIT_NAMES) {
+        if (currentTheme && currentTheme.portraitGen && PMD_PORTRAIT_NAMES) {
             PORTRAITS = [];
             for (var pfi = 0; pfi < PMD_PORTRAIT_NAMES.length; pfi++) {
                 var pnum = String(pfi + 1);
@@ -1800,6 +1880,19 @@
                         "assets/themes/pmd/portrait/" + pnum + "/0000/0001/Normal.png",
                     w: 40,
                     h: 40
+                });
+            }
+        }
+        /* Generic file-based portrait deck: one PNG per name under portraitBase. */
+        if (currentTheme && currentTheme.portraitNames) {
+            PORTRAITS = [];
+            for (var gni = 0; gni < currentTheme.portraitNames.length; gni++) {
+                var gname = currentTheme.portraitNames[gni];
+                PORTRAITS.push({
+                    name: gname,
+                    src: (currentTheme.portraitBase || "") + gname + ".png",
+                    w: currentTheme.portraitW || 32,
+                    h: currentTheme.portraitH || 32
                 });
             }
         }
@@ -3081,7 +3174,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "acww", "ct", "ff7", "ff8", "fft", "mc", "mmbn1", "pmd"];
+    var THEME_ORDER = ["default", "acww", "ct", "ff7", "ff8", "fft", "gs", "mc", "mmbn1", "pmd"];
     var themeIndex = 0;
     var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
@@ -3155,7 +3248,7 @@
     }
 
     function humanizeName(name) {
-        return name.replace(/_/g, " ").replace(/(^|[^\w'’])(\w)/g, function (m, p, c) { return p + c.toUpperCase(); });
+        return name.replace(/[_-]/g, " ").replace(/(^|[^\w'’])(\w)/g, function (m, p, c) { return p + c.toUpperCase(); });
     }
 
     function boxStyleLabel(name) {
@@ -3267,27 +3360,31 @@
     }
 
     /* Draws the file-based portrait icon box left of the message box for themes
-       that have no atlas (pmd): the frame PNG is downscaled to a fixed CSS size
-       and the 40px portrait is painted 2x (80 css px), slightly inset. */
+       with iconBoxPortrait: the frame PNG is nine-sliced into a fixed CSS size
+       and the portrait is painted inside it. Icon box size, slices and portrait
+       footprint come from the theme (pmd defaults keep its original look). */
     var ICON_BOX_CSS = 96;
     var PORTRAIT_CSS = 80;
 
     function drawIconBox(canvas, iconOverride, portraitOverride) {
         if (!canvas) return false;
-        canvas.width = ICON_BOX_CSS * PIXEL_SCALE;
-        canvas.height = ICON_BOX_CSS * PIXEL_SCALE;
-        canvas.style.width = ICON_BOX_CSS + "px";
-        canvas.style.height = ICON_BOX_CSS + "px";
+        var boxCss = currentTheme.iconBoxCss || ICON_BOX_CSS;
+        var portraitCss = currentTheme.iconPortraitCss || PORTRAIT_CSS;
+        canvas.width = boxCss * PIXEL_SCALE;
+        canvas.height = boxCss * PIXEL_SCALE;
+        canvas.style.width = boxCss + "px";
+        canvas.style.height = boxCss + "px";
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         var srcIcon = iconOverride || iconImg;
         if (!srcIcon || !srcIcon.complete || !srcIcon.naturalWidth) return false;
         ctx.imageSmoothingEnabled = false;
         var boxScale = (currentTheme.boxScale || 0.5) * PIXEL_SCALE;
-        drawNineSlice(ctx, srcIcon, { l: 20, r: 20, t: 20, b: 20 }, boxScale,
+        var slices = currentTheme.iconSlices || { l: 20, r: 20, t: 20, b: 20 };
+        drawNineSlice(ctx, srcIcon, slices, boxScale,
             canvas.width, canvas.height);
-        var pw = PORTRAIT_CSS * PIXEL_SCALE;
-        var ph = PORTRAIT_CSS * PIXEL_SCALE;
+        var pw = portraitCss * PIXEL_SCALE;
+        var ph = portraitCss * PIXEL_SCALE;
         var px = Math.round((canvas.width - pw) / 2);
         var py = Math.round((canvas.height - ph) / 2);
         if (portraitOverride) {
@@ -3468,7 +3565,7 @@
            readable; the arrows cycle with wrap-around and reset the scroll. */
         portraitGenIndex = 0;
         portraitGenLabel = null;
-        if (currentTheme && currentTheme.portraitFiles && PMD_PORTRAIT_GENS && PMD_PORTRAIT_GENS.length > 1) {
+        if (currentTheme && currentTheme.portraitGen && PMD_PORTRAIT_GENS && PMD_PORTRAIT_GENS.length > 1) {
             var genRow = document.createElement("div");
             genRow.className = "portrait-gen-row";
             var genPrev = document.createElement("button");
@@ -3534,7 +3631,7 @@
 
         /* File-based themes page the deck by generation; atlas themes show their
            whole (small) list and never build a gen row. */
-        var genFilter = (currentTheme && currentTheme.portraitFiles) ? portraitGenIndex + 1 : 0;
+        var genFilter = (currentTheme && currentTheme.portraitGen) ? portraitGenIndex + 1 : 0;
         if (portraitGenLabel && PMD_PORTRAIT_GENS) {
             portraitGenLabel.textContent = "Gen " + genFilter +
                 " (" + genFilter + "/" + PMD_PORTRAIT_GENS.length + ")";
