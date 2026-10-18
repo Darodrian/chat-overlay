@@ -66,7 +66,6 @@
 		}
 	},
 
-
 	"9825": {
 		"x": 540,
 		"w": 11,
@@ -483,3 +482,19 @@
 		"h": 12
 	}
 };
+
+var THEME_CT = {
+        key: "ct",
+        label: "Chrono Trigger",
+        atlas: "assets/themes/ct/ct-font.png",
+        data: (typeof THEME_DATA_CT === "object" && THEME_DATA_CT) ? THEME_DATA_CT : null,
+        windowBorder: 8,
+        drawMode: "style",
+        userRows: null,
+        mapApostrophe: false,
+        fontFamily: "ChronoType",
+        fontSize: 32,
+        lineHeight: 32,
+        textShadow: "2px 2px 0 #000",
+        tuner: ["windowStyle"]
+    };

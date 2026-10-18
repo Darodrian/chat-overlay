@@ -652,3 +652,24 @@
 		"h": 15
 	}
 };
+
+var THEME_MINISHCAP = {
+        key: "mc",
+        label: "The Legend of Zelda: The Minish Cap",
+        atlas: "assets/themes/minishcap/minishcap-font.png",
+        boxAtlas: "assets/themes/minishcap/minishcap-blank.png",
+        data: (typeof THEME_DATA_MINISHCAP === "object" && THEME_DATA_MINISHCAP) ? THEME_DATA_MINISHCAP : null,
+        windowBorder: 0,
+        drawMode: "box",
+        userRows: null,
+        mapApostrophe: true,
+        fontFamily: "MinishType",
+        fontStack: "'ZpixBig', monospace",
+        atlasFallback: "#$%&()*+/:;<=>?@[]^_`{|}~",
+        zpixFallback: "&\\",
+        fontSize: 16,
+        lineHeight: 32,
+        continueArrow: true,
+        inlineName: true,
+        boxBands: { top: 5 / 48, bot: 5 / 48 }
+    };

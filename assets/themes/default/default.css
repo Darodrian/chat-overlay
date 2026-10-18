@@ -1,0 +1,45 @@
+#chat.theme-default {
+    color: var(--ff-text);
+    text-shadow: 2px 0 0 rgba(0,0,0,0.85), -2px 0 0 rgba(0,0,0,0.85),
+                 0 2px 0 rgba(0,0,0,0.85), 0 -2px 0 rgba(0,0,0,0.85);
+}
+
+#chat.theme-default li {
+    padding: 12px 4px;
+    font-size: 24px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    border-bottom: 2px dashed rgba(200, 170, 110, 0.35);
+}
+
+#chat.theme-default .user {
+    color: var(--ff-username);
+}
+
+#chat.theme-default .user.mod {
+    color: var(--ff-mod);
+}
+
+#chat.theme-default .user.sub {
+    color: var(--ff-sub);
+}
+
+#chat.theme-default .user.vip {
+    color: var(--ff-vip);
+}
+
+#chat.theme-default blockquote {
+    margin: 8px 0 0 28px;
+    color: var(--ff-text);
+}
+
+#chat.theme-default .timestamp {
+    color: var(--ff-timestamp);
+    font-size: 24px;
+    margin-left: 12px;
+}
+
+#chat.theme-default img.emote {
+    height: 2em;
+}

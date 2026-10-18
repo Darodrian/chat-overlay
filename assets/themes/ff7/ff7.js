@@ -1,4 +1,4 @@
-﻿var THEME_DATA_FF7 = 
+﻿var THEME_DATA_FF7 =
 {
     "height":  16,
     "origin":  {
@@ -813,3 +813,18 @@
              }
 };
 
+var THEME_FF7 = {
+        key: "ff7",
+        label: "Final Fantasy VII",
+        atlas: "assets/themes/ff7/ff7-font.png",
+        data: (typeof THEME_DATA_FF7 === "object" && THEME_DATA_FF7) ? THEME_DATA_FF7 : null,
+        windowBorder: 4,
+        drawMode: "border",
+        userRows: null,
+        mapApostrophe: true,
+        fontFamily: "Reactor7",
+        fontStack: "'Zpix', monospace",
+        fontSize: 32,
+        lineHeight: 32,
+        textShadow: "2px 2px 0 #000",
+    };

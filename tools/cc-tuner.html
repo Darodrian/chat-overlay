@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chrono Cross box tuner</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font: 12px/1.45 system-ui, "Segoe UI", sans-serif;
+    background: #16181d; color: #dfe3ea;
+    display: flex;
+  }
+  #panel { width: 440px; min-width: 440px; overflow: auto; padding: 12px 12px 40px;
+           border-right: 1px solid #2b2f37; background: #1b1e24; }
+  #stage { flex: 1; overflow: auto; padding: 16px; display: flex; flex-direction: column;
+           gap: 12px; align-items: flex-start; }
+  h1 { font-size: 14px; margin: 0 0 4px; }
+  .sub { color: #8a93a2; margin: 0 0 12px; }
+  h2 { font-size: 11px; margin: 16px 0 6px; color: #8fb3ff;
+       text-transform: uppercase; letter-spacing: .07em; }
+  fieldset { border: 1px solid #2b2f37; border-radius: 6px; margin: 0 0 10px; padding: 8px 8px 10px; }
+  legend { padding: 0 4px; color: #9aa4b2; font-size: 11px; }
+  .row { display: flex; align-items: center; gap: 6px; margin: 3px 0; flex-wrap: wrap; }
+  .row > label { flex: 0 0 60px; color: #9aa4b2; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .grid4 .cell { display: flex; flex-direction: column; gap: 2px; }
+  .grid4 .cell span { color: #7f8898; font-size: 10px; text-align: center; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+  input[type=number] { width: 100%; background: #0f1116; color: #e6e9ef;
+    border: 1px solid #333a45; border-radius: 4px; padding: 3px 18px 3px 5px; font: inherit; }
+  input[type=number]:focus { outline: 1px solid #4c7dff; border-color: #4c7dff; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 68px; resize: vertical;
+    background: #0f1116; color: #e6e9ef; border: 1px solid #333a45; border-radius: 4px;
+    padding: 5px; font: 12px/1.45 ui-monospace, Consolas, monospace; }
+  textarea:focus { outline: 1px solid #4c7dff; border-color: #4c7dff; }
+  select { width: 100%; background: #0f1116; color: #e6e9ef; border: 1px solid #333a45;
+           border-radius: 4px; padding: 4px; font: inherit; }
+  button { background: #2a3140; color: #e6e9ef; border: 1px solid #3a4356;
+           border-radius: 5px; padding: 5px 9px; cursor: pointer; font: inherit; }
+  button:hover { background: #333c4e; }
+  button.primary { background: #2c4a8f; border-color: #3f63b8; }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; }
+  .checks label { display: flex; align-items: center; gap: 5px; color: #c3cad6; }
+  details { border: 1px solid #2b2f37; border-radius: 6px; margin: 0 0 6px; padding: 6px 8px; }
+  details summary { cursor: pointer; color: #c3cad6; }
+  details .grid4 { margin-top: 6px; }
+  #out { white-space: pre; font: 11px/1.4 ui-monospace, Consolas, monospace;
+         background: #0f1116; border: 1px solid #333a45; border-radius: 5px;
+         padding: 8px; max-height: 240px; overflow: auto; user-select: text; }
+  #readout { white-space: pre; font: 11px/1.4 ui-monospace, Consolas, monospace;
+             color: #a9e0b1; background: #0f1116; border: 1px solid #333a45;
+             border-radius: 5px; padding: 8px; }
+  .wrap { position: relative; display: inline-block; line-height: 0; }
+  .wrap::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(45deg, #23262d 25%, transparent 25%, transparent 75%, #23262d 75%) 0 0 / 16px 16px,
+      linear-gradient(45deg, #23262d 25%, transparent 25%, transparent 75%, #23262d 75%) 8px 8px / 16px 16px,
+      #191b20;
+  }
+  .ctcRow { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .ctcRow canvas, #arrowPrev { image-rendering: pixelated; background: #101216; border: 1px solid #2b2f37; }
+  .ctcFrame { display: flex; flex-direction: column; gap: 3px; }
+  .ctcFrame .grid4 { width: 300px; }
+  .hint { color: #7f8898; }
+  input[type=text] { width: 100%; background: #0f1116; color: #e6e9ef;
+    border: 1px solid #333a45; border-radius: 4px; padding: 3px 5px; font: inherit; }
+  input[type=text]:focus { outline: 1px solid #4c7dff; border-color: #4c7dff; }
+
+  @font-face { font-family: 'ChronoCross'; src: url('../assets/fonts/ChronoCross.woff2') format('woff2'); font-display: swap; }
+  @font-face { font-family: 'Zpix'; src: url('../assets/fonts/zpix.woff2') format('woff2'); font-display: swap; }
+  #previewOuter { display: inline-block; }
+  #preview { position: relative; display: inline-block; transform-origin: top left; padding: 24px;
+    background:
+      linear-gradient(45deg, #23262d 25%, transparent 25%, transparent 75%, #23262d 75%) 0 0 / 16px 16px,
+      linear-gradient(45deg, #23262d 25%, transparent 25%, transparent 75%, #23262d 75%) 8px 8px / 16px 16px,
+      #191b20; }
+  #chat.theme-cc {
+    color: var(--ui-body-color, #ffffff);
+    font-family: var(--ui-font, inherit);
+    text-shadow: var(--ui-text-shadow, none);
+    -webkit-font-smoothing: none;
+    text-rendering: geometricPrecision;
+  }
+  #chat.theme-cc ul { list-style: none; padding: 0; margin: 0; }
+  #chat.theme-cc li {
+    display: flex; flex-direction: column; width: max-content;
+    max-width: var(--cc-cap, 550px); box-sizing: border-box;
+    background: transparent; border: none; position: relative;
+  }
+  #chat.theme-cc .window-bg { position: absolute; top: 0; left: 0; display: block;
+    image-rendering: pixelated; z-index: 0; }
+  #chat.theme-cc .msg-box {
+    position: relative; z-index: 1; background: transparent;
+    box-sizing: content-box;
+    padding: var(--cc-pt, 28px) var(--cc-pr, 30px) var(--cc-pb, 26px) var(--cc-pl, 126px);
+    min-height: 96px;
+  }
+  #chat.theme-cc .msg-box .portrait { position: absolute;
+    left: var(--cc-px, 24px); top: var(--cc-py, 22px);
+    width: var(--cc-pw, 96px); height: var(--cc-ph, 96px);
+    image-rendering: auto; z-index: 2; }
+  #chat.theme-cc .msg-header { display: flex; flex-wrap: wrap; align-items: center; margin: 0 0 2px 0; }
+  #chat.theme-cc .msg-header .username { margin-bottom: 0; }
+  #chat.theme-cc .msg-box .username { color: var(--ui-user-color, #f4f1ea);
+    font-size: var(--ui-fs, 24px); line-height: var(--ui-lh, 32px);
+    display: flex; flex-wrap: wrap; align-items: center; word-break: break-word; }
+  #chat.theme-cc .msg-header .username::after { content: ":"; }
+  #chat.theme-cc .msg-box .message-text { margin: 0;
+    color: var(--ui-body-color, #ffffff);
+    font-size: var(--ui-fs, 24px); line-height: var(--ui-lh, 32px);
+    white-space: normal; word-break: break-word; }
+</style>
+
+</head>
+<body>
+
+<div id="panel">
+  <h1>Chrono Cross box tuner</h1>
+  <p class="sub">Dev tool. Reuses the app's exact compositor. Tune a style, then <b>Copy spec</b> and paste into <code>assets/themes/cc/cc.js</code>.</p>
+
+  <fieldset>
+    <legend>Style</legend>
+    <select id="styleSel"></select>
+    <div class="row" style="margin-top:6px">
+      <label>Art set</label>
+      <select id="setSel" style="flex:1"></select>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <label>Scale</label><input type="number" id="scale" value="1" step="0.25" style="width:96px">
+      <label style="flex:0 0 auto">Zoom</label><input type="number" id="zoom" value="2" step="1" min="1" max="8" style="width:96px">
+    </div>
+    <div class="row" style="margin-top:6px">
+      <span class="hint" id="geoStatus">geometry: loading…</span>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Overlays</legend>
+    <div class="checks">
+      <label><input type="checkbox" id="gCorner" checked> corner rects</label>
+      <label><input type="checkbox" id="gTile" checked> edge tiling</label>
+      <label><input type="checkbox" id="gWall" checked> wall</label>
+      <label><input type="checkbox" id="gContent" checked> content + portrait</label>
+      <label><input type="checkbox" id="gPortrait" checked> portrait on</label>
+      <label><input type="checkbox" id="gBoxSize"> min box size</label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Crop (trim)</legend>
+    <div class="grid2">
+      <div class="cell"><span>top</span><input type="number" id="trimTIn" step="1" min="0"></div>
+      <div class="cell"><span>bottom</span><input type="number" id="trimBIn" step="1" min="0"></div>
+    </div>
+    <p class="hint">Pixels cut off the top and bottom of the frame. The message loses
+      exactly this much height; the art is cropped, not re-flowed.</p>
+  </fieldset>
+
+  <h2>Edge offset (eo)</h2>
+  <div class="grid4" id="eoBox"></div>
+
+  <h2>Seam overlap / corner bleed</h2>
+  <div class="grid2">
+    <div class="cell"><span>ov</span><input type="number" id="ovIn" step="1"></div>
+    <div class="cell"><span>bleed</span><input type="number" id="bleedIn" step="1"></div>
+  </div>
+  <div class="grid2" style="margin-top:4px">
+    <div class="cell"><span>scaleSnap</span><select id="scaleSnapSel"><option value="round">round</option><option value="floor">floor</option><option value="ceil">ceil</option></select></div>
+  </div>
+  <label style="display:flex;align-items:center;gap:6px;margin-top:6px"
+         title="Center fill starts at the wall line instead of the edge canvas inset">
+    <input type="checkbox" id="centerFromWallIn"> centerFromWall
+  </label>
+
+  <h2>Wall / content inset (wall)</h2>
+  <div class="grid4" id="wallBox"></div>
+
+  <h2>Content box (portrait + text)</h2>
+  <div class="grid4" id="portraitBox"></div>
+  <div class="grid4" id="contentBox"></div>
+
+  <h2>Corner offset (co)</h2>
+  <div id="coBox"></div>
+
+  <h2>Part content rects</h2>
+  <div id="partsBox"></div>
+
+  <h2>Computed</h2>
+  <div id="readout"></div>
+
+  <h2>Spec output</h2>
+  <div class="row" style="margin-bottom:6px">
+    <button class="primary" id="copyBtn">Copy spec</button>
+    <button id="resetBtn">Reset style</button>
+  </div>
+  <div class="row" style="margin-bottom:6px">
+    <button id="exportBtn">Export…</button>
+    <button id="importBtn">Import…</button>
+    <button id="clearSavedBtn">Clear saved</button>
+    <input type="file" id="importFile" accept="application/json,.json" style="display:none">
+  </div>
+  <textarea id="pasteJson" placeholder='Paste a full Export payload, or a style map like {"style3": { ... }}, or a bare spec from Copy spec'></textarea>
+  <div class="row" style="margin-bottom:6px">
+    <button id="pasteApplyBtn">Apply pasted JSON</button>
+  </div>
+  <div id="out"></div>
+</div>
+
+<div id="stage">
+  <div>
+    <h2 style="margin-top:0">Preview message</h2>
+    <div class="row">
+      <label style="flex:0 0 auto">Name</label>
+      <input type="text" id="pvName" value="Serge" style="width:130px">
+      <label style="flex:0 0 auto">Box cap</label>
+      <input type="number" id="pvCap" value="550" step="10" style="width:80px">
+    </div>
+    <textarea id="pvText" rows="3" style="margin:4px 0 8px">Swapping the box parts in is finally easy. This line is long enough to wrap onto a second row so you can see where the text really lands.</textarea>
+    <div id="previewOuter">
+      <div id="preview">
+        <div id="chat" class="theme-cc"><ul>
+          <li id="pvLi">
+            <canvas class="window-bg" id="pvBg"></canvas>
+            <div class="msg-box" id="pvBox">
+              <canvas class="portrait" id="pvPortrait"></canvas>
+              <div class="msg-header" id="pvHeader"><span class="user username" id="pvUser">Serge</span></div>
+              <blockquote class="message-text" id="pvTextEl"></blockquote>
+            </div>
+          </li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2 style="margin-top:0">Continue arrow (ctc)</h2>
+    <div class="row">
+      <label>Scale</label><input type="number" id="arrowScaleIn" value="1" step="0.25" style="width:84px">
+      <label style="flex:0 0 auto">X</label><input type="number" id="arrowXIn" value="0" step="1" style="width:76px">
+      <label style="flex:0 0 auto">Y</label><input type="number" id="arrowYIn" value="8" step="1" style="width:76px">
+    </div>
+    <div class="row" style="margin-top:6px">
+      <label style="display:flex;align-items:center;gap:6px;flex:0 0 auto">
+        <input type="checkbox" id="arrowBlinkIn"> blink
+      </label>
+      <label style="flex:0 0 auto">ms</label><input type="number" id="arrowBlinkMsIn" value="400" step="50" style="width:84px">
+    </div>
+    <p class="hint">A single-frame ctc can blink on/off. The app ignores this when
+      the style ships more than one frame — those cycle instead.</p>
+    <canvas id="arrowPrev" width="240" height="96" style="display:block;margin:6px 0"></canvas>
+    <div class="ctcRow" id="ctcRow"></div>
+  </div>
+</div>
+
+<script src="../assets/themes/cc/cc.js"></script>
+<script>
+
+const PART_KEYS = ["tl", "t", "tr", "l", "c", "r", "bl", "b", "br"];
+const SIDES = ["t", "b", "l", "r"];
+const CORNERS = ["tl", "tr", "bl", "br"];
+
+function drawCcBoxParts(ctx, parts, w, h, scale) {
+  if (!parts || !parts.def || w <= 0 || h <= 0) return;
+  var s = (typeof scale === "number" && scale > 0) ? scale : 1;
+  var def = parts.def;
+  var smoothing = ctx.imageSmoothingEnabled;
+  var bleed = (typeof def.bleed === "number" ? def.bleed : 0) * s;
+  var trim = def.trim || null;
+  var trimT = trim ? Math.max(0, Math.round(trim.t || 0)) : 0;
+  var trimB = trim ? Math.max(0, Math.round(trim.b || 0)) : 0;
+  if (bleed || trimT || trimB) {
+    ctx.save();
+    ctx.translate(bleed, bleed - trimT);
+    w -= 2 * bleed;
+    h += trimT + trimB - 2 * bleed;
+  }
+  if (s < 1) ctx.imageSmoothingEnabled = true;
+  function ready(k) {
+    var i = parts.imgs[k];
+    return !!(def[k] && i && i.complete && i.naturalWidth);
+  }
+  var wall = def.wall || {};
+
+  var scaleSnap = def.scaleSnap;
+  function snap(v) {
+    var n = v * s;
+    if (typeof scaleSnap === "string") {
+      if (scaleSnap === "floor") return Math.floor(n + 1e-12);
+      if (scaleSnap === "ceil") return Math.ceil(n - 1e-12);
+    }
+    return Math.max(1, Math.round(n));
+  }
+  function snap0(v) {
+    var n = v * s;
+    if (typeof scaleSnap === "string") {
+      if (scaleSnap === "floor") return Math.floor(n + 1e-12);
+      if (scaleSnap === "ceil") return Math.ceil(n - 1e-12);
+    }
+    return Math.max(0, Math.round(n));
+  }
+  if (scaleSnap == null) scaleSnap = "round";
+
+  var tlW = snap(def.tl.w), tlH = snap(def.tl.h);
+  var trW = snap(def.tr.w), trH = snap(def.tr.h);
+  var blW = snap(def.bl.w), blH = snap(def.bl.h);
+  var brW = snap(def.br.w), brH = snap(def.br.h);
+
+  var edgeTSrc = def.t.w, edgeBSrc = def.b.w;
+  var edgeLSrc = def.l.h, edgeRSrc = def.r.h;
+  var edgeTH = snap0(def.t.h);
+  var edgeBH = snap0(def.b.h);
+  var edgeLW = snap0(def.l.w);
+  var edgeRW = snap0(def.r.w);
+
+  var insetT = edgeTH, insetB = edgeBH, insetL = edgeLW, insetR = edgeRW;
+  if (def.centerFromWall === true) {
+    insetT = snap0(typeof wall.t === "number" ? wall.t : def.t.h);
+    insetB = snap0(typeof wall.b === "number" ? wall.b : def.b.h);
+    insetL = snap0(typeof wall.l === "number" ? wall.l : def.l.w);
+    insetR = snap0(typeof wall.r === "number" ? wall.r : def.r.w);
+  }
+  var remW = w - insetL - insetR;
+  var remH = h - insetT - insetB;
+  var iw = remW, ih = remH;
+  if (iw > 0 && ih > 0 && ready("c")) {
+    var cr = def.c, ci = parts.imgs.c;
+    var ccw = snap(cr.w), cch = snap(cr.h);
+    if (ccw <= 0) ccw = snap0(cr.w);
+    if (cch <= 0) cch = snap0(cr.h);
+    if (ccw > 0 && cch > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(insetL, insetT, iw, ih);
+      ctx.clip();
+      for (var cy = 0; cy < ih; cy += cch) {
+        for (var cx = 0; cx < iw; cx += ccw) {
+          ctx.drawImage(ci, cr.x, cr.y, cr.w, cr.h,
+            insetL + cx, insetT + cy, ccw, cch);
+        }
+      }
+      ctx.restore();
+    }
+  }
+
+  function tileHGapless(k, srcW, srcH, dx, dy, dw) {
+    var r = def[k];
+    if (!ready(k) || dw <= 0) return;
+    var tw = snap0(srcW);
+    var th = snap0(srcH);
+    if (tw <= 0) tw = snap0(r.w);
+    if (th <= 0) th = snap0(r.h);
+    if (tw <= 0) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(dx, dy, dw, th);
+    ctx.clip();
+    for (var x = 0; x < dw; x += tw) {
+      ctx.drawImage(parts.imgs[k], r.x, r.y, r.w, r.h,
+        dx + x, dy, tw, th);
+    }
+    ctx.restore();
+  }
+  function tileVGapless(k, srcW, srcH, dx, dy, dh) {
+    var r = def[k];
+    if (!ready(k) || dh <= 0) return;
+    var tw = snap0(srcW);
+    var th = snap0(srcH);
+    if (tw <= 0) tw = snap0(r.w);
+    if (th <= 0) th = snap0(r.h);
+    if (th <= 0) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(dx, dy, tw, dh);
+    ctx.clip();
+    for (var y = 0; y < dh; y += th) {
+      ctx.drawImage(parts.imgs[k], r.x, r.y, r.w, r.h,
+        dx, dy + y, tw, th);
+    }
+    ctx.restore();
+  }
+  var eo = def.eo || { t: 0, b: 0, l: 0, r: 0 };
+  var eot = snap0(eo.t), eob = snap0(eo.b), eol = snap0(eo.l), eor = snap0(eo.r);
+  var ov = snap0((typeof def.ov === "number" ? def.ov : 0));
+  var runW = (w - tlW - trW) + 2 * ov;
+  var runH = (h - tlH - blH) + 2 * ov;
+  tileHGapless("t", edgeTSrc, def.t.h, tlW - ov, eot, runW);
+  tileHGapless("b", edgeBSrc, def.b.h, blW - ov, (h - edgeBH) + eob, runW);
+  tileVGapless("l", def.l.w, edgeLSrc, eol, tlH - ov, runH);
+  tileVGapless("r", def.r.w, edgeRSrc, (w - edgeRW) + eor, trH - ov, runH);
+
+  var co = def.co || null;
+  function corner(k, dx, dy) {
+    var r = def[k];
+    if (!ready(k)) return;
+    var o = co && co[k];
+    if (o) { dx += (o.dx || 0) * s; dy += (o.dy || 0) * s; }
+    ctx.drawImage(parts.imgs[k], r.x, r.y, r.w, r.h, dx, dy, r.w * s, r.h * s);
+  }
+  corner("tl", 0, 0);
+  corner("tr", w - trW, 0);
+  corner("bl", 0, h - blH);
+  corner("br", w - brW, h - brH);
+
+  if (s < 1) ctx.imageSmoothingEnabled = smoothing;
+  if (bleed || trimT || trimB) ctx.restore();
+}
+
+function computeInset(spec, ccs) {
+  var pad = spec.pad || 16;
+  var wall = spec.wall;
+  var T = Math.round((wall ? wall.t : pad) * ccs);
+  var B = Math.round((wall ? wall.b : pad) * ccs);
+  var L = Math.round((wall ? wall.l : pad) * ccs);
+  var R = Math.round((wall ? wall.r : pad) * ccs);
+  var c = spec.content;
+  var Px, Py, Ps, pl, pt, pr, pb;
+  if (c) {
+    Px = c.px; Py = c.py; Ps = c.ps;
+    pl = c.pl; pt = c.pt; pr = c.pr; pb = c.pb;
+  } else {
+    Px = L + 6; Py = T + 4; Ps = 96;
+    pl = Px + Ps + 12; pt = Py; pr = R + 14; pb = B + 6;
+  }
+  var cornerW = Math.max(spec.tl.w, spec.tr.w);
+  var stackH = Math.max(spec.tl.h + spec.bl.h, spec.tr.h + spec.br.h);
+  return {
+    pad: pad, T: T, B: B, L: L, R: R, Px: Px, Py: Py, Ps: Ps,
+    pl: pl, pt: pt, pr: pr, pb: pb,
+    minW: 2 * cornerW,
+    minH: Math.max(Ps, stackH - Py - pb),
+    stackH: stackH
+  };
+}
+
+function seedContent(s) {
+  if (s.content) return;
+  var ins = computeInset(s, typeof s.scale === "number" ? s.scale : 1);
+  s.content = { px: ins.Px, py: ins.Py, ps: ins.Ps, pl: ins.pl, pt: ins.pt, pr: ins.pr, pb: ins.pb };
+}
+
+const imgCache = {};
+const els = {
+  styleSel: document.getElementById("styleSel"),
+  setSel: document.getElementById("setSel"),
+  scale: document.getElementById("scale"), zoom: document.getElementById("zoom"),
+  gCorner: document.getElementById("gCorner"), gTile: document.getElementById("gTile"),
+  gWall: document.getElementById("gWall"), gContent: document.getElementById("gContent"),
+  gPortrait: document.getElementById("gPortrait"), gBoxSize: document.getElementById("gBoxSize"),
+  eoBox: document.getElementById("eoBox"), wallBox: document.getElementById("wallBox"),
+  portraitBox: document.getElementById("portraitBox"), contentBox: document.getElementById("contentBox"),
+  coBox: document.getElementById("coBox"), partsBox: document.getElementById("partsBox"),
+  ovIn: document.getElementById("ovIn"), bleedIn: document.getElementById("bleedIn"),
+  trimTIn: document.getElementById("trimTIn"), trimBIn: document.getElementById("trimBIn"),
+  scaleSnapSel: document.getElementById("scaleSnapSel"),
+  centerFromWallIn: document.getElementById("centerFromWallIn"),
+  readout: document.getElementById("readout"), out: document.getElementById("out"),
+  copyBtn: document.getElementById("copyBtn"), resetBtn: document.getElementById("resetBtn"),
+  exportBtn: document.getElementById("exportBtn"), importBtn: document.getElementById("importBtn"),
+  importFile: document.getElementById("importFile"), clearSavedBtn: document.getElementById("clearSavedBtn"),
+  pasteJson: document.getElementById("pasteJson"), pasteApplyBtn: document.getElementById("pasteApplyBtn"),
+  arrowScaleIn: document.getElementById("arrowScaleIn"),
+  arrowXIn: document.getElementById("arrowXIn"), arrowYIn: document.getElementById("arrowYIn"),
+  arrowPrev: document.getElementById("arrowPrev"),
+  arrowBlinkIn: document.getElementById("arrowBlinkIn"),
+  arrowBlinkMsIn: document.getElementById("arrowBlinkMsIn"),
+  ctcRow: document.getElementById("ctcRow"),
+  geoStatus: document.getElementById("geoStatus"),
+  pvName: document.getElementById("pvName"), pvCap: document.getElementById("pvCap"),
+  pvText: document.getElementById("pvText"), pvChat: document.getElementById("chat"),
+  pvPreview: document.getElementById("preview"), pvPreviewOuter: document.getElementById("previewOuter"),
+  pvLi: document.getElementById("pvLi"), pvBox: document.getElementById("pvBox"),
+  pvBg: document.getElementById("pvBg"), pvPortrait: document.getElementById("pvPortrait"),
+  pvUser: document.getElementById("pvUser"), pvTextEl: document.getElementById("pvTextEl")
+};
+
+let current = "style3";
+let curSet = "1999";
+let CC_STYLES = null;
+let DEFAULTS = null;
+const PORTRAIT_SRC = "../assets/themes/cc/portrait/1999/glenn.png";
+const PORTRAIT_CSS = 96, PORTRAIT_SCALE = 2;
+let portraitImg = null;
+
+function styleSets(name) { return Object.keys(CC_STYLES[name] || {}); }
+function spec() { return CC_STYLES[current][curSet]; }
+
+function syncSetSel() {
+  const sets = styleSets(current);
+  if (sets.indexOf(curSet) < 0) curSet = sets[0];
+  els.setSel.innerHTML = "";
+  sets.forEach(function (name) {
+    const o = document.createElement("option");
+    o.value = name; o.textContent = name;
+    els.setSel.appendChild(o);
+  });
+  els.setSel.value = curSet;
+}
+
+function loadImages(name, cb) {
+  const s = CC_STYLES[name][curSet];
+  if (imgCache[s.dir]) { cb(imgCache[s.dir]); return; }
+  const entry = { imgs: {}, ctc: [], ctcRects: [] };
+  const base = "../" + s.dir;
+  const files = PART_KEYS.map(k => ({ key: k, file: base + k + ".png" }));
+  s.ctc.forEach((c, i) => {
+    entry.ctcRects[i] = { x: c.x, y: c.y, w: c.w, h: c.h };
+    files.push({ key: "ctc" + i, file: base + c.file });
+  });
+  let pending = files.length;
+  function done() { if (--pending <= 0) cb(entry); }
+  files.forEach(f => {
+    const im = new Image();
+    im.onload = done; im.onerror = done;
+    im.src = f.file;
+    if (f.key.indexOf("ctc") === 0) entry.ctc[+f.key.slice(3)] = im;
+    else entry.imgs[f.key] = im;
+  });
+  imgCache[s.dir] = entry;
+}
+
+function numInput(get, set) {
+  const i = document.createElement("input");
+  i.type = "number"; i.value = get();
+  i.addEventListener("input", function () {
+    const v = parseFloat(i.value);
+    if (!isNaN(v)) { set(v); render(); scheduleSave(); }
+  });
+  return i;
+}
+
+function buildPartRects() {
+  const s = spec();
+  els.partsBox.innerHTML = "";
+  PART_KEYS.forEach(function (k) {
+    const d = document.createElement("details");
+    const sum = document.createElement("summary");
+    sum.textContent = k + "  (" + s[k].x + "," + s[k].y + " " + s[k].w + "x" + s[k].h + ")";
+    d.appendChild(sum);
+    const g = document.createElement("div");
+    g.className = "grid4";
+    ["x", "y", "w", "h"].forEach(function (axis) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      const lbl = document.createElement("span"); lbl.textContent = k + "." + axis;
+      cell.appendChild(lbl);
+      cell.appendChild(numInput(() => s[k][axis], v => { s[k][axis] = v; sum.textContent = k + " (" + s[k].x + "," + s[k].y + " " + s[k].w + "x" + s[k].h + ")"; }));
+      g.appendChild(cell);
+    });
+    d.appendChild(g);
+    els.partsBox.appendChild(d);
+  });
+}
+
+function buildControls() {
+  const s = spec();
+  els.eoBox.innerHTML = "";
+  SIDES.forEach(function (side) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    const lbl = document.createElement("span"); lbl.textContent = "eo." + side;
+    cell.appendChild(lbl);
+    cell.appendChild(numInput(() => s.eo[side], v => { s.eo[side] = v; }));
+    els.eoBox.appendChild(cell);
+  });
+  els.wallBox.innerHTML = "";
+  SIDES.forEach(function (side) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    const lbl = document.createElement("span"); lbl.textContent = "wall." + side;
+    cell.appendChild(lbl);
+    cell.appendChild(numInput(() => s.wall[side], v => { s.wall[side] = v; }));
+    els.wallBox.appendChild(cell);
+  });
+  seedContent(s);
+  els.portraitBox.innerHTML = "";
+  [["px", "px"], ["py", "py"], ["ps", "ps"]].forEach(function (p) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    const lbl = document.createElement("span"); lbl.textContent = "portrait." + p[1];
+    cell.appendChild(lbl);
+    cell.appendChild(numInput(() => s.content[p[0]], v => { s.content[p[0]] = v; }));
+    els.portraitBox.appendChild(cell);
+  });
+  els.contentBox.innerHTML = "";
+  [["pl", "left"], ["pt", "top"], ["pr", "right"], ["pb", "bottom"]].forEach(function (p) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    const lbl = document.createElement("span"); lbl.textContent = "text." + p[1];
+    cell.appendChild(lbl);
+    cell.appendChild(numInput(() => s.content[p[0]], v => { s.content[p[0]] = v; }));
+    els.contentBox.appendChild(cell);
+  });
+  els.coBox.innerHTML = "";
+  CORNERS.forEach(function (c) {
+    s.co = s.co || {};
+    s.co[c] = s.co[c] || { dx: 0, dy: 0 };
+    const wrap = document.createElement("div");
+    const lbl = document.createElement("div"); lbl.className = "cell"; lbl.innerHTML = "<span style='text-align:left'>co." + c + "</span>";
+    wrap.appendChild(lbl);
+    const g = document.createElement("div"); g.className = "grid2";
+    ["dx", "dy"].forEach(function (axis) {
+      const cell = document.createElement("div"); cell.className = "cell";
+      const sp = document.createElement("span"); sp.textContent = axis;
+      cell.appendChild(sp);
+      cell.appendChild(numInput(() => s.co[c][axis] || 0, v => { s.co[c][axis] = v; }));
+      g.appendChild(cell);
+    });
+    wrap.appendChild(g);
+    els.coBox.appendChild(wrap);
+  });
+  els.ovIn.value = (s.ov || 0);
+  els.bleedIn.value = (s.bleed || 0);
+  if (els.scaleSnapSel) els.scaleSnapSel.value = (s.scaleSnap || "round");
+  if (els.centerFromWallIn) els.centerFromWallIn.checked = !!s.centerFromWall;
+  els.scale.value = (typeof s.scale === "number" ? s.scale : 1);
+  var av = arrowVals(s.arrow);
+  els.arrowScaleIn.value = av.scale;
+  els.arrowXIn.value = av.x;
+  els.arrowYIn.value = av.y;
+  els.arrowBlinkIn.checked = !!(s.arrow && s.arrow.blink);
+  els.arrowBlinkMsIn.value = (s.arrow && typeof s.arrow.blinkMs === "number") ? s.arrow.blinkMs : 400;
+  els.trimTIn.value = (s.trim && s.trim.t) || 0;
+  els.trimBIn.value = (s.trim && s.trim.b) || 0;
+  buildPartRects();
+  buildCtcControls();
+}
+
+function drawGuides(g, w, h, spec_, ins, trimT, trimB) {
+  var ctx = g;
+  const H = spec_;
+  const frameH = h + trimT + trimB;
+  ctx.save();
+  if (trimT) ctx.translate(0, -trimT);
+  if (els.gCorner.checked) {
+    ctx.strokeStyle = "rgba(255,120,180,0.9)"; ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, H.tl.w - 1, H.tl.h - 1);
+    ctx.strokeRect(w - H.tr.w + 0.5, 0.5, H.tr.w - 1, H.tr.h - 1);
+    ctx.strokeRect(0.5, frameH - H.bl.h + 0.5, H.bl.w - 1, H.bl.h - 1);
+    ctx.strokeRect(w - H.br.w + 0.5, frameH - H.br.h + 0.5, H.br.w - 1, H.br.h - 1);
+  }
+  if (els.gTile.checked) {
+    ctx.strokeStyle = "rgba(120,200,255,0.85)";
+
+    for (let x = H.tl.w; x < w - H.tr.w; x += H.t.w) line(x, 0, x, frameH);
+    for (let x = H.bl.w; x < w - H.br.w; x += H.b.w) line(x, 0, x, frameH);
+
+    for (let y = H.tl.h; y < frameH - H.bl.h; y += H.l.h) line(0, y, w, y);
+    for (let y = H.tr.h; y < frameH - H.br.h; y += H.r.h) line(0, y, w, y);
+  }
+  ctx.restore();
+  if (els.gWall.checked) {
+    const wt = ins.T - trimT, wb = h + trimB - ins.B;
+    ctx.strokeStyle = "rgba(255,214,102,0.95)";
+    ctx.strokeRect(ins.L + 0.5, wt + 0.5, (w - ins.L - ins.R) - 1, (wb - wt) - 1);
+  }
+  if (els.gContent.checked) {
+    ctx.strokeStyle = "rgba(120,255,160,0.95)";
+    const cw = w - ins.pl - ins.pr, chh = h - ins.pt - ins.pb;
+    ctx.strokeRect(ins.pl + 0.5, ins.pt + 0.5, cw - 1, chh - 1);
+    if (els.gPortrait.checked) {
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
+      ctx.strokeRect(ins.Px + 0.5, ins.Py + 0.5, ins.Ps - 1, ins.Ps - 1);
+      ctx.fillStyle = "rgba(255,255,255,0.08)";
+      ctx.fillRect(ins.Px, ins.Py, ins.Ps, ins.Ps);
+    }
+  }
+  if (els.gBoxSize.checked) {
+    ctx.strokeStyle = "rgba(255,90,90,0.9)";
+    ctx.setLineDash([5, 4]);
+    ctx.strokeRect(0.5, 0.5, Math.max(1, ins.minW) - 1, Math.max(1, ins.minH) - 1);
+    ctx.setLineDash([]);
+  }
+  function line(x0, y0, x1, y1) {
+    ctx.beginPath(); ctx.moveTo(x0 + 0.5, y0 + 0.5); ctx.lineTo(x1 + 0.5, y1 + 0.5); ctx.stroke();
+  }
+}
+
+var ctcPreviews = [];
+
+function arrowVals(a) {
+  a = a || {};
+  return {
+    scale: (typeof a.scale === "number" ? a.scale : 1),
+    x: (typeof a.x === "number" ? a.x : 0),
+    y: (typeof a.y === "number" ? a.y : 8)
+  };
+}
+
+function buildCtcControls() {
+  const s = spec();
+  els.ctcRow.innerHTML = "";
+  ctcPreviews = [];
+  (s.ctc || []).forEach(function (c, i) {
+    const wrap = document.createElement("div");
+    wrap.className = "ctcFrame";
+    const label = document.createElement("div");
+    label.className = "hint";
+    label.textContent = "ctc-" + (i + 1);
+    const cvs = document.createElement("canvas");
+    const g = document.createElement("div");
+    g.className = "grid4";
+    ["x", "y", "w", "h"].forEach(function (axis) {
+      const cell = document.createElement("div"); cell.className = "cell";
+      const sp = document.createElement("span"); sp.textContent = axis;
+      cell.appendChild(sp);
+      cell.appendChild(numInput(function () { return s.ctc[i][axis]; },
+                                function (v) { s.ctc[i][axis] = v; }));
+      g.appendChild(cell);
+    });
+    wrap.appendChild(label);
+    wrap.appendChild(cvs);
+    wrap.appendChild(g);
+    els.ctcRow.appendChild(wrap);
+    ctcPreviews.push(cvs);
+  });
+  refreshCtcPreviews();
+}
+
+function refreshCtcPreviews() {
+  const s = spec();
+  const entry = imgCache[s.dir];
+  const asc = arrowVals(s.arrow).scale;
+  (s.ctc || []).forEach(function (c, i) {
+    const cvs = ctcPreviews[i];
+    if (!cvs) return;
+    const dw = Math.max(1, Math.round(c.w * asc));
+    const dh = Math.max(1, Math.round(c.h * asc));
+    cvs.width = dw; cvs.height = dh;
+    cvs.style.width = (dw * 2) + "px"; cvs.style.height = (dh * 2) + "px";
+    const g = cvs.getContext("2d");
+    g.imageSmoothingEnabled = false;
+    g.clearRect(0, 0, dw, dh);
+    if (entry && entry.ctc[i] && entry.ctc[i].complete && entry.ctc[i].naturalWidth) {
+      g.drawImage(entry.ctc[i], c.x, c.y, c.w, c.h, 0, 0, dw, dh);
+    }
+  });
+  refreshArrowPreview();
+}
+
+function refreshArrowPreview() {
+  const cvs = els.arrowPrev;
+  if (!cvs) return;
+  const s = spec();
+  const av = arrowVals(s.arrow);
+  const g = cvs.getContext("2d");
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.imageSmoothingEnabled = false;
+  g.fillStyle = "#101216"; g.fillRect(0, 0, cvs.width, cvs.height);
+  const ax0 = 24, ay0 = 34;
+  g.strokeStyle = "rgba(255,255,255,0.25)"; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(0, ay0 + 0.5); g.lineTo(cvs.width, ay0 + 0.5); g.stroke();
+  g.fillStyle = "rgba(120,200,255,0.95)"; g.fillRect(ax0 - 1, ay0 - 1, 3, 3);
+  const c = (s.ctc || [])[0];
+  const entry = imgCache[s.dir];
+  if (c && entry && entry.ctc[0] && entry.ctc[0].complete && entry.ctc[0].naturalWidth) {
+    const dw = Math.max(1, Math.round(c.w * av.scale));
+    const dh = Math.max(1, Math.round(c.h * av.scale));
+    g.drawImage(entry.ctc[0], c.x, c.y, c.w, c.h, ax0 + av.x, ay0 + av.y, dw, dh);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+
+function drawPreviewPortrait() {
+  const c = els.pvPortrait;
+  const w = Math.round(PORTRAIT_CSS * PORTRAIT_SCALE);
+  if (c.width !== w) { c.width = w; c.height = w; }
+  const g = c.getContext("2d");
+  g.clearRect(0, 0, w, w);
+  if (portraitImg && portraitImg.complete && portraitImg.naturalWidth) {
+    g.imageSmoothingEnabled = true;
+    g.drawImage(portraitImg, 0, 0, w, w);
+  }
+}
+
+function render() {
+  if (!CC_STYLES) return;
+  const spec_ = spec();
+  const sc = Math.max(0.1, parseFloat(els.scale.value) || 1);
+  const zoom = Math.max(1, parseFloat(els.zoom.value) || 1);
+  const ins = computeInset(spec_, sc);
+  const trimT = Math.max(0, Math.round((spec_.trim && spec_.trim.t) || 0));
+  const trimB = Math.max(0, Math.round((spec_.trim && spec_.trim.b) || 0));
+  ins.pt = Math.max(0, ins.pt - trimT);
+  ins.pb = Math.max(0, ins.pb - trimB);
+  ins.Py = Math.max(0, ins.Py - trimT);
+  const li = els.pvLi;
+
+  li.style.setProperty("--cc-pl", ins.pl + "px");
+  li.style.setProperty("--cc-pt", ins.pt + "px");
+  li.style.setProperty("--cc-pr", ins.pr + "px");
+  li.style.setProperty("--cc-pb", ins.pb + "px");
+  li.style.setProperty("--cc-px", ins.Px + "px");
+  li.style.setProperty("--cc-py", ins.Py + "px");
+  li.style.setProperty("--cc-pw", ins.Ps + "px");
+  li.style.setProperty("--cc-ph", ins.Ps + "px");
+  li.style.setProperty("--cc-cap", Math.max(1, parseFloat(els.pvCap.value) || 550) + "px");
+
+  const ccCornerW = Math.max(1, Math.round(Math.max(spec_.tl.w, spec_.tr.w) * sc));
+  const ccStackH = Math.max(1, Math.round(Math.max(spec_.tl.h + spec_.bl.h, spec_.tr.h + spec_.br.h) * sc));
+  els.pvBox.style.minWidth = (2 * ccCornerW) + "px";
+  els.pvBox.style.minHeight = Math.max(ins.Ps, ccStackH - ins.Py - ins.pb - trimT - trimB) + "px";
+
+  els.pvPreview.style.transform = "scale(" + zoom + ")";
+  els.pvChat.style.setProperty("--ui-font", "'ChronoCross', 'Zpix', monospace");
+  els.pvChat.style.setProperty("--ui-fs", "30px");
+  els.pvChat.style.setProperty("--ui-lh", "30px");
+  els.pvChat.style.setProperty("--ui-body-color", "#ffffff");
+  els.pvChat.style.setProperty("--ui-user-color", "#f4f1ea");
+  els.pvChat.style.setProperty("--ui-text-shadow", "2px 2px 0 #000");
+
+  els.pvUser.textContent = els.pvName.value || "User";
+  els.pvTextEl.innerHTML = escapeHtml(els.pvText.value || "").replace(/\n/g, "<br>");
+  drawPreviewPortrait();
+
+  loadImages(current, function (entry) {
+    const box = els.pvBox;
+    const bw = Math.max(1, box.offsetWidth);
+    const bh = Math.max(1, box.offsetHeight);
+    const ccBleed = Math.max(0, Math.round((spec_.bleed || 0) * sc));
+    const bg = els.pvBg;
+    bg.style.left = (-ccBleed) + "px";
+    bg.style.top = (-ccBleed) + "px";
+    bg.width = bw + 2 * ccBleed;
+    bg.height = bh + 2 * ccBleed;
+    const bx = bg.getContext("2d");
+    bx.clearRect(0, 0, bg.width, bg.height);
+    bx.imageSmoothingEnabled = false;
+    drawCcBoxParts(bx, { def: spec_, imgs: entry.imgs }, bg.width, bg.height, sc);
+    bx.save();
+    bx.translate(ccBleed, ccBleed);
+    drawGuides(bx, bw, bh, spec_, ins, trimT, trimB);
+    bx.restore();
+    refreshCtcPreviews();
+
+    els.pvPreviewOuter.style.width = Math.round(els.pvPreview.offsetWidth * zoom) + "px";
+    els.pvPreviewOuter.style.height = Math.round(els.pvPreview.offsetHeight * zoom) + "px";
+
+    els.readout.textContent =
+      "corner " + spec_.tl.w + "x" + spec_.tl.h + "   stackH " + ins.stackH + "\n" +
+      "wall  T" + ins.T + " B" + ins.B + " L" + ins.L + " R" + ins.R + "\n" +
+      "content-in  left " + ins.pl + "  top " + ins.pt + "  right " + ins.pr + "  bottom " + ins.pb + "\n" +
+      "portrait  x" + ins.Px + " y" + ins.Py + "  " + ins.Ps + "px\n" +
+      "min box  " + (2 * ccCornerW) + " x " +
+        Math.max(ins.Ps, ccStackH - ins.Py - ins.pb - trimT - trimB) + "\n" +
+      "crop  top " + trimT + "  bottom " + trimB + "\n" +
+      "seam ov  " + (spec_.ov || 0) + "   bleed " + (spec_.bleed || 0) + "\n" +
+      "measured box " + bw + " x " + bh;
+
+    els.out.textContent = specToText();
+    applyBlinkPreview(spec_);
+  });
+}
+
+let blinkTimer = null;
+function applyBlinkPreview(s) {
+  if (blinkTimer) { clearInterval(blinkTimer); blinkTimer = null; }
+  const a = s.arrow || {};
+  const playable = !!a.blink && (s.ctc || []).length === 1;
+  const targets = [els.arrowPrev].concat(ctcPreviews);
+  targets.forEach(function (t) { if (t) t.style.visibility = ""; });
+  if (!playable) return;
+  let on = true;
+  blinkTimer = setInterval(function () {
+    on = !on;
+    targets.forEach(function (t) { if (t) t.style.visibility = on ? "" : "hidden"; });
+  }, Math.max(16, a.blinkMs > 0 ? a.blinkMs : 400));
+}
+
+function specToText() {
+  function rect(r) { return "{ x: " + r.x + ", y: " + r.y + ", w: " + r.w + ", h: " + r.h + " }"; }
+  function leaf(s, ind) {
+    const P = " ".repeat(ind);
+    const L = [];
+    L.push(P + 'dir: "' + s.dir + '",');
+    L.push(P + "tl: " + rect(s.tl) + ", t: " + rect(s.t) + ", tr: " + rect(s.tr) + ",");
+    L.push(P + "l: " + rect(s.l) + ", c: " + rect(s.c) + ", r: " + rect(s.r) + ",");
+    L.push(P + "bl: " + rect(s.bl) + ", b: " + rect(s.b) + ", br: " + rect(s.br) + ",");
+    L.push(P + "eo: { t: " + s.eo.t + ", b: " + s.eo.b + ", l: " + s.eo.l + ", r: " + s.eo.r + " },");
+    var extra = [];
+    if ((s.ov || 0) !== 0) extra.push("ov: " + s.ov);
+    if ((s.bleed || 0) !== 0) extra.push("bleed: " + s.bleed);
+    if (typeof s.scale === "number" && s.scale !== 1) extra.push("scale: " + s.scale);
+    if (typeof s.scaleSnap === "string" && s.scaleSnap !== "round") extra.push('scaleSnap: "' + s.scaleSnap + '"');
+    if (s.centerFromWall) extra.push("centerFromWall: true");
+    if (extra.length) L.push(P + extra.join(", ") + ",");
+    L.push(P + "wall: { t: " + s.wall.t + ", b: " + s.wall.b + ", l: " + s.wall.l + ", r: " + s.wall.r + " },");
+    if (s.content) {
+      var c = s.content;
+      L.push(P + "content: { px: " + c.px + ", py: " + c.py + ", ps: " + c.ps +
+             ", pl: " + c.pl + ", pt: " + c.pt + ", pr: " + c.pr + ", pb: " + c.pb + " },");
+    }
+    if (s.trim && ((s.trim.t || 0) !== 0 || (s.trim.b || 0) !== 0)) {
+      L.push(P + "trim: { t: " + (s.trim.t || 0) + ", b: " + (s.trim.b || 0) + " },");
+    }
+    var coUsed = s.co && CORNERS.some(function (c) { var o = s.co[c]; return o && ((o.dx || 0) !== 0 || (o.dy || 0) !== 0); });
+    if (coUsed) {
+      const parts = CORNERS.map(function (c) {
+        const o = s.co[c] || {};
+        return c + ": { dx: " + (o.dx || 0) + ", dy: " + (o.dy || 0) + " }";
+      });
+      L.push(P + "co: { " + parts.join(", ") + " },");
+    }
+    var av = arrowVals(s.arrow);
+    var blink = !!(s.arrow && s.arrow.blink);
+    if (av.scale !== 1 || av.x !== 0 || av.y !== 8 || blink) {
+      var body = "scale: " + av.scale + ", x: " + av.x + ", y: " + av.y;
+      if (blink) {
+        body += ", blink: true";
+        if (typeof s.arrow.blinkMs === "number") body += ", blinkMs: " + s.arrow.blinkMs;
+      }
+      L.push(P + "arrow: { " + body + " },");
+    }
+    L.push(P + "ctc: [");
+    s.ctc.forEach(function (c, i) {
+      L.push(P + '    { file: "' + c.file + '", x: ' + c.x + ", y: " + c.y + ", w: " + c.w + ", h: " + c.h + " }" + (i < s.ctc.length - 1 ? "," : ""));
+    });
+    L.push(P + "]");
+    return L;
+  }
+  const L = [];
+  L.push(current + ": {");
+  const sets = Object.keys(CC_STYLES[current]);
+  sets.forEach(function (setName, i) {
+    L.push('    "' + setName + '": {');
+    leaf(CC_STYLES[current][setName], 8).forEach(function (l) { L.push(l); });
+    L.push("    }" + (i < sets.length - 1 ? "," : ""));
+  });
+  L.push("}");
+  return L.join("\n");
+}
+
+const STORE_KEY = "ccTunerGeometryV1";
+const STORE_VERSION = 3;
+let saveTimer = null;
+
+function deepMerge(dst, src) {
+  if (!src || typeof src !== "object") return dst;
+  Object.keys(src).forEach(function (k) {
+    var v = src[k];
+    if (v && typeof v === "object" && !Array.isArray(v) &&
+        dst[k] && typeof dst[k] === "object" && !Array.isArray(dst[k])) {
+      deepMerge(dst[k], v);
+    } else {
+      dst[k] = v;
+    }
+  });
+  return dst;
+}
+
+function collectState() {
+  return {
+    version: STORE_VERSION,
+    current: current,
+    set: curSet,
+    styles: JSON.parse(JSON.stringify(CC_STYLES)),
+    ui: {
+      cap: els.pvCap.value,
+      zoom: els.zoom.value,
+      name: els.pvName.value,
+      text: els.pvText.value,
+      overlays: {
+        gCorner: els.gCorner.checked, gTile: els.gTile.checked,
+        gWall: els.gWall.checked, gContent: els.gContent.checked,
+        gPortrait: els.gPortrait.checked, gBoxSize: els.gBoxSize.checked
+      }
+    }
+  };
+}
+
+function looksLikeSpec(v) {
+  return !!v && typeof v === "object" && !Array.isArray(v) &&
+         (v.tl != null || v.dir != null || v.t != null);
+}
+
+function applyPayload(s) {
+  if (!s || typeof s !== "object" || Array.isArray(s)) {
+    return { ok: false, error: "expected a JSON object" };
+  }
+  if (s.version != null && s.version !== STORE_VERSION) {
+    return { ok: false, error: "unsupported version " + s.version };
+  }
+
+  var stylesMap = null, single = null;
+  if (s.styles && typeof s.styles === "object" && !Array.isArray(s.styles)) {
+    stylesMap = s.styles;
+  } else if (looksLikeSpec(s)) {
+    single = s;
+  } else {
+    var keys = Object.keys(s);
+    var objs = keys.filter(function (k) {
+      return s[k] && typeof s[k] === "object" && !Array.isArray(s[k]);
+    });
+    var anyKnown = keys.some(function (k) { return !!CC_STYLES[k]; });
+    if (keys.length && objs.length === keys.length &&
+        (anyKnown || objs.every(looksLikeSpec))) {
+      stylesMap = s;
+    } else {
+      return { ok: false, error: "unrecognized structure" };
+    }
+  }
+
+  var applied = [], skipped = [];
+  if (single) {
+    deepMerge(CC_STYLES[current][curSet], single);
+    applied.push(current);
+  } else {
+    Object.keys(stylesMap).forEach(function (k) {
+      var v = stylesMap[k];
+      if (!CC_STYLES[k] || !v || typeof v !== "object" || Array.isArray(v)) {
+        skipped.push(k);
+        return;
+      }
+      if (looksLikeSpec(v)) {
+        if (CC_STYLES[k][curSet]) { deepMerge(CC_STYLES[k][curSet], v); applied.push(k); }
+        else skipped.push(k);
+        return;
+      }
+      deepMerge(CC_STYLES[k], v);
+      applied.push(k);
+    });
+  }
+
+  if (s.current && CC_STYLES[s.current]) current = s.current;
+  if (s.set && CC_STYLES[current] && CC_STYLES[current][s.set]) curSet = s.set;
+
+  var ui = s.ui || {};
+  if (ui.cap != null) els.pvCap.value = ui.cap;
+  if (ui.zoom != null) els.zoom.value = ui.zoom;
+  if (ui.name != null) els.pvName.value = ui.name;
+  if (ui.text != null) els.pvText.value = ui.text;
+  var ov = ui.overlays || {};
+  ["gCorner", "gTile", "gWall", "gContent", "gPortrait", "gBoxSize"].forEach(function (id) {
+    if (typeof ov[id] === "boolean") els[id].checked = ov[id];
+  });
+
+  return { ok: true, applied: applied, skipped: skipped };
+}
+
+function applyAndRefresh(report) {
+  if (!report.ok) { els.out.textContent = "Import: " + report.error; return; }
+  els.styleSel.value = current;
+  syncSetSel();
+  buildControls();
+  render();
+  scheduleSave();
+  var msg = "Imported " + (report.applied.length ? report.applied.join(", ") : "(nothing)");
+  if (report.skipped.length) msg += "  |  skipped: " + report.skipped.join(", ");
+  els.out.textContent = msg;
+}
+
+function applyState(s) { return applyPayload(s).ok; }
+
+function saveState() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(collectState())); } catch (e) {}
+}
+function scheduleSave() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 300);
+}
+function loadSavedState() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (s && s.version != null && s.version !== STORE_VERSION) {
+      localStorage.removeItem(STORE_KEY);
+      return;
+    }
+    applyState(s);
+  } catch (e) {}
+}
+
+els.styleSel.addEventListener("change", function () {
+  current = els.styleSel.value;
+  if (!CC_STYLES[current][curSet]) curSet = styleSets(current)[0];
+  syncSetSel();
+  buildControls();
+  render();
+  scheduleSave();
+});
+els.setSel.addEventListener("change", function () {
+  curSet = els.setSel.value;
+  buildControls();
+  render();
+  scheduleSave();
+});
+els.zoom.addEventListener("input", function () { render(); scheduleSave(); });
+els.pvCap.addEventListener("input", function () { render(); scheduleSave(); });
+els.pvName.addEventListener("input", function () { render(); scheduleSave(); });
+els.pvText.addEventListener("input", function () { render(); scheduleSave(); });
+els.scale.addEventListener("input", function () {
+  const v = parseFloat(els.scale.value);
+  spec().scale = isNaN(v) ? 1 : v;
+  render();
+  scheduleSave();
+});
+function setArrow(field, v) {
+  const s = spec();
+  s.arrow = s.arrow || {};
+  s.arrow[field] = isNaN(v) ? (field === "scale" ? 1 : (field === "y" ? 8 : 0)) : v;
+  render();
+  scheduleSave();
+}
+els.arrowScaleIn.addEventListener("input", function () { setArrow("scale", parseFloat(els.arrowScaleIn.value)); });
+els.arrowXIn.addEventListener("input", function () { setArrow("x", parseFloat(els.arrowXIn.value)); });
+els.arrowYIn.addEventListener("input", function () { setArrow("y", parseFloat(els.arrowYIn.value)); });
+els.arrowBlinkIn.addEventListener("change", function () {
+  const s = spec();
+  s.arrow = s.arrow || {};
+  if (els.arrowBlinkIn.checked) {
+    s.arrow.blink = true;
+    if (typeof s.arrow.blinkMs !== "number") s.arrow.blinkMs = parseFloat(els.arrowBlinkMsIn.value) || 400;
+  } else {
+    delete s.arrow.blink;
+    delete s.arrow.blinkMs;
+  }
+  els.arrowBlinkMsIn.value = s.arrow.blinkMs || 400;
+  render();
+  scheduleSave();
+});
+els.arrowBlinkMsIn.addEventListener("input", function () {
+  const v = parseFloat(els.arrowBlinkMsIn.value);
+  const s = spec();
+  s.arrow = s.arrow || {};
+  s.arrow.blinkMs = isNaN(v) || v <= 0 ? 400 : v;
+  render();
+  scheduleSave();
+});
+els.ovIn.addEventListener("input", function () {
+  const v = parseFloat(els.ovIn.value);
+  spec().ov = isNaN(v) ? 0 : v;
+  render();
+  scheduleSave();
+});
+els.bleedIn.addEventListener("input", function () {
+  const v = parseFloat(els.bleedIn.value);
+  spec().bleed = isNaN(v) ? 0 : v;
+  render();
+  scheduleSave();
+});
+els.trimTIn.addEventListener("input", function () { setTrim("t", parseFloat(els.trimTIn.value)); });
+els.trimBIn.addEventListener("input", function () { setTrim("b", parseFloat(els.trimBIn.value)); });
+function setTrim(edge, v) {
+  const s = spec();
+  s.trim = s.trim || { t: 0, b: 0 };
+  s.trim[edge] = isNaN(v) ? 0 : Math.max(0, Math.round(v));
+  render();
+  scheduleSave();
+}
+if (els.scaleSnapSel) {
+  els.scaleSnapSel.addEventListener("change", function () {
+    const v = els.scaleSnapSel.value;
+    spec().scaleSnap = (v === "floor" || v === "ceil") ? v : "round";
+    render();
+    scheduleSave();
+  });
+}
+if (els.centerFromWallIn) {
+  els.centerFromWallIn.addEventListener("change", function () {
+    spec().centerFromWall = els.centerFromWallIn.checked ? true : undefined;
+    render();
+    scheduleSave();
+  });
+}
+["gCorner", "gTile", "gWall", "gContent", "gPortrait", "gBoxSize"].forEach(function (id) {
+  els[id].addEventListener("change", function () { render(); scheduleSave(); });
+});
+els.resetBtn.addEventListener("click", function () {
+  CC_STYLES[current][curSet] = JSON.parse(JSON.stringify(DEFAULTS[current][curSet]));
+  buildControls();
+  render();
+  scheduleSave();
+});
+els.copyBtn.addEventListener("click", function () {
+  const text = specToText();
+  els.out.textContent = text;
+  navigator.clipboard && navigator.clipboard.writeText(text);
+});
+els.exportBtn.addEventListener("click", function () {
+  try {
+    var blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "cc-tuner-geometry.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    els.out.textContent = "Exported cc-tuner-geometry.json";
+  } catch (e) { els.out.textContent = "Export failed: " + e.message; }
+});
+els.importBtn.addEventListener("click", function () { els.importFile.click(); });
+els.importFile.addEventListener("change", function () {
+  var f = els.importFile.files && els.importFile.files[0];
+  if (!f) return;
+  var fr = new FileReader();
+  fr.onload = function () {
+    try {
+      applyAndRefresh(applyPayload(JSON.parse(String(fr.result))));
+    } catch (e) { els.out.textContent = "Import failed: " + e.message; }
+  };
+  fr.readAsText(f);
+  els.importFile.value = "";
+});
+els.pasteApplyBtn.addEventListener("click", function () {
+  var t = (els.pasteJson.value || "").trim();
+  if (!t) { els.out.textContent = "Paste JSON first."; return; }
+  try {
+    applyAndRefresh(applyPayload(JSON.parse(t)));
+  } catch (e) { els.out.textContent = "Paste failed: " + e.message; }
+});
+els.clearSavedBtn.addEventListener("click", function () {
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  els.out.textContent = "Saved state cleared (current edits kept).";
+});
+
+function bootWith(styles, source) {
+  CC_STYLES = styles;
+  DEFAULTS = JSON.parse(JSON.stringify(CC_STYLES));
+  if (!CC_STYLES[current]) current = Object.keys(CC_STYLES)[0];
+  if (!CC_STYLES[current][curSet]) curSet = Object.keys(CC_STYLES[current])[0];
+  els.styleSel.innerHTML = "";
+  Object.keys(CC_STYLES).forEach(function (name) {
+    var o = document.createElement("option");
+    o.value = name; o.textContent = name;
+    els.styleSel.appendChild(o);
+  });
+  els.geoStatus.textContent = "geometry: " + source;
+  loadSavedState();
+  els.styleSel.value = current;
+  syncSetSel();
+  buildControls();
+  render();
+}
+
+function boot() {
+  portraitImg = new Image();
+  portraitImg.onload = function () { render(); };
+  portraitImg.src = PORTRAIT_SRC;
+
+  bootWith(JSON.parse(JSON.stringify(THEME_CC.boxParts)), "cc.js");
+
+  if (document.fonts && document.fonts.load) {
+    document.fonts.load("30px ChronoCross").then(function () { render(); });
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { render(); });
+  }
+}
+
+boot();
+</script>
+</body>
+</html>

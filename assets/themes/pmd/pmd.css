@@ -1,0 +1,114 @@
+@font-face {
+    font-family: 'PMDFont';
+    src: url("../../fonts/pmd.woff2") format("woff2");
+    font-display: swap;
+}
+
+#chat.theme-pmd {
+    color: var(--ui-body-color, #ffffff);
+}
+
+#chat.theme-pmd li {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    max-width: 480px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    position: relative;
+    transform-origin: center;
+    animation: pop 0.18s ease-out;
+}
+
+#chat.theme-pmd .window-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    image-rendering: pixelated;
+    z-index: 0;
+}
+
+#chat.theme-pmd .msg-box {
+    position: relative;
+    z-index: 1;
+    padding: 20px 24px 16px 24px;
+    background: transparent;
+}
+
+#chat.theme-pmd li + li {
+    margin-top: 20px;
+}
+
+#chat.theme-pmd .msg-box .username {
+    color: var(--ui-user-color, var(--ui-username));
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    word-break: break-word;
+}
+
+#chat.theme-pmd .msg-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#chat.theme-pmd .msg-header .username {
+    margin-bottom: 0;
+}
+
+#chat.theme-pmd .msg-header .timestamp {
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    opacity: 0.55;
+    margin-left: 12px;
+}
+
+#chat.theme-pmd .msg-box .message-text {
+    margin: 0;
+    color: var(--ui-body-color, #ffffff);
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    white-space: normal;
+    word-break: break-word;
+}
+
+#chat.theme-pmd {
+    font-family: var(--ui-font, inherit);
+    text-shadow: var(--ui-text-shadow, none);
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+}
+
+#chat.theme-pmd li {
+    flex-direction: row;
+    align-items: flex-start;
+    max-width: 480px;
+}
+
+#chat.theme-pmd .msg-box {
+    padding: 16px 24px 20px 22px;
+    min-height: 60px;
+}
+
+#chat.theme-pmd .icon-box {
+    flex: 0 0 auto;
+    margin-right: 8px;
+    image-rendering: pixelated;
+    z-index: 2;
+}
+
+#chat.theme-pmd .msg-box img.badge {
+    height: 0.8em;
+    vertical-align: 0px;
+}
+
+#chat.theme-pmd ul.align-default .msg-box {
+    flex: 1 1 auto;
+}

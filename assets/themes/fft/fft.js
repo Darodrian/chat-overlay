@@ -1,4 +1,4 @@
-﻿var THEME_DATA_FFT = 
+﻿var THEME_DATA_FFT =
 {
     "height":  16,
     "origin":  {
@@ -1528,3 +1528,23 @@
                    }
 };
 
+var THEME_FFT = {
+        key: "fft",
+        label: "Final Fantasy Tactics",
+        atlas: "assets/themes/fft/fft-font.png",
+        boxAtlas: "assets/themes/fft/fft-blank.png",
+        data: (typeof THEME_DATA_FFT === "object" && THEME_DATA_FFT) ? THEME_DATA_FFT : null,
+        windowBorder: 0,
+        drawMode: "box",
+        userRows: null,
+        mapApostrophe: false,
+        fontFamily: "Altima",
+        fontSize: 36,
+        lineHeight: 32,
+        letterSpacing: 1,
+        textShadow: "2px 2px 0 #6f6959",
+        bodyColor: "#312921",
+        usernameColor: "#6b2910",
+        portrait: true,
+        tuner: ["userPortrait"]
+    };

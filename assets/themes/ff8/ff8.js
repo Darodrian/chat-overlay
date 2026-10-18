@@ -773,3 +773,15 @@
 		"w": 11
 	}
 };
+
+var THEME_FF8 = {
+        key: "ff8",
+        label: "Final Fantasy VIII",
+        atlas: "assets/themes/ff8/ff8-font.png",
+        data: (typeof THEME_DATA_FF8 === "object" && THEME_DATA_FF8) ? THEME_DATA_FF8 : null,
+        windowBorder: 2,
+        drawMode: "border",
+        userRows: { broadcaster: 60, mod: 48, sub: 36, vip: 12 },
+        mapApostrophe: true,
+        zpixFallback: "@\\^`|{}¨´ªº"
+    };

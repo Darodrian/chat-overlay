@@ -964,3 +964,25 @@
 	}
 }
 ;
+
+var THEME_ACWW = {
+        key: "acww",
+        label: "Animal Crossing: Wild World",
+        atlas: "assets/themes/acww/acww-font.png",
+        data: (typeof THEME_DATA_ACWW === "object" && THEME_DATA_ACWW) ? THEME_DATA_ACWW : null,
+        windowBorder: 24,
+        drawMode: "style",
+        userRows: null,
+        mapApostrophe: false,
+        nameTag: true,
+        chromaKey: true,
+        chromaKeyRects: function (style) {
+            if (style && style.name === "thought") return [];
+            return [
+                { x: 28, y: 0, w: 89, h: 20 },
+                { x: 117, y: 10, w: 44, h: 1 }
+            ];
+        },
+        continueArrow: true,
+        tuner: ["windowStyle", "nameColor"]
+    };

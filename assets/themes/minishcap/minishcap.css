@@ -1,0 +1,129 @@
+@font-face {
+    font-family: 'MinishType';
+    src: url("../../fonts/MinishType.woff2") format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ZpixBig';
+    src: url("../../fonts/zpix.woff2") format("woff2");
+    font-display: swap;
+    size-adjust: 150%;
+}
+
+#chat.theme-mc {
+    color: var(--ui-body-color, #ffffff);
+}
+
+#chat.theme-mc li {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    max-width: 480px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    position: relative;
+    transform-origin: center;
+    animation: pop 0.18s ease-out;
+}
+
+#chat.theme-mc .window-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    image-rendering: pixelated;
+    z-index: 0;
+}
+
+#chat.theme-mc .msg-box {
+    position: relative;
+    z-index: 1;
+    padding: 20px 24px 16px 24px;
+    background: transparent;
+}
+
+#chat.theme-mc li + li {
+    margin-top: 20px;
+}
+
+#chat.theme-mc .msg-box .username {
+    color: var(--ui-user-color, var(--ui-username));
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    word-break: break-word;
+}
+
+#chat.theme-mc .msg-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#chat.theme-mc .msg-header .username {
+    margin-bottom: 0;
+}
+
+#chat.theme-mc .msg-header .timestamp {
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    opacity: 0.55;
+    margin-left: 12px;
+}
+
+#chat.theme-mc .msg-box .message-text {
+    margin: 0;
+    color: var(--ui-body-color, #ffffff);
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    white-space: normal;
+    word-break: break-word;
+}
+
+#chat.theme-mc {
+    font-family: var(--ui-font, inherit);
+    text-shadow: var(--ui-text-shadow, none);
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+}
+
+#chat.theme-mc li {
+    min-width: 320px;
+}
+
+#chat.theme-mc .msg-box {
+    padding: 16px 28px 16px 22px;
+    min-height: 96px;
+    word-spacing: 0.25em;
+}
+
+#chat.theme-mc .continue-arrow {
+    position: absolute;
+    right: 32px;
+    bottom: 0;
+    width: 14px;
+    height: 12px;
+    image-rendering: pixelated;
+    z-index: 3;
+    opacity: 0.9;
+}
+
+#chat.theme-mc .msg-box img.badge {
+    height: 1.4em;
+    vertical-align: 0px;
+}
+
+#chat.theme-mc .glyph-canvas {
+    vertical-align: -4px;
+}
+
+#chat.theme-mc .ui-zpix {
+    display: inline-block;
+    vertical-align: 2px;
+}

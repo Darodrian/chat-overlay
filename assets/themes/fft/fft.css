@@ -1,0 +1,119 @@
+@font-face {
+    font-family: 'Altima';
+    src: url("../../fonts/Altima.woff2") format("woff2");
+    font-display: swap;
+}
+
+#chat.theme-fft {
+    color: var(--ui-body-color, #ffffff);
+}
+
+#chat.theme-fft li {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    max-width: 480px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    position: relative;
+    transform-origin: center;
+    animation: pop 0.18s ease-out;
+}
+
+#chat.theme-fft .window-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    image-rendering: pixelated;
+    z-index: 0;
+}
+
+#chat.theme-fft .msg-box {
+    position: relative;
+    z-index: 1;
+    padding: 20px 24px 16px 24px;
+    background: transparent;
+}
+
+#chat.theme-fft li + li {
+    margin-top: 20px;
+}
+
+#chat.theme-fft .msg-box .username {
+    color: var(--ui-user-color, var(--ui-username));
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    word-break: break-word;
+}
+
+#chat.theme-fft .msg-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#chat.theme-fft .msg-header .username {
+    margin-bottom: 0;
+}
+
+#chat.theme-fft .msg-header .timestamp {
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    opacity: 0.55;
+    margin-left: 12px;
+}
+
+#chat.theme-fft .msg-box .message-text {
+    margin: 0;
+    color: var(--ui-body-color, #ffffff);
+    font-size: var(--ui-fs, 24px);
+    line-height: var(--ui-lh, 32px);
+    white-space: normal;
+    word-break: break-word;
+}
+
+#chat.theme-fft {
+    font-family: var(--ui-font, inherit);
+    text-shadow: var(--ui-text-shadow, none);
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+}
+
+#chat.theme-fft li {
+    max-width: 400px;
+    min-width: 280px;
+}
+
+#chat.theme-fft .msg-box {
+    padding: 30px 12px 12px 102px;
+    min-height: 102px;
+}
+
+#chat.theme-fft .msg-header {
+    margin: 0;
+}
+
+#chat.theme-fft .portrait {
+    position: absolute;
+    left: 12px;
+    top: 32px;
+    width: 80px;
+    height: 96px;
+    image-rendering: pixelated;
+    z-index: 2;
+}
+
+#chat.theme-fft .msg-box .message-text {
+    margin: 2px 0 0 0;
+}
+
+#chat.theme-fft .msg-box img.badge {
+    height: 0.6em
+}

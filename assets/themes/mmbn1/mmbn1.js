@@ -24,12 +24,6 @@
 					"w": 13,
 					"h": 13
 				},
-				/* Second blink frame. continueArrowFrames() treats every option as an
-					animation frame and blinkArrows cycles through them at 700ms, so with
-					only one option it redrew the same frame forever and the arrow never
-					blinked. mc and acww animate the same way, by swapping to a fully
-					transparent cell for half of each cycle. This cell is empty in
-					mmbn1-font.png and overlaps no other declared glyph or portrait rect. */
 				"blank": {
 					"x": 1013,
 					"y": 62,
@@ -1108,3 +1102,26 @@
 		"h": 14
 	}
 };
+
+var THEME_MMBN1 = {
+        key: "mmbn1",
+        label: "Mega Man Battle Network 1",
+        atlas: "assets/themes/mmbn1/mmbn1-font.png",
+        boxAtlas: "assets/themes/mmbn1/mmbn1-blank.png",
+        data: (typeof THEME_DATA_MMBN1 === "object" && THEME_DATA_MMBN1) ? THEME_DATA_MMBN1 : null,
+        windowBorder: 0,
+        drawMode: "box",
+        userRows: null,
+        mapApostrophe: true,
+        fontFamily: "BN5DSEUFontThin",
+        fontStack: "'Zpix', monospace",
+        fontSize: 24,
+        lineHeight: 32,
+        bodyColor: "#2e3434",
+        usernameColor: "#2e3434",
+        portrait: true,
+        continueArrow: true,
+        inlineName: true,
+        boxBands: { top: 6 / 64, bot: 4 / 64 },
+        tuner: ["userPortrait"]
+    };

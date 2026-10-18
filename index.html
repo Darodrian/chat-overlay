@@ -16,6 +16,10 @@
     <script src="assets/themes/fft/fft.js"></script>
     <script src="assets/themes/minishcap/minishcap.js"></script>
     <script src="assets/themes/mmbn1/mmbn1.js"></script>
+    <script src="assets/themes/default/default.js"></script>
+    <script src="assets/themes/gs/gs.js"></script>
+    <script src="assets/themes/pmd/pmd.js"></script>
+    <script src="assets/themes/cc/cc.js"></script>
 
     <style>
         :root {
@@ -48,64 +52,17 @@
             font-display: swap;
         }
 
-        /* Per-theme webfonts, selected by theme.fontFamily in THEMES. */
-        @font-face {
-            font-family: 'ChronoType';
-            src: url("assets/fonts/ChronoType.woff2") format("woff2");
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Altima';
-            src: url("assets/fonts/Altima.woff2") format("woff2");
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'MinishType';
-            src: url("assets/fonts/MinishType.woff2") format("woff2");
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'BN5DSEUFontThin';
-            src: url("assets/fonts/BN5DSEU Font Thin.woff2") format("woff2");
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'ZpixBig';
-            src: url("assets/fonts/zpix.woff2") format("woff2");
-            font-display: swap;
-            size-adjust: 150%;
-        }
-
-        @font-face {
-            font-family: 'Reactor7';
-            src: url("assets/fonts/Reactor7.woff2") format("woff2");
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'PMDFont';
-            src: url("assets/fonts/pmd.woff2") format("woff2");
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'GoldenSunItalics';
-            src: url("assets/fonts/GoldenSunItalics.woff2") format("woff2");
-            font-display: swap;
-        }
-
         html, body {
             margin: 0;
+            overflow: hidden;
             font-family: 'Zpix', monospace;
         }
 
         #chat {
-            width: 600px;
-            height: 1000px;
+            width: 100%;
+            min-width: 650px;
+            max-width: 800px;
+            height: 100vh;
             overflow-x: hidden;
             overflow-y: hidden;
             display: flex;
@@ -131,7 +88,7 @@
             margin: 0;
         }
 
-        /* ---- Setup notice (shown until a channel is set) ---- */
+
         #setup-notice {
             position: fixed;
             inset: 0;
@@ -141,6 +98,7 @@
             z-index: 500;
             font-family: 'Zpix', monospace;
         }
+
         #setup-notice.show { display: flex; }
 
         #setup-notice .setup-box {
@@ -167,6 +125,7 @@
             font-size: 15px;
             line-height: 1.6;
         }
+
         #setup-notice p:last-child { margin-bottom: 0; }
 
         #setup-notice b { color: #ffffff; }
@@ -178,373 +137,22 @@
             color: #f0e6d3;
         }
 
-        /* ---- Default (Zpix webfont) theme ---- */
-        #chat.theme-default {
-            color: var(--ff-text);
-            text-shadow: 2px 0 0 rgba(0,0,0,0.85), -2px 0 0 rgba(0,0,0,0.85),
-                         0 2px 0 rgba(0,0,0,0.85), 0 -2px 0 rgba(0,0,0,0.85);
-        }
-
-        #chat.theme-default li {
-            padding: 12px 4px;
-            font-size: 24px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            overflow-wrap: break-word;
-            border-bottom: 2px dashed rgba(200, 170, 110, 0.35);
-        }
-
-        #chat.theme-default .user {
-            color: var(--ff-username);
-        }
-
-        #chat.theme-default .user.mod { color: var(--ff-mod); }
-        #chat.theme-default .user.sub { color: var(--ff-sub); }
-        #chat.theme-default .user.vip { color: var(--ff-vip); }
-
-        #chat.theme-default blockquote {
-            margin: 8px 0 0 28px;
-            color: var(--ff-text);
-        }
-
-        #chat.theme-default .timestamp {
-            color: var(--ff-timestamp);
-            font-size: 24px;
-            margin-left: 12px;
-        }
-
-        /* ---- Atlas (crisp pixel font) themes ---- */
-        #chat.theme-ff8, #chat.theme-ct, #chat.theme-acww, #chat.theme-ff7, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-pmd, #chat.theme-gs {
-            color: var(--ui-body-color, #ffffff);
-        }
-
-        #chat.theme-ff8 li, #chat.theme-ct li, #chat.theme-acww li, #chat.theme-ff7 li, #chat.theme-fft li, #chat.theme-mc li, #chat.theme-mmbn1 li, #chat.theme-pmd li, #chat.theme-gs li {
-            display: flex;
-            flex-direction: column;
-            width: max-content;
-            max-width: 480px;
-            box-sizing: border-box;
-            background: transparent;
-            border: none;
-            position: relative;
-            transform-origin: center;
-            animation: pop 0.18s ease-out; /* keep in sync with POP_MS */
-        }
-
-        #chat.theme-ff8 .window-bg, #chat.theme-ct .window-bg, #chat.theme-acww .window-bg, #chat.theme-ff7 .window-bg, #chat.theme-fft .window-bg, #chat.theme-mc .window-bg, #chat.theme-mmbn1 .window-bg, #chat.theme-pmd .window-bg, #chat.theme-gs .window-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: block;
-            image-rendering: pixelated;
-            z-index: 0;
-        }
-
-        #chat.theme-ff8 .msg-box, #chat.theme-ct .msg-box, #chat.theme-acww .msg-box, #chat.theme-ff7 .msg-box, #chat.theme-fft .msg-box, #chat.theme-mc .msg-box, #chat.theme-mmbn1 .msg-box, #chat.theme-pmd .msg-box, #chat.theme-gs .msg-box {
-            position: relative;
-            z-index: 1;
-            padding: 20px 24px 16px 24px;
-            background: transparent;
-        }
 
         @keyframes pop {
             from { transform: scale(0); opacity: 0; }
             to   { transform: scale(1); opacity: 1; }
         }
 
-        #chat.theme-ff8 li + li, #chat.theme-ct li + li, #chat.theme-acww li + li, #chat.theme-ff7 li + li, #chat.theme-fft li + li, #chat.theme-mc li + li, #chat.theme-mmbn1 li + li, #chat.theme-pmd li + li, #chat.theme-gs li + li {
-            margin-top: 20px;
-        }
 
-        #chat.theme-ff8 .msg-box .username, #chat.theme-ct .msg-box .username, #chat.theme-acww .msg-box .username, #chat.theme-ff7 .msg-box .username, #chat.theme-fft .msg-box .username, #chat.theme-mc .msg-box .username, #chat.theme-mmbn1 .msg-box .username, #chat.theme-pmd .msg-box .username, #chat.theme-gs .msg-box .username {
-            color: var(--ui-user-color, var(--ui-username));
-            font-size: var(--ui-fs, 24px);
-            line-height: var(--ui-lh, 32px);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            word-break: break-word;
-        }
 
-        #chat.theme-ff8 .msg-header, #chat.theme-ct .msg-header, #chat.theme-acww .msg-header, #chat.theme-ff7 .msg-header, #chat.theme-fft .msg-header, #chat.theme-mc .msg-header, #chat.theme-mmbn1 .msg-header, #chat.theme-pmd .msg-header, #chat.theme-gs .msg-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        #chat.theme-ff8 .msg-header .username, #chat.theme-ct .msg-header .username, #chat.theme-acww .msg-header .username, #chat.theme-ff7 .msg-header .username, #chat.theme-fft .msg-header .username, #chat.theme-mc .msg-header .username, #chat.theme-mmbn1 .msg-header .username, #chat.theme-pmd .msg-header .username, #chat.theme-gs .msg-header .username {
-            margin-bottom: 0;
-        }
-
-        #chat.theme-ff8 .msg-header .timestamp, #chat.theme-ct .msg-header .timestamp, #chat.theme-acww .msg-header .timestamp, #chat.theme-ff7 .msg-header .timestamp, #chat.theme-fft .msg-header .timestamp, #chat.theme-mc .msg-header .timestamp, #chat.theme-mmbn1 .msg-header .timestamp, #chat.theme-pmd .msg-header .timestamp, #chat.theme-gs .msg-header .timestamp {
-            font-size: var(--ui-fs, 24px);
-            line-height: var(--ui-lh, 32px);
-            opacity: 0.55;
-            margin-left: 12px;
-        }
-
-        #chat.theme-ff8 .msg-box .message-text, #chat.theme-ct .msg-box .message-text, #chat.theme-acww .msg-box .message-text, #chat.theme-ff7 .msg-box .message-text, #chat.theme-fft .msg-box .message-text, #chat.theme-mc .msg-box .message-text, #chat.theme-mmbn1 .msg-box .message-text, #chat.theme-pmd .msg-box .message-text, #chat.theme-gs .msg-box .message-text {
-            margin: 0;
-            color: var(--ui-body-color, #ffffff);
-            font-size: var(--ui-fs, 24px);
-            line-height: var(--ui-lh, 32px);
-            white-space: normal;
-            word-break: break-word;
-        }
-
-        #chat.theme-ff8 .ui-zpix {
-            display: inline-block;
-            vertical-align: 6px;
-            color: #dcdcdc;
-            text-shadow: 1px 1px 0 #333;
-        }
-
-        #chat.theme-ff8 .msg-box .username {
-            display: inline-block;
-        }
-
-        #chat.theme-ff8 .msg-box img.badge {
-            height: 0.8em;
-            vertical-align: 6px;
-        }
-
-        /* ---- Webfont themes: fixed per-theme size, nearest-neighbour pixel glyphs ---- */
-        #chat.theme-ct, #chat.theme-fft, #chat.theme-mc, #chat.theme-mmbn1, #chat.theme-ff7, #chat.theme-pmd, #chat.theme-gs {
-            font-family: var(--ui-font, inherit);
-            text-shadow: var(--ui-text-shadow, none);
-            -webkit-font-smoothing: none;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: geometricPrecision;
-        }
-
-        #chat.theme-ct .msg-box .username {
-            display: inline-block;
-        }
-
-        #chat.theme-ct .msg-box img.badge {
-            height: 0.6em;
-            vertical-align: 6px;
-        }
-
-        /* Role colours for inlineName themes (mc, mmbn1), which no longer have
-           per-role atlas rows. The span's own declaration always beats the
-           colour it would otherwise inherit from .message-text. */
         #chat .user.mod { color: var(--ui-mod); }
+
         #chat .user.sub { color: var(--ui-sub); }
+
         #chat .user.vip { color: var(--ui-vip); }
+
         #chat .user.broadcaster { color: var(--ui-broadcaster); }
 
-        #chat.theme-acww li { max-width: none; }
-
-        #chat.theme-acww .msg-box {
-            width: 512px;
-            box-sizing: border-box;
-            padding: 24px 0 32px 0;
-        }
-
-        #chat.theme-acww .msg-header {
-            position: relative;
-            height: 48px;
-            margin: 0;
-        }
-
-        #chat.theme-acww .name-tag {
-            position: absolute;
-            left: 56px;
-            top: -24px;
-            min-width: 178px;
-            height: 44px;
-            image-rendering: pixelated;
-            z-index: 1;
-        }
-
-        #chat.theme-acww .msg-header .username {
-            position: absolute;
-            left: 90px;
-            top: -15px;
-            z-index: 2;
-            line-height: 26px;
-            white-space: nowrap;
-            flex-wrap: nowrap;
-            color: #000;
-        }
-
-        #chat.theme-acww .msg-header .timestamp {
-            position: absolute;
-            right: 130px;
-            top: 20px;
-            z-index: 2;
-            opacity: 0.9;
-            margin-left: 0;
-        }
-
-        #chat.theme-acww .msg-box .message-text { margin: 4px 90px 0 90px; }
-
-        #chat.theme-acww .continue-arrow {
-            position: absolute;
-            right: 55px;
-            bottom: 20px;
-            width: 32px;
-            height: 34px;
-            image-rendering: pixelated;
-            z-index: 3;
-            opacity: 0.9;
-        }
-
-        #chat.theme-ff7 .msg-box {
-            padding: 12px 24px 16px 16px;
-        }
-
-        #chat.theme-ff7 .msg-box .username {
-            display: inline-block;
-        }
-
-        #chat.theme-ff7 .msg-box img.badge {
-            height: 0.6em;
-            vertical-align: 2px;
-        }
-
-        #chat.theme-fft li {
-            max-width: 400px;
-            min-width: 280px;
-        }
-
-        #chat.theme-fft .msg-box {
-            padding: 30px 12px 12px 102px;
-            min-height: 102px;
-        }
-
-        #chat.theme-fft .msg-header {
-            margin: 0;
-        }
-
-        #chat.theme-fft .portrait {
-            position: absolute;
-            left: 12px;
-            top: 32px;
-            width: 80px;
-            height: 96px;
-            image-rendering: pixelated;
-            z-index: 2;
-        }
-
-        #chat.theme-fft .msg-box .message-text {
-            margin: 2px 0 0 0;
-        }
-
-        #chat.theme-fft .msg-box img.badge {
-            height: 0.6em
-        }
-
-        #chat.theme-mc li {
-            min-width: 320px;
-        }
-
-        #chat.theme-mc .msg-box {
-            padding: 16px 28px 16px 22px;
-            min-height: 96px;
-            word-spacing: 0.25em;
-        }
-
-        #chat.theme-mc .continue-arrow {
-            position: absolute;
-            right: 32px;
-            bottom: 0;
-            width: 14px;
-            height: 12px;
-            image-rendering: pixelated;
-            z-index: 3;
-            opacity: 0.9;
-        }
-
-        #chat.theme-mc .msg-box img.badge {
-            height: 1.4em;
-            vertical-align: 0px;
-        }
-
-        #chat.theme-mmbn1 li {
-            min-width: 320px;
-        }
-
-        #chat.theme-mmbn1 .msg-box {
-            padding: 24px 16px 16px 106px;
-            min-height: 92px;
-        }
-
-        #chat.theme-mmbn1 .portrait {
-            position: absolute;
-            left: 18px;
-            top: 20px;
-            width: 80px;
-            height: 96px;
-            image-rendering: pixelated;
-            z-index: 2;
-        }
-
-        #chat.theme-mmbn1 .continue-arrow {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 26px;
-            height: 26px;
-            image-rendering: pixelated;
-            z-index: 3;
-            opacity: 0.9;
-        }
-
-        #chat.theme-mmbn1 .msg-box img.badge {
-            height: 0.9em;
-            vertical-align: 0px;
-        }
-
-        #chat.theme-pmd li {
-            flex-direction: row;
-            align-items: flex-start;
-            max-width: 480px;
-        }
-
-        #chat.theme-pmd .msg-box {
-            padding: 16px 24px 20px 22px;
-            min-height: 60px;
-        }
-
-        #chat.theme-pmd .icon-box {
-            flex: 0 0 auto;
-            margin-right: 8px;
-            image-rendering: pixelated;
-            z-index: 2;
-        }
-
-        #chat.theme-pmd .msg-box img.badge {
-            height: 0.8em;
-            vertical-align: 0px;
-        }
-
-        #chat.theme-gs li {
-            flex-direction: row;
-            align-items: flex-start;
-            max-width: 480px;
-        }
-
-        #chat.theme-gs .msg-box {
-            padding: 16px 24px 20px 22px;
-            min-height: 44px;
-        }
-
-        #chat.theme-gs .icon-box {
-            flex: 0 0 auto;
-            margin-right: 8px;
-            image-rendering: pixelated;
-            z-index: 2;
-        }
-
-        #chat.theme-gs .msg-box img.badge {
-            height: 0.8em;
-            vertical-align: 0px;
-        }
-
-        /* ---- Shared ---- */
 
         #chat img.badge {
             height: 1em;
@@ -563,17 +171,6 @@
             left: var(--ui-hx, 0px);
         }
 
-        #chat.theme-mc .glyph-canvas {
-            vertical-align: -4px;
-        }
-
-        #chat.theme-mc .ui-zpix{
-            display: inline-block;
-            vertical-align: 2px;
-        }
-
-        
-
         #chat .bglyph {
             display: inline-block;
             background-image: var(--ui-atlas, none);
@@ -586,10 +183,6 @@
             height: 48px;
             vertical-align: middle;
             display: inline-block;
-        }
-
-        #chat.theme-default img.emote {
-            height: 2em;
         }
 
         #chat .e-stack {
@@ -610,27 +203,37 @@
         }
 
         #chat img.fx-flipx { transform: scaleX(-1); }
+
         #chat img.fx-flipy { transform: scaleY(-1); }
+
         #chat img.fx-wide {
             transform: scaleX(2);
             transform-origin: left center;
             margin-right: 2em;
         }
+
         #chat img.fx-flipx.fx-wide, #chat img.fx-wide.fx-flipx { transform: scaleX(-2); }
+
         #chat img.fx-cursed { filter: grayscale(1) contrast(1.6) brightness(0.88); }
+
         #chat img.fx-hyper {
             filter: saturate(3) hue-rotate(300deg) contrast(1.5);
             animation: fx-shake 0.12s linear infinite;
         }
+
         #chat img.fx-rainbow { animation: fx-rainbow 1s linear infinite; }
+
         #chat img.fx-jam { animation: fx-jam 0.5s linear infinite; }
+
         #chat img.fx-bounce { animation: fx-bounce 0.9s ease-in-out infinite; }
+
         #chat img.fx-spin { animation: fx-spin 1s linear infinite; }
 
         @keyframes fx-rainbow {
             from { filter: hue-rotate(0deg); }
             to   { filter: hue-rotate(360deg); }
         }
+
         @keyframes fx-shake {
             0%   { transform: translate(0, 0); }
             25%  { transform: translate(-3px, 2px); }
@@ -638,11 +241,13 @@
             75%  { transform: translate(-2px, -3px); }
             100% { transform: translate(2px, 3px); }
         }
+
         @keyframes fx-jam {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             25%      { transform: translateY(3px) rotate(-4deg); }
             75%      { transform: translateY(-3px) rotate(4deg); }
         }
+
         @keyframes fx-bounce {
             0%, 100% { transform: scaleY(1); }
             20%      { transform: scaleY(0.7); }
@@ -650,6 +255,7 @@
             60%      { transform: scaleX(-1) scaleY(0.7); }
             80%      { transform: scaleY(1); }
         }
+
         @keyframes fx-spin {
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
@@ -666,19 +272,25 @@
         #chat ul.hide-timestamps .timestamp { display: none; }
 
         #chat ul.fade-expire li { transition: opacity 0.8s ease; }
+
         #chat ul.fade-expire li.expiring { opacity: 0 !important; }
 
         #chat ul.align-default li { width: 100%; max-width: none; }
-        #chat.theme-pmd ul.align-default .msg-box, #chat.theme-gs ul.align-default .msg-box { flex: 1 1 auto; }
 
-        #chat ul.align-center li     { margin-left: auto; margin-right: auto; }
-        #chat ul.align-right li      { margin-left: auto; margin-right: 0; }
-        #chat ul.align-alternate li:nth-child(odd)  { margin-left: 0; margin-right: auto; }
+        #chat ul.align-center li { margin-left: auto; margin-right: auto; }
+
+        #chat ul.align-right li { margin-left: auto; margin-right: 0; }
+
+        #chat ul.align-alternate li:nth-child(odd) { margin-left: 0; margin-right: auto; }
+
         #chat ul.align-alternate li:nth-child(even) { margin-left: auto; margin-right: 0; }
 
-        #chat ul.align-center .msg-content     { margin-left: auto; margin-right: auto; width: fit-content; }
-        #chat ul.align-right .msg-content      { margin-left: auto; margin-right: 0;    width: fit-content; }
+        #chat ul.align-center .msg-content { margin-left: auto; margin-right: auto; width: fit-content; }
+
+        #chat ul.align-right .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; }
+
         #chat ul.align-alternate li:nth-child(odd)  .msg-content { margin-left: 0;    margin-right: auto; width: fit-content; }
+
         #chat ul.align-alternate li:nth-child(even) .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; }
 
         #tuner {
@@ -695,29 +307,36 @@
             font-size: 12px;
             display: none;
         }
+
         #tuner.show { display: block; }
+
         #tuner h1 {
             margin: 0 0 8px 0;
             font-size: 12px;
             letter-spacing: 1px;
             color: var(--ui-mod);
         }
+
         #tuner h1 span { color: var(--ui-dim); font-size: 10px; }
+
         #tuner .tuner-row {
             display: flex;
             align-items: center;
             margin: 6px 0;
             line-height: 1.4;
         }
+
         #tuner .tuner-row label {
             flex: 1;
             margin-right: 8px;
         }
+
         #tuner .tuner-row output {
             flex: 1;
             text-align: center;
             color: #ffffff;
         }
+
         #tuner button {
             width: 32px;
             height: 28px;
@@ -730,26 +349,33 @@
             font-size: 12px;
             cursor: pointer;
         }
+
         #tuner button:active { transform: translate(2px, 2px); box-shadow: none; }
+
         #tuner .tuner-toggle { width: 60px; }
+
         #tuner input[type="range"] {
             flex: 1;
             margin: 0 8px 0 0;
             min-width: 0;
         }
+
         #tuner-fade-secs-out { min-width: 30px; text-align: center; }
+
         #tuner input[type="range"] { flex: 1; margin: 0 8px 0 0; min-width: 0; }
+
         #tuner #tuner-fade-secs-out { flex: initial; min-width: 36px; text-align: right; }
-        /* Portrait themes swap the dropdowns for an in-page picker: CEF paints
-           native <select> popups to a separate texture OBS never composites, so
-           everything here is plain DOM. */
+
+
         #tuner.wide { width: 440px; }
+
         #tuner .portrait-picker {
             display: flex;
             gap: 8px;
             align-items: flex-start;
             margin: 6px 0;
         }
+
         #tuner .portrait-users {
             width: 190px;
             max-height: 240px;
@@ -758,6 +384,7 @@
             background: #1e1b16;
             border: 2px solid #33312c;
         }
+
         #tuner .portrait-user {
             display: block;
             width: 100%;
@@ -774,15 +401,20 @@
             text-align: left;
             cursor: pointer;
         }
+
         #tuner .portrait-user:last-child { border-bottom: 0; }
+
         #tuner .portrait-user:hover { background: #2a2722; }
+
         #tuner .portrait-user.active { background: #54514a; color: #ffffff; }
+
         #tuner .portrait-user .pu-name {
             display: block;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         #tuner .portrait-user .pu-assign {
             display: block;
             color: var(--ui-dim);
@@ -791,14 +423,18 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         #tuner .portrait-user.active .pu-assign { color: #d8d2c4; }
+
         #tuner .portrait-grid-wrap { flex: 1; min-width: 0; }
+
         #tuner .portrait-grid-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 4px;
         }
+
         #tuner .portrait-grid-head .pg-title {
             color: var(--ui-dim);
             font-size: 10px;
@@ -806,6 +442,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         #tuner .portrait-grid {
             display: grid;
             grid-template-columns: repeat(4, max-content);
@@ -817,6 +454,7 @@
             background: #1e1b16;
             border: 2px solid #33312c;
         }
+
         #tuner .portrait-tile {
             position: relative;
             display: block;
@@ -829,11 +467,16 @@
             box-shadow: none;
             cursor: pointer;
         }
+
         #tuner .portrait-tile:active { transform: none; box-shadow: none; }
+
         #tuner .portrait-tile:hover { border-color: #8b8578; }
+
         #tuner .portrait-tile.selected { border-color: #f0c040; }
-        /* Square-portrait themes (pmd) fit a square thumb, so the cell hugs it. */
+
+
         #tuner .portrait-grid.square .portrait-tile { height: 52px; }
+
         #tuner .portrait-tile.selected::after {
             content: "";
             position: absolute;
@@ -843,10 +486,12 @@
             height: 6px;
             background: #f0c040;
         }
+
         #tuner .portrait-tile canvas {
             display: block;
             image-rendering: pixelated;
         }
+
         #tuner .portrait-tile .tile-label {
             position: absolute;
             left: 0;
@@ -862,13 +507,14 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        /* AUTO / NONE fill the same footprint as a portrait tile, so their label
-           centres rather than hugging the bottom edge. */
+
+
         #tuner .portrait-tile.plain {
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         #tuner .portrait-tile.plain .tile-label {
             position: static;
             padding: 0 2px;
@@ -876,7 +522,8 @@
             font-size: 11px;
             line-height: 1.2;
         }
-        /* Generation pager under the grid: mirrors the tuner-row ◀ ▶ controls. */
+
+
         #tuner .portrait-gen-row {
             display: flex;
             align-items: center;
@@ -884,13 +531,26 @@
             gap: 6px;
             margin-top: 4px;
         }
+
         #tuner .portrait-gen-row .pg-gen {
             flex: 1;
             text-align: center;
             color: #ffffff;
             font-size: 12px;
         }
-    </style>
+</style>
+
+    <link rel="stylesheet" href="assets/themes/default/default.css">
+    <link rel="stylesheet" href="assets/themes/ff8/ff8.css">
+    <link rel="stylesheet" href="assets/themes/ct/ct.css">
+    <link rel="stylesheet" href="assets/themes/acww/acww.css">
+    <link rel="stylesheet" href="assets/themes/ff7/ff7.css">
+    <link rel="stylesheet" href="assets/themes/fft/fft.css">
+    <link rel="stylesheet" href="assets/themes/gs/gs.css">
+    <link rel="stylesheet" href="assets/themes/minishcap/minishcap.css">
+    <link rel="stylesheet" href="assets/themes/mmbn1/mmbn1.css">
+    <link rel="stylesheet" href="assets/themes/pmd/pmd.css">
+    <link rel="stylesheet" href="assets/themes/cc/cc.css">
 
 </head>
 <body>
@@ -901,7 +561,7 @@
     <div id="setup-notice">
         <div class="setup-box">
             <h1>Chat Overlay setup</h1>
-            <p>Add this page as a <b>Browser Source</b> in OBS — size <b>600 x 1000</b></p>
+            <p>Add this page as a <b>Browser Source</b> in OBS — any size works, the overlay fills the window (650–800 px wide)</p>
             <p>Replace <code>yourusername</code> in the URL with your channel name</p>
             <p>Open the <b>Interact</b> window and press <b>F</b> for the tuner menu</p>
         </div>
@@ -969,20 +629,14 @@
         return (d && d.h) || GLYPH_H;
     }
 
-    /* True when the theme renders text with a woff2 webfont instead of atlas glyphs. */
     function usesWebfont() {
         return !!(currentTheme && currentTheme.fontFamily);
     }
 
-    /* True when a webfont theme fills the webfont's gaps from its own atlas PNG.
-       Such a theme lists the characters the webfont lacks in `atlasFallback`;
-       pure-atlas themes omit the key and keep using the atlas for everything. */
     function usesAtlasFallback() {
         return !!(currentTheme && currentTheme.atlasFallback);
     }
 
-    /* Should this character be drawn from the atlas rather than set as text?
-       Single source of truth for the message body and the name/timestamp runs. */
     function useAtlasGlyph(ch) {
         if (!atlasReady()) return false;
         if (!GLYPHS[ch.charCodeAt(0)]) return false;
@@ -990,12 +644,6 @@
         return usesAtlasFallback() && currentTheme.atlasFallback.indexOf(ch) >= 0;
     }
 
-    /* A theme webfont is generated from its own atlas PNG on a doubled pixel
-       grid, so a glyph borrowed from that atlas must be drawn at PIXEL_SCALE to
-       line up with the webfont text beside it. Verified against MinishType:
-       unitsPerEm 1024, sCapHeight 1408 -> 22px caps at font-size 16, matching
-       the atlas's 11px of cap ink doubled; all 56 letters and digits also match
-       on advance width once doubled. */
     var GLYPHS = {};
     var WINDOW_STYLES = [];
     var PORTRAITS = [];
@@ -1045,10 +693,6 @@
         return userPortraits[currentTheme.key];
     }
 
-    /* ---- Tuner config persistence (localStorage, per channel) ----
-       The overlay is a static browser source, so localStorage is the only place
-       to remember settings between sessions. Config is keyed by the ?channel=
-       value so two streamers sharing a machine don't clobber each other. */
     var CONFIG_STORE_KEY = "chatOverlayConfig";
     var CONFIG_VERSION = 1;
     var configStore = null;
@@ -1092,9 +736,6 @@
         configSaveTimer = setTimeout(saveConfig, 300);
     }
 
-    /* Restores theme + appearance toggles + per-theme options for this channel.
-       Runs once at startup, before the first applyTheme. Invalid/absent data
-       silently falls back to the current in-code defaults. */
     function hydrateConfig() {
         loadConfigStore();
         var c = currentConfig();
@@ -1192,270 +833,17 @@
     };
 
     var THEMES = {
-        default: {
-            key: "default",
-            label: "Default",
-            atlas: null,
-            data: null,
-            windowBorder: 0,
-            drawMode: null,
-            userRows: null,
-            mapApostrophe: false
-        },
-        ff8: {
-            key: "ff8",
-            label: "Final Fantasy VIII",
-            atlas: "assets/themes/ff8/ff8-font.png",
-            data: (typeof THEME_DATA_FF8 === "object" && THEME_DATA_FF8) ? THEME_DATA_FF8 : null,
-            windowBorder: 2,
-            drawMode: "border",
-            userRows: { broadcaster: 60, mod: 48, sub: 36, vip: 12 },
-            mapApostrophe: true,
-            zpixFallback: "@\\^`|{}¨´ªº"
-        },
-        ct: {
-            key: "ct",
-            label: "Chrono Trigger",
-            atlas: "assets/themes/ct/ct-font.png",
-            data: (typeof THEME_DATA_CT === "object" && THEME_DATA_CT) ? THEME_DATA_CT : null,
-            windowBorder: 8,
-            drawMode: "style",
-            userRows: null,
-            mapApostrophe: false,
-            fontFamily: "ChronoType",
-            fontSize: 32,
-            lineHeight: 32,
-            textShadow: "2px 2px 0 #000",
-            tuner: ["windowStyle"]
-        },
-        acww: {
-            key: "acww",
-            label: "Animal Crossing: Wild World",
-            atlas: "assets/themes/acww/acww-font.png",
-            data: (typeof THEME_DATA_ACWW === "object" && THEME_DATA_ACWW) ? THEME_DATA_ACWW : null,
-            windowBorder: 24,
-            drawMode: "style",
-            userRows: null,
-            mapApostrophe: false,
-            nameTag: true,
-            chromaKey: true,
-            chromaKeyRects: function (style) {
-                if (style && style.name === "thought") return [];
-                return [
-                    { x: 28, y: 0, w: 89, h: 20 },
-                    { x: 117, y: 10, w: 44, h: 1 }
-                ];
-            },
-            continueArrow: true,
-            tuner: ["windowStyle", "nameColor"]
-        },
-        ff7: {
-            key: "ff7",
-            label: "Final Fantasy VII",
-            atlas: "assets/themes/ff7/ff7-font.png",
-            data: (typeof THEME_DATA_FF7 === "object" && THEME_DATA_FF7) ? THEME_DATA_FF7 : null,
-            windowBorder: 4,
-            drawMode: "border",
-            userRows: null,
-            mapApostrophe: true,
-            fontFamily: "Reactor7",
-            fontStack: "'Zpix', monospace",
-            fontSize: 32,
-            lineHeight: 32,
-            textShadow: "2px 2px 0 #000",
-        },
-        fft: {
-            key: "fft",
-            label: "Final Fantasy Tactics",
-            atlas: "assets/themes/fft/fft-font.png",
-            boxAtlas: "assets/themes/fft/fft-blank.png",
-            data: (typeof THEME_DATA_FFT === "object" && THEME_DATA_FFT) ? THEME_DATA_FFT : null,
-            windowBorder: 0,
-            drawMode: "box",
-            userRows: null,
-            mapApostrophe: false,
-            fontFamily: "Altima",
-            fontSize: 36,
-            lineHeight: 32,
-            letterSpacing: 1,
-            textShadow: "2px 2px 0 #6f6959",
-            bodyColor: "#312921",
-            usernameColor: "#6b2910",
-            portrait: true,
-            tuner: ["userPortrait"]
-        },
-        gs: {
-            key: "gs",
-            label: "Golden Sun",
-            atlas: null,
-            data: null,
-            boxAtlas: "assets/themes/gs/box/box.png",
-            boxSlices: { l: 7, r: 7, t: 7, b: 7 },
-            boxScale: 2,
-            fontFamily: "GoldenSunItalics",
-            fontStack: "'Zpix', monospace",
-            fontSize: 28,
-            lineHeight: 28,
-            bodyColor: "#ffffff",
-            usernameColor: "#f4f1ea",
-            textShadow: "2px 2px 0 #000",
-            drawMode: "box",
-            windowBorder: 0,
-            userRows: null,
-            mapApostrophe: false,
-            inlineName: true,
-            iconImage: "assets/themes/gs/box/icon.png",
-            iconSlices: { l: 4, r: 4, t: 4, b: 4 },
-            iconBoxCss: 80,
-            iconPortraitCss: 64,
-            portraitBase: "assets/themes/gs/portrait/",
-            portraitNames: [
-                "aaron", "agatio", "akafubu", "alex", "armorer-2", "armorer",
-                "babi", "briggs", "champan-general-store", "chaucha", "conservato",
-                "dodonpa", "donpa", "dora", "elder-of-madra", "elder-of-prox",
-                "eoleo", "faran", "feizhi", "felix-and-jennas-dad",
-                "felix-and-jennas-mom", "felix-w-mask", "felix", "garet",
-                "garets-grandma", "garets-grandpa", "great-healer", "healer",
-                "herbalist-2", "herbalist", "hsu", "innkeeper", "innkeepers-wife",
-                "iodem", "isaac", "ivan", "jenna", "jupiter-djinn", "kaja", "karst",
-                "kay", "kraden", "kushinada", "kyle", "lady-mccoy", "laurel",
-                "lord-hammet", "maha", "mars-djinn", "master-hama", "master-poi",
-                "mayor-of-alhafra", "mayor-of-madra", "menardi", "mercury-djinn",
-                "mia", "moapa", "mr-jerra", "ms-jerra", "nariwabes-teller", "nyumpa",
-                "obaba", "piers", "puelle", "riki", "saturos", "shaman-villages-teller",
-                "sheba", "sunshine", "susa", "tavi", "tret-1", "tret-2", "uzume",
-                "venus-djinn", "weaponeer-2", "weaponeer", "young-garet",
-                "young-isaac", "young-jenna"
-            ],
-            portraitImage: "assets/themes/gs/portrait/aaron.png",
-            portrait: true,
-            portraitFiles: true,
-            squarePortrait: true,
-            iconBoxPortrait: true,
-            tuner: ["userPortrait"]
-        },
-        mc: {
-            key: "mc",
-            label: "The Legend of Zelda: The Minish Cap",
-            atlas: "assets/themes/minishcap/minishcap-font.png",
-            boxAtlas: "assets/themes/minishcap/minishcap-blank.png",
-            data: (typeof THEME_DATA_MINISHCAP === "object" && THEME_DATA_MINISHCAP) ? THEME_DATA_MINISHCAP : null,
-            windowBorder: 0,
-            drawMode: "box",
-            userRows: null,
-            mapApostrophe: true,
-            fontFamily: "MinishType",
-            fontStack: "'ZpixBig', monospace",
-            atlasFallback: "#$%&()*+/:;<=>?@[]^_`{|}~",
-            zpixFallback: "&\\",
-            fontSize: 16,
-            lineHeight: 32,
-            continueArrow: true,
-            inlineName: true,
-            boxBands: { top: 5 / 48, bot: 5 / 48 }
-        },
-        mmbn1: {
-            key: "mmbn1",
-            label: "Mega Man Battle Network 1",
-            atlas: "assets/themes/mmbn1/mmbn1-font.png",
-            boxAtlas: "assets/themes/mmbn1/mmbn1-blank.png",
-            data: (typeof THEME_DATA_MMBN1 === "object" && THEME_DATA_MMBN1) ? THEME_DATA_MMBN1 : null,
-            windowBorder: 0,
-            drawMode: "box",
-            userRows: null,
-            mapApostrophe: true,
-            fontFamily: "BN5DSEUFontThin",
-            fontStack: "'Zpix', monospace",
-            fontSize: 24,
-            lineHeight: 32,
-            bodyColor: "#2e3434",
-            usernameColor: "#2e3434",
-            portrait: true,
-            continueArrow: true,
-            inlineName: true,
-            boxBands: { top: 6 / 64, bot: 4 / 64 },
-            tuner: ["userPortrait"]
-        },
-        pmd: {
-            key: "pmd",
-            label: "Pokémon Mystery Dungeon",
-            atlas: null,
-            data: null,
-            boxAtlas: "assets/themes/pmd/box/classic/classicbox.png",
-            boxSlices: { l: 40, r: 40, t: 30, b: 30 },
-            boxScale: 0.4,
-            fontFamily: "PMDFont",
-            fontStack: "'Zpix', monospace",
-            fontSize: 18,
-            lineHeight: 32,
-            mapApostrophe: false,
-            bodyColor: "#ffffff",
-            usernameColor: "#f4f1ea",
-            textShadow: "2px 2px 0 #000",
-            drawMode: "box",
-            windowBorder: 0,
-            userRows: null,
-            inlineName: true,
-            iconImage: "assets/themes/pmd/box/classic/classicicon.png",
-            portraitImage: "assets/themes/pmd/portrait/0001/Normal.png",
-            portrait: true,
-            portraitFiles: true,
-            portraitGen: true,
-            squarePortrait: true,
-            iconBoxPortrait: true,
-            defaultBoxStyle: "classic",
-            boxStyles: {
-                classic: {
-                    box: "assets/themes/pmd/box/classic/classicbox.png",
-                    icon: "assets/themes/pmd/box/classic/classicicon.png"
-                },
-                classicgray: {
-                    box: "assets/themes/pmd/box/classicgray/classicgraybox.png",
-                    icon: "assets/themes/pmd/box/classicgray/classicgrayicon.png"
-                },
-                classicgreen: {
-                    box: "assets/themes/pmd/box/classicgreen/classicgreenbox.png",
-                    icon: "assets/themes/pmd/box/classicgreen/classicgreenicon.png"
-                },
-                classicindigo: {
-                    box: "assets/themes/pmd/box/classicindigo/classicindigobox.png",
-                    icon: "assets/themes/pmd/box/classicindigo/classicindigoicon.png"
-                },
-                classicorange: {
-                    box: "assets/themes/pmd/box/classicorange/classicorangebox.png",
-                    icon: "assets/themes/pmd/box/classicorange/classicorangeicon.png"
-                },
-                classicpink: {
-                    box: "assets/themes/pmd/box/classicpink/classicpinkbox.png",
-                    icon: "assets/themes/pmd/box/classicpink/classicpinkicon.png"
-                },
-                classicpurple: {
-                    box: "assets/themes/pmd/box/classicpurple/classicpurplebox.png",
-                    icon: "assets/themes/pmd/box/classicpurple/classicpurpleicon.png"
-                },
-                classicred: {
-                    box: "assets/themes/pmd/box/classicred/classicredbox.png",
-                    icon: "assets/themes/pmd/box/classicred/classicredicon.png"
-                },
-                classicteal: {
-                    box: "assets/themes/pmd/box/classicteal/classictealbox.png",
-                    icon: "assets/themes/pmd/box/classicteal/classictealicon.png"
-                },
-                classicyellow: {
-                    box: "assets/themes/pmd/box/classicyellow/classicyellowbox.png",
-                    icon: "assets/themes/pmd/box/classicyellow/classicyellowicon.png"
-                },
-                special1: {
-                    box: "assets/themes/pmd/box/special1/special1box.png",
-                    icon: "assets/themes/pmd/box/special1/special1icon.png"
-                },
-                special2: {
-                    box: "assets/themes/pmd/box/special2/special2box.png",
-                    icon: "assets/themes/pmd/box/special2/special2icon.png"
-                }
-            },
-            tuner: ["boxStyle", "userPortrait"]
-        }
+        default: THEME_DEFAULT,
+        ff8: THEME_FF8,
+        ct: THEME_CT,
+        acww: THEME_ACWW,
+        ff7: THEME_FF7,
+        fft: THEME_FFT,
+        gs: THEME_GS,
+        mc: THEME_MINISHCAP,
+        mmbn1: THEME_MMBN1,
+        pmd: THEME_PMD,
+        cc: THEME_CC
     };
 
     var DEFAULT_OPTIONS = { mode: 0, dim: false, badges: false, roleBadges: false, timestamps: false, bg: false, fade: false, fadeSeconds: 30 };
@@ -1497,8 +885,25 @@
     function drawArrowFrame(canvas, frame) {
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (!atlasReady() || !frame) return;
         ctx.imageSmoothingEnabled = false;
+        if (canvas._cc) {
+            var ci = canvas._cc;
+            if (ci.img && ci.img._parts) {
+                var cim = (frame && frame.ctc != null) ? ci.img.ctc[frame.ctc] : null;
+                if (!cim || !cim.complete || !cim.naturalWidth) return;
+                var rr = (ci.img.ctcRects && ci.img.ctcRects[frame.ctc]) ||
+                    { x: 0, y: 0, w: cim.naturalWidth, h: cim.naturalHeight };
+                ctx.drawImage(cim, rr.x, rr.y, rr.w, rr.h,
+                    0, 0, canvas.width, canvas.height);
+                return;
+            }
+            if (!frame || !ci.img || !ci.img.complete || !ci.img.naturalWidth) return;
+            var dw = frame.w, dh = frame.h;
+            ctx.drawImage(ci.img, frame.rx + frame.cell * ci.cell, frame.ry + ci.top,
+                frame.w, frame.h, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+            return;
+        }
+        if (!atlasReady() || !frame) return;
         ctx.drawImage(atlas, frame.x, frame.y, frame.w, frame.h,
             0, 0, frame.w * PIXEL_SCALE, frame.h * PIXEL_SCALE);
     }
@@ -1509,16 +914,30 @@
         for (var i = 0; i < list.length; i++) {
             var c = list[i];
             if (!c._frames || !c._frames.length) continue;
-            c._frame = ((c._frame || 0) + 1) % c._frames.length;
-            drawArrowFrame(c, c._frames[c._frame]);
+            if (c._frames.length > 1) {
+                c._frame = ((c._frame || 0) + 1) % c._frames.length;
+                drawArrowFrame(c, c._frames[c._frame]);
+                continue;
+            }
+            var b = c._blink;
+            if (!b) continue;
+            var onTicks = Math.max(1, Math.round((b.ms > 0 ? b.ms : 400) / (blinkInterval || 130)));
+            var phase = b.tick || 0;
+            c.style.visibility = phase < onTicks ? "" : "hidden";
+            b.tick = (phase + 1) % (onTicks * 2);
         }
     }
 
     var blinkTimer = null;
+    var blinkInterval = 0;
 
     function startBlink() {
-        if (blinkTimer || !currentTheme.continueArrow) return;
-        blinkTimer = setInterval(blinkArrows, 700);
+        if (!currentTheme.continueArrow) return;
+        var ms = currentTheme.arrowInterval || 700;
+        if (blinkTimer && blinkInterval === ms) return;
+        if (blinkTimer) clearInterval(blinkTimer);
+        blinkInterval = ms;
+        blinkTimer = setInterval(blinkArrows, ms);
     }
 
     var THEME_TUNER = {
@@ -1622,201 +1041,49 @@
                 renderAllHistory();
             }
         },
+        portraitSet: {
+            label: "Set (1999/2021)",
+            type: "cycle",
+            resolveValues: function () {
+                var sets = currentTheme && currentTheme.portraitSets;
+                var vals = [];
+                if (sets && typeof sets === "object") {
+                    Object.keys(sets).forEach(function (name) {
+                        vals.push({ label: name, name: name, value: sets[name] });
+                    });
+                }
+                return vals;
+            },
+            resolveDefault: function () {
+                var sets = currentTheme && currentTheme.portraitSets;
+                var d = currentTheme && currentTheme.defaultPortraitSet;
+                if (sets && d) {
+                    var keys = Object.keys(sets);
+                    for (var i = 0; i < keys.length; i++) {
+                        if (keys[i] === d) return i;
+                    }
+                }
+                return 0;
+            },
+            onChange: function () {
+                var vals = THEME_TUNER.portraitSet.resolveValues();
+                var idx = themeOptionState["portraitSet"];
+                var entry = (typeof idx === "number" && vals[idx]) ? vals[idx] : vals[0];
+                if (!entry) return;
+                currentTheme.portraitBase = entry.value;
+                currentTheme.boxSet = entry.name;
+                loadThemeData(currentTheme.data);
+                buildTunerOptions();
+                if (currentTheme.boxStyles) applyBoxStyle();
+                else renderAllHistory();
+            }
+        },
         userPortrait: {
             label: "Portrait",
             type: "userPortrait"
         }
     };
 
-    /* National Dex names (gens 1-9) in folder order: index i -> portrait/(i+1)/. Used
-       to build the file-based portrait deck (each folder also has a shiny at 0000/0001). */
-    var PMD_PORTRAIT_NAMES = [
-        "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
-        "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
-        "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot",
-        "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok",
-        "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina",
-        "Nidoqueen", "Nidoran♂", "Nidorino", "Nidoking", "Clefairy", "Clefable",
-        "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat",
-        "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat",
-        "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck",
-        "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag",
-        "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop",
-        "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool",
-        "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash",
-        "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo",
-        "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder",
-        "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee",
-        "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute",
-        "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung",
-        "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela",
-        "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu",
-        "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar",
-        "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto",
-        "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte",
-        "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno",
-        "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo",
-        "Mew",
-        "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion",
-        "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot",
-        "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat",
-        "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi",
-        "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos",
-        "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip",
-        "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma",
-        "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking",
-        "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress",
-        "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish",
-        "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring",
-        "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid",
-        "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom",
-        "Kingdra", "Phanpy", "Donphan", "Porygon2", "Stantler", "Smeargle",
-        "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank",
-        "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar",
-        "Tyranitar", "Lugia", "Ho-Oh", "Celebi", "Treecko", "Grovyle",
-        "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp",
-        "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple",
-        "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre",
-        "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow",
-        "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit",
-        "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking",
-        "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud",
-        "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty",
-        "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite",
-        "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat",
-        "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo",
-        "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink",
-        "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea",
-        "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone",
-        "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy",
-        "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas",
-        "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull",
-        "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt",
-        "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail",
-        "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence",
-        "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel",
-        "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi",
-        "Deoxys",
-        "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape",
-        "Piplup", "Prinplup", "Empoleon", "Starly", "Staravia", "Staraptor",
-        "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio",
-        "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon",
-        "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Vespiquen",
-        "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos",
-        "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny",
-        "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky",
-        "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny",
-        "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax",
-        "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion",
-        "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke",
-        "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickilicky", "Rhyperior",
-        "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon",
-        "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass",
-        "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf",
-        "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia",
-        "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus", "Victini",
-        "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar",
-        "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup",
-        "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage",
-        "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna",
-        "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola",
-        "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill",
-        "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad",
-        "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny",
-        "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil",
-        "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka",
-        "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty",
-        "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen",
-        "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino",
-        "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion",
-        "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe",
-        "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus",
-        "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula",
-        "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo",
-        "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "Lampent",
-        "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic",
-        "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao",
-        "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant",
-        "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant",
-        "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion",
-        "Terrakion", "Virizion", "Tornadus", "Thundurus", "Reshiram", "Zekrom",
-        "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect", "Chespin",
-        "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie",
-        "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder",
-        "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar",
-        "Flabébé", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham",
-        "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade",
-        "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay",
-        "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher",
-        "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura",
-        "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy",
-        "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo",
-        "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas",
-        "Yveltal", "Zygarde", "Diancie", "Hoopa", "Volcanion", "Rowlet",
-        "Dartrix", "Decidueye", "Litten", "Torracat", "Incineroar", "Popplio",
-        "Brionne", "Primarina", "Pikipek", "Trumbeak", "Toucannon", "Yungoos",
-        "Gumshoos", "Grubbin", "Charjabug", "Vikavolt", "Crabrawler", "Crabominable",
-        "Oricorio", "Cutiefly", "Ribombee", "Rockruff", "Lycanroc", "Wishiwashi",
-        "Mareanie", "Toxapex", "Mudbray", "Mudsdale", "Dewpider", "Araquanid",
-        "Fomantis", "Lurantis", "Morelull", "Shiinotic", "Salandit", "Salazzle",
-        "Stufful", "Bewear", "Bounsweet", "Steenee", "Tsareena", "Comfey",
-        "Oranguru", "Passimian", "Wimpod", "Golisopod", "Sandygast", "Palossand",
-        "Pyukumuku", "Type: Null", "Silvally", "Minior", "Komala", "Turtonator",
-        "Togedemaru", "Mimikyu", "Bruxish", "Drampa", "Dhelmise", "Jangmo-o",
-        "Hakamo-o", "Kommo-o", "Tapu Koko", "Tapu Lele", "Tapu Bulu", "Tapu Fini",
-        "Cosmog", "Cosmoem", "Solgaleo", "Lunala", "Nihilego", "Buzzwole",
-        "Pheromosa", "Xurkitree", "Celesteela", "Kartana", "Guzzlord", "Necrozma",
-        "Magearna", "Marshadow", "Poipole", "Naganadel", "Stakataka", "Blacephalon",
-        "Zeraora", "Meltan", "Melmetal", "Grookey", "Thwackey", "Rillaboom",
-        "Scorbunny", "Raboot", "Cinderace", "Sobble", "Drizzile", "Inteleon",
-        "Skwovet", "Greedent", "Rookidee", "Corvisquire", "Corviknight", "Blipbug",
-        "Dottler", "Orbeetle", "Nickit", "Thievul", "Gossifleur", "Eldegoss",
-        "Wooloo", "Dubwool", "Chewtle", "Drednaw", "Yamper", "Boltund",
-        "Rolycoly", "Carkol", "Coalossal", "Applin", "Flapple", "Appletun",
-        "Silicobra", "Sandaconda", "Cramorant", "Arrokuda", "Barraskewda", "Toxel",
-        "Toxtricity", "Sizzlipede", "Centiskorch", "Clobbopus", "Grapploct", "Sinistea",
-        "Polteageist", "Hatenna", "Hattrem", "Hatterene", "Impidimp", "Morgrem",
-        "Grimmsnarl", "Obstagoon", "Perrserker", "Cursola", "Sirfetch'd", "Mr. Rime",
-        "Runerigus", "Milcery", "Alcremie", "Falinks", "Pincurchin", "Snom",
-        "Frosmoth", "Stonjourner", "Eiscue", "Indeedee", "Morpeko", "Cufant",
-        "Copperajah", "Dracozolt", "Arctozolt", "Dracovish", "Arctovish", "Duraludon",
-        "Dreepy", "Drakloak", "Dragapult", "Zacian", "Zamazenta", "Eternatus",
-        "Kubfu", "Urshifu", "Zarude", "Regieleki", "Regidrago", "Glastrier",
-        "Spectrier", "Calyrex", "Wyrdeer", "Kleavor", "Ursaluna", "Basculegion",
-        "Sneasler", "Overqwil", "Enamorus", "Sprigatito", "Floragato", "Meowscarada",
-        "Fuecoco", "Crocalor", "Skeledirge", "Quaxly", "Quaxwell", "Quaquaval",
-        "Lechonk", "Oinkologne", "Tarountula", "Spidops", "Nymble", "Lokix",
-        "Pawmi", "Pawmo", "Pawmot", "Tandemaus", "Maushold", "Fidough",
-        "Dachsbun", "Smoliv", "Dolliv", "Arboliva", "Squawkabilly", "Nacli",
-        "Naclstack", "Garganacl", "Charcadet", "Armarouge", "Ceruledge", "Tadbulb",
-        "Bellibolt", "Wattrel", "Kilowattrel", "Maschiff", "Mabosstiff", "Shroodle",
-        "Grafaiai", "Bramblin", "Brambleghast", "Toedscool", "Toedscruel", "Klawf",
-        "Capsakid", "Scovillain", "Rellor", "Rabsca", "Flittle", "Espathra",
-        "Tinkatink", "Tinkatuff", "Tinkaton", "Wiglett", "Wugtrio", "Bombirdier",
-        "Finizen", "Palafin", "Varoom", "Revavroom", "Cyclizar", "Orthworm",
-        "Glimmet", "Glimmora", "Greavard", "Houndstone", "Flamigo", "Cetoddle",
-        "Cetitan", "Veluza", "Dondozo", "Tatsugiri", "Annihilape", "Clodsire",
-        "Farigiraf", "Dudunsparce", "Kingambit", "Great Tusk", "Scream Tail", "Brute Bonnet",
-        "Flutter Mane", "Slither Wing", "Sandy Shocks", "Iron Treads", "Iron Bundle", "Iron Hands",
-        "Iron Jugulis", "Iron Moth", "Iron Thorns", "Frigibax", "Arctibax", "Baxcalibur",
-        "Gimmighoul", "Gholdengo", "Wo-Chien", "Chien-Pao", "Ting-Lu", "Chi-Yu",
-        "Roaring Moon", "Iron Valiant", "Koraidon", "Miraidon", "Walking Wake", "Iron Leaves",
-        "Dipplin", "Poltchageist", "Sinistcha", "Okidogi", "Munkidori", "Fezandipiti",
-        "Ogerpon", "Archaludon", "Hydrapple", "Gouging Fire", "Raging Bolt", "Iron Boulder",
-        "Iron Crown", "Terapagos", "Pecharunt"
-    ];
-
-    /* Inclusive National Dex ranges per generation; index i -> "Gen i+1". The
-       portrait picker pages the grid by these (arrows cycle, wrapping around).
-       Adding a gen = append its names above + its range here. */
-    var PMD_PORTRAIT_GENS = [
-        [1, 151], [152, 251], [252, 386], [387, 493], [494, 649],
-        [650, 721], [722, 809], [810, 905], [906, 1025]
-    ];
-
-    /* Portraits whose shiny is absent (958) or byte-identical to the base art
-       (802) in the source set; they never roll shiny. */
-    var PMD_NO_SHINY = { 802: true, 958: true };
 
     function loadThemeData(data) {
         GLYPHS = {};
@@ -1858,8 +1125,6 @@
                 });
             }
         }
-        /* File-based portrait themes (pmd) list every root folder's Normal.png;
-           the shiny variant lives one level deeper at 0000/0001/Normal.png. */
         if (currentTheme && currentTheme.portraitGen && PMD_PORTRAIT_NAMES) {
             PORTRAITS = [];
             for (var pfi = 0; pfi < PMD_PORTRAIT_NAMES.length; pfi++) {
@@ -1883,7 +1148,6 @@
                 });
             }
         }
-        /* Generic file-based portrait deck: one PNG per name under portraitBase. */
         if (currentTheme && currentTheme.portraitNames) {
             PORTRAITS = [];
             for (var gni = 0; gni < currentTheme.portraitNames.length; gni++) {
@@ -1918,6 +1182,17 @@
         currentTheme = t;
         themeLoaded = false;
         startBlink();
+        if (t.portraitSets) {
+            var psVals = THEME_TUNER.portraitSet.resolveValues();
+            var psIdx = restoreThemeOption("portraitSet", THEME_TUNER.portraitSet.resolveDefault());
+            if (typeof psIdx === "number" && psVals[psIdx]) {
+                t.portraitBase = psVals[psIdx].value;
+                t.boxSet = psVals[psIdx].name;
+            } else if (t.defaultPortraitSet) {
+                t.portraitBase = t.portraitSets[t.defaultPortraitSet] || t.portraitBase;
+                t.boxSet = t.defaultPortraitSet;
+            }
+        }
         loadThemeData(t.data);
         if (t.atlas) {
             var img = atlasCache[t.key];
@@ -1983,8 +1258,6 @@
         } else {
             portraitImg = null;
         }
-        /* Appearance toggles are global and persisted (hydrateConfig at startup),
-           so switching themes must not reset them. */
         applyTunerMode();
         applyDim();
         applyBadges();
@@ -2011,8 +1284,6 @@
         root.setProperty("--ui-body-color", t.bodyColor || "#ffffff");
         root.setProperty("--ui-user-color", t.usernameColor || "#f4f1ea");
         root.setProperty("--ui-text-shadow", t.textShadow || "none");
-        /* Window backgrounds are sized from measured text, so re-render once the
-           webfont is actually available rather than measuring the swap fallback. */
         if (!t.fontFamily || !document.fonts || !document.fonts.load) return;
         if (document.fonts.check("16px " + t.fontFamily)) return;
         document.fonts.load("16px " + t.fontFamily).then(function () {
@@ -2077,10 +1348,6 @@
         return randomWindow();
     }
 
-    /* Pixel-art 9-slice: per-side source slices are scaled by a fixed factor
-       and every edge/center band is TILED (never stretched) so the box keeps
-       crisp art at any width/height. The center band is drawn too (transparent
-       source regions stay transparent), so frames like the icon can reuse it. */
     function drawNineSlice(ctx, img, slices, scale, w, h) {
         var nw = img.naturalWidth, nh = img.naturalHeight;
         var dl = Math.max(1, Math.round(slices.l * scale));
@@ -2129,6 +1396,180 @@
         }
     }
 
+    function drawCcBoxParts(ctx, parts, w, h, scale) {
+        if (!parts || !parts.def || w <= 0 || h <= 0) return;
+        var s = (typeof scale === "number" && scale > 0) ? scale : 1;
+        var def = parts.def;
+        var smoothing = ctx.imageSmoothingEnabled;
+        var bleed = (typeof def.bleed === "number" ? def.bleed : 0) * s;
+        var trim = def.trim || null;
+        var trimT = trim ? Math.max(0, Math.round(trim.t || 0)) : 0;
+        var trimB = trim ? Math.max(0, Math.round(trim.b || 0)) : 0;
+        if (bleed || trimT || trimB) {
+            ctx.save();
+            ctx.translate(bleed, bleed - trimT);
+            w -= 2 * bleed;
+            h += trimT + trimB - 2 * bleed;
+        }
+        if (s < 1) ctx.imageSmoothingEnabled = true;
+        function ready(k) {
+            var i = parts.imgs[k];
+            return !!(def[k] && i && i.complete && i.naturalWidth);
+        }
+        var wall = def.wall || {};
+
+        var scaleSnap = def.scaleSnap;
+        function snap(v) {
+            var n = v * s;
+            if (typeof scaleSnap === "string") {
+                if (scaleSnap === "floor") return Math.floor(n + 1e-12);
+                if (scaleSnap === "ceil") return Math.ceil(n - 1e-12);
+            }
+            return Math.max(1, Math.round(n));
+        }
+        function snap0(v) {
+            var n = v * s;
+            if (typeof scaleSnap === "string") {
+                if (scaleSnap === "floor") return Math.floor(n + 1e-12);
+                if (scaleSnap === "ceil") return Math.ceil(n - 1e-12);
+            }
+            return Math.max(0, Math.round(n));
+        }
+        if (scaleSnap == null) scaleSnap = "round";
+
+        var tlW = snap(def.tl.w), tlH = snap(def.tl.h);
+        var trW = snap(def.tr.w), trH = snap(def.tr.h);
+        var blW = snap(def.bl.w), blH = snap(def.bl.h);
+        var brW = snap(def.br.w), brH = snap(def.br.h);
+
+        var edgeTSrc = def.t.w, edgeBSrc = def.b.w;
+        var edgeLSrc = def.l.h, edgeRSrc = def.r.h;
+        var edgeTH = snap0(def.t.h);
+        var edgeBH = snap0(def.b.h);
+        var edgeLW = snap0(def.l.w);
+        var edgeRW = snap0(def.r.w);
+
+        var insetT = edgeTH, insetB = edgeBH, insetL = edgeLW, insetR = edgeRW;
+        if (def.centerFromWall === true) {
+            insetT = snap0(typeof wall.t === "number" ? wall.t : def.t.h);
+            insetB = snap0(typeof wall.b === "number" ? wall.b : def.b.h);
+            insetL = snap0(typeof wall.l === "number" ? wall.l : def.l.w);
+            insetR = snap0(typeof wall.r === "number" ? wall.r : def.r.w);
+        }
+        var remW = w - insetL - insetR;
+        var remH = h - insetT - insetB;
+        var iw = remW, ih = remH;
+        if (iw > 0 && ih > 0 && ready("c")) {
+            var cr = def.c, ci = parts.imgs.c;
+            var ccw = snap(cr.w), cch = snap(cr.h);
+            if (ccw <= 0) ccw = snap0(cr.w);
+            if (cch <= 0) cch = snap0(cr.h);
+            if (ccw > 0 && cch > 0) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(insetL, insetT, iw, ih);
+                ctx.clip();
+                for (var cy = 0; cy < ih; cy += cch) {
+                    for (var cx = 0; cx < iw; cx += ccw) {
+                        ctx.drawImage(ci, cr.x, cr.y, cr.w, cr.h,
+                            insetL + cx, insetT + cy, ccw, cch);
+                    }
+                }
+                ctx.restore();
+            }
+        }
+
+
+        function tileHGapless(k, srcW, srcH, dx, dy, dw) {
+            var r = def[k];
+            if (!ready(k) || dw <= 0) return;
+            var tw = snap0(srcW);
+            var th = snap0(srcH);
+            if (tw <= 0) tw = snap0(r.w);
+            if (th <= 0) th = snap0(r.h);
+            if (tw <= 0) return;
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(dx, dy, dw, th);
+            ctx.clip();
+            for (var x = 0; x < dw; x += tw) {
+                ctx.drawImage(parts.imgs[k], r.x, r.y, r.w, r.h,
+                    dx + x, dy, tw, th);
+            }
+            ctx.restore();
+        }
+        function tileVGapless(k, srcW, srcH, dx, dy, dh) {
+            var r = def[k];
+            if (!ready(k) || dh <= 0) return;
+            var tw = snap0(srcW);
+            var th = snap0(srcH);
+            if (tw <= 0) tw = snap0(r.w);
+            if (th <= 0) th = snap0(r.h);
+            if (th <= 0) return;
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(dx, dy, tw, dh);
+            ctx.clip();
+            for (var y = 0; y < dh; y += th) {
+                ctx.drawImage(parts.imgs[k], r.x, r.y, r.w, r.h,
+                    dx, dy + y, tw, th);
+            }
+            ctx.restore();
+        }
+
+        var eo = def.eo || { t: 0, b: 0, l: 0, r: 0 };
+        var eot = snap0(eo.t), eob = snap0(eo.b), eol = snap0(eo.l), eor = snap0(eo.r);
+        var ov = snap0((typeof def.ov === "number" ? def.ov : 0));
+        var runW = (w - tlW - trW) + 2 * ov;
+        var runH = (h - tlH - blH) + 2 * ov;
+        tileHGapless("t", edgeTSrc, def.t.h, tlW - ov, eot, runW);
+        tileHGapless("b", edgeBSrc, def.b.h, blW - ov, (h - edgeBH) + eob, runW);
+        tileVGapless("l", def.l.w, edgeLSrc, eol, tlH - ov, runH);
+        tileVGapless("r", def.r.w, edgeRSrc, (w - edgeRW) + eor, trH - ov, runH);
+
+
+        var co = def.co || null;
+        function corner(k, dx, dy) {
+            var r = def[k];
+            if (!ready(k)) return;
+            var o = co && co[k];
+            if (o) { dx += (o.dx || 0) * s; dy += (o.dy || 0) * s; }
+            ctx.drawImage(parts.imgs[k], r.x, r.y, r.w, r.h, dx, dy, r.w * s, r.h * s);
+        }
+        corner("tl", 0, 0);
+        corner("tr", w - trW, 0);
+        corner("bl", 0, h - blH);
+        corner("br", w - brW, h - brH);
+
+        if (s < 1) ctx.imageSmoothingEnabled = smoothing;
+        if (bleed || trimT || trimB) ctx.restore();
+    }
+
+    function ccBoxTileFit(parts, w, h, scaleFallback) {
+        var out = { dx: 0, dy: 0 };
+        if (!parts || !parts.def || !(w > 0) || !(h > 0)) return out;
+        var def = parts.def;
+        var s = (typeof def.scale === "number" && def.scale > 0) ? def.scale :
+            ((typeof scaleFallback === "number" && scaleFallback > 0) ? scaleFallback : 1);
+        var bleed = (typeof def.bleed === "number" ? def.bleed : 0) * s;
+        var fw = w - 2 * bleed, fh = h - 2 * bleed;
+        if (fw <= 0 || fh <= 0) return out;
+        function sn(v, min) {
+            var n = v * s;
+            var r = (def.scaleSnap === "floor") ? Math.floor(n + 1e-12) :
+                (def.scaleSnap === "ceil") ? Math.ceil(n - 1e-12) : Math.round(n);
+            return Math.max(min, r);
+        }
+        var ov = sn(typeof def.ov === "number" ? def.ov : 0, 0);
+        var tw = sn(def.t.w, 0);
+        var th = sn(def.r.h, 0);
+        var runW = fw - sn(def.tl.w, 1) - sn(def.tr.w, 1) + 2 * ov;
+        var runH = fh - sn(def.tl.h, 1) - sn(def.bl.h, 1) + 2 * ov;
+        if (tw > 0 && runW > 0) { var mw = runW % tw; out.dx = mw === 0 ? 0 : tw - mw; }
+        if (th > 0 && runH > 0) { var mh = runH % th; out.dy = mh === 0 ? 0 : th - mh; }
+        return out;
+    }
+
     function drawWindow(canvas, style, w, h, boxOverride) {
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, w, h);
@@ -2146,12 +1587,18 @@
 
         if (currentTheme.drawMode === "box") {
             var srcBox = boxOverride || boxImg;
-            if (srcBox && srcBox.complete && srcBox.naturalWidth > 0) {
+            if (srcBox && (srcBox._parts || (srcBox.complete && srcBox.naturalWidth > 0))) {
                 var nw = srcBox.naturalWidth, nh = srcBox.naturalHeight;
                 var bb = currentTheme.boxBands || {};
                 var slices = currentTheme.boxSlices;
                 var slice = currentTheme.boxSlice;
-                if (slices) {
+                if (currentTheme.ccBox) {
+                    if (srcBox._parts) {
+                        var ccS = (srcBox.def && typeof srcBox.def.scale === "number")
+                            ? srcBox.def.scale : (currentTheme.ccScale || 1);
+                        drawCcBoxParts(ctx, srcBox, w, h, ccS);
+                    }
+                } else if (slices) {
                     drawNineSlice(ctx, srcBox, slices, currentTheme.boxScale || 0.5, w, h);
                 } else if (slice && nw > 4 * slice && nh > 2 * slice) {
                     var c = slice * PIXEL_SCALE;
@@ -2235,8 +1682,6 @@
         removeMagenta();
     }
 
-    /* Characters rendered as plain Zpix text (webfont/atlas gaps). Wrapped in
-       .ui-zpix so themes can nudge them vertically via CSS. */
     function zpixFallbackChar(ch) {
         var s = currentTheme && currentTheme.zpixFallback;
         return !!(s && s.indexOf(ch) >= 0);
@@ -2500,12 +1945,13 @@
         applyOverlays(blockquote);
     }
 
-    function typeMessage(blockquote, units) {
+    function typeMessage(blockquote, units, onDone) {
         var state = { lastCanvas: null };
         var done = 0;
         var timer = setInterval(function () {
             if (done >= units.length) {
                 clearInterval(timer);
+                if (onDone) onDone();
                 return;
             }
             applyUnit(blockquote, state, units[done]);
@@ -2604,11 +2050,6 @@
     }
 
     function buildUnits(message, messageEmotes) {
-        /* A theme can mix a webfont with atlas glyphs: mc renders letters as webfont
-           text but its atlasFallback characters as canvases, so it must use the same
-           unit builder as the pure-atlas themes. Other webfont themes still bail out,
-           since buildUnits would also start curly-quoting their text (buildDefaultUnits
-           only does that when the theme sets mapApostrophe). */
         if (!currentTheme.atlas || (usesWebfont() && !usesAtlasFallback())) return buildDefaultUnits(message, messageEmotes);
         var twitchRanges = parseTwitchRanges(messageEmotes);
         var units = [];
@@ -2823,6 +2264,7 @@
 
     function renderMessage(record, animate) {
         var newMessage = buildMessageNode(record);
+        if (!animate) newMessage.style.animation = "none";
         record.node = newMessage;
         chat.append(newMessage);
         if (newMessage._finish) newMessage._finish(animate);
@@ -2886,7 +2328,8 @@
 
     function buildMessageNode(record) {
         var user = record.user, message = record.message, flags = record.flags, extra = record.extra;
-        var useAtlas = !!(currentTheme.atlas || currentTheme.boxAtlas);
+        var useAtlas = !!(currentTheme.atlas || currentTheme.boxAtlas ||
+            currentTheme.boxParts);
         var newMessage = document.createElement("li");
         var blockquote = document.createElement("blockquote");
         var units = buildUnits(message, extra && extra.messageEmotes);
@@ -2924,6 +2367,8 @@
         var msgPortrait = null;
         var boxStyleName = effectiveBoxStyleName(record);
         var boxStyleImages = boxStyleName ? boxStyleImage(boxStyleName) : null;
+        var ccInfo = (currentTheme.ccBox && boxStyleImages && boxStyleImages.box) ?
+            boxStyleImages.box._cc : null;
 
         box.className = "msg-box";
         bg.className = "window-bg";
@@ -3006,8 +2451,6 @@
                 if (!portrait) {
                     portraitShiny = false;
                     if (userKey) {
-                        /* Dedupe on the base name so a shiny and a normal of the
-                           same species can never both be handed out. */
                         var used = {};
                         Object.keys(userPortraitMap()).forEach(function (u) {
                             var n = stripShinyName(userPortraitMap()[u]);
@@ -3036,13 +2479,69 @@
                 } else {
                     var pic = document.createElement("canvas");
                     pic.className = "portrait";
-                    drawPortrait(portrait, pic, PIXEL_SCALE);
+                    var picScale = currentTheme.portraitScale || PIXEL_SCALE;
+                    if (!drawPortrait(portrait, pic, picScale)) {
+                        onPortraitReady(portrait.src, function () {
+                            drawPortrait(portrait, pic, picScale);
+                        });
+                    }
                     box.appendChild(pic);
                 }
             }
         }
 
         box.appendChild(blockquote);
+
+        if (ccInfo) {
+            var ccs = (ccInfo && typeof ccInfo.scale === "number") ? ccInfo.scale :
+                ((currentTheme && typeof currentTheme.ccScale === "number") ? currentTheme.ccScale : 1);
+            var ccPad = ccInfo.pad || 16;
+            var ccw = ccInfo.wall;
+            var ccpT = Math.round((ccw ? ccw.t : ccPad) * ccs);
+            var ccpB = Math.round((ccw ? ccw.b : ccPad) * ccs);
+            var ccpL = Math.round((ccw ? ccw.l : ccPad) * ccs);
+            var ccpR = Math.round((ccw ? ccw.r : ccPad) * ccs);
+            var ccPx, ccPy, ccPs, ccPl, ccPt, ccPr, ccPb;
+            var ccHasPic = !!box.querySelector(".portrait");
+            var ccContent = ccInfo.content || null;
+            if (ccContent) {
+                ccPx = ccContent.px; ccPy = ccContent.py; ccPs = ccContent.ps;
+                ccPt = ccContent.pt; ccPr = ccContent.pr; ccPb = ccContent.pb;
+                ccPl = ccHasPic ? ccContent.pl : ccpL + 14;
+            } else {
+                ccPx = ccpL + 6;
+                ccPy = ccpT + 4;
+                ccPs = currentTheme.portraitW || 96;
+                ccPl = ccHasPic ? ccPx + ccPs + 12 : ccpL + 14;
+                ccPt = ccPy;
+                ccPr = ccpR + 14;
+                ccPb = ccpB + 6;
+            }
+            var ccTrimT = 0, ccTrimB = 0;
+            var ccTrim = ccInfo.trim || null;
+            if (ccTrim) {
+                ccTrimT = Math.max(0, Math.round(ccTrim.t || 0));
+                ccTrimB = Math.max(0, Math.round(ccTrim.b || 0));
+                ccPt = Math.max(0, ccPt - ccTrimT);
+                ccPb = Math.max(0, ccPb - ccTrimB);
+                ccPy = Math.max(0, ccPy - ccTrimT);
+            }
+            newMessage.style.setProperty("--cc-pl", ccPl + "px");
+            newMessage.style.setProperty("--cc-pt", ccPt + "px");
+            newMessage.style.setProperty("--cc-pr", ccPr + "px");
+            newMessage.style.setProperty("--cc-pb", ccPb + "px");
+            newMessage.style.setProperty("--cc-px", ccPx + "px");
+            newMessage.style.setProperty("--cc-py", ccPy + "px");
+            newMessage.style.setProperty("--cc-pw", ccPs + "px");
+            newMessage.style.setProperty("--cc-ph", ccPs + "px");
+            if (ccInfo.corner) {
+                var cwC = Math.max(1, Math.round(ccInfo.corner.w * ccs));
+                box.style.minWidth = (2 * cwC) + "px";
+                var stackC = Math.max(1, Math.round(ccInfo.corner.stackH * ccs));
+                box.style.minHeight = Math.max(ccPs, stackC - ccPy - ccPb - ccTrimT - ccTrimB) + "px";
+            }
+        }
+
         if (record._portraitName !== "__hidden__" &&
             portraitImg && (iconImg || (boxStyleImages && boxStyleImages.icon))) {
             var iconEl = document.createElement("canvas");
@@ -3054,25 +2553,77 @@
         newMessage.appendChild(box);
 
         var arrowFrames = continueArrowFrames();
-        if (arrowFrames.length) {
+        var placeArrow = function () {};
+        if (ccInfo && ccInfo.arrow && ccInfo.arrow.frames.length) {
+            arrowFrames = ccInfo.arrow.frames;
+            var asc = (typeof ccInfo.arrow.scale === "number" && ccInfo.arrow.scale > 0) ? ccInfo.arrow.scale : 1;
+            var aw = 0, ah = 0;
+            for (var afi = 0; afi < arrowFrames.length; afi++) {
+                if (arrowFrames[afi].w > aw) aw = arrowFrames[afi].w;
+                if (arrowFrames[afi].h > ah) ah = arrowFrames[afi].h;
+            }
+            aw = Math.max(1, Math.round(aw * asc));
+            ah = Math.max(1, Math.round(ah * asc));
             var arr = document.createElement("canvas");
             arr.className = "continue-arrow";
-            arr.width = arrowFrames[0].w * PIXEL_SCALE;
-            arr.height = arrowFrames[0].h * PIXEL_SCALE;
+            arr.width = aw;
+            arr.height = ah;
             arr._frames = arrowFrames;
             arr._frame = 0;
+            arr._cc = { img: boxStyleImages.box, cell: ccInfo.arrow.cell, top: ccInfo.arrow.top };
+            if (ccInfo.arrow.blink && arrowFrames.length === 1) {
+                arr._blink = { ms: ccInfo.arrow.blinkMs || 0 };
+            }
+            if (typeof ccInfo.arrow.x === "number") arr.style.left = ccInfo.arrow.x + "px";
+            if (typeof ccInfo.arrow.y === "number") arr.style.top = ccInfo.arrow.y + "px";
             drawArrowFrame(arr, arrowFrames[0]);
-            newMessage.appendChild(arr);
+            var ctcAnchor = document.createElement("span");
+            ctcAnchor.className = "ctc-anchor";
+            ctcAnchor.appendChild(arr);
+            placeArrow = function () { if (ctcAnchor) blockquote.appendChild(ctcAnchor); };
+        } else if (arrowFrames.length) {
+            var arr2 = document.createElement("canvas");
+            arr2.className = "continue-arrow";
+            arr2.width = arrowFrames[0].w * PIXEL_SCALE;
+            arr2.height = arrowFrames[0].h * PIXEL_SCALE;
+            arr2._frames = arrowFrames;
+            arr2._frame = 0;
+            drawArrowFrame(arr2, arrowFrames[0]);
+            box.appendChild(arr2);
         }
 
         function sizeWindow() {
             if (blockquote.offsetWidth) blockquote.style.minWidth = blockquote.offsetWidth + "px";
             if (blockquote.offsetHeight) blockquote.style.minHeight = blockquote.offsetHeight + "px";
             if (windowStyle && box.offsetWidth && box.offsetHeight) {
-                bg.style.left = box.offsetLeft + "px";
-                bg.style.top = box.offsetTop + "px";
-                bg.width = box.offsetWidth;
-                bg.height = box.offsetHeight;
+                var ccScaleEff = (ccInfo && typeof ccInfo.scale === "number") ? ccInfo.scale :
+                    ((currentTheme && currentTheme.ccScale) || 1);
+                var ccBleed = (ccInfo && ccInfo.bleed) ?
+                    Math.max(0, Math.round(ccInfo.bleed * ccScaleEff)) : 0;
+                if (ccInfo && boxStyleImages && boxStyleImages.box) {
+                    var ccParts = boxStyleImages.box;
+                    if (newMessage._ccCap === undefined) {
+                        newMessage._ccCap = parseFloat(getComputedStyle(newMessage).maxWidth) || 0;
+                        if (newMessage._ccCap > 0) {
+                            var ccUp = ccBoxTileFit(ccParts, newMessage._ccCap + 2 * ccBleed,
+                                box.offsetHeight + 2 * ccBleed, ccScaleEff).dx;
+                            if (ccUp > 0) newMessage.style.maxWidth = (newMessage._ccCap + ccUp) + "px";
+                        }
+                    }
+                    newMessage.style.setProperty("--cc-pr", ccPr + "px");
+                    newMessage.style.setProperty("--cc-pb", ccPb + "px");
+                    var ccf = ccBoxTileFit(ccParts,
+                        box.offsetWidth + 2 * ccBleed,
+                        box.offsetHeight + 2 * ccBleed + ccTrimT + ccTrimB, ccScaleEff);
+                    if (ccf.dx || ccf.dy) {
+                        newMessage.style.setProperty("--cc-pr", (ccPr + ccf.dx) + "px");
+                        newMessage.style.setProperty("--cc-pb", (ccPb + ccf.dy) + "px");
+                    }
+                }
+                bg.style.left = (box.offsetLeft - ccBleed) + "px";
+                bg.style.top = (box.offsetTop - ccBleed) + "px";
+                bg.width = box.offsetWidth + 2 * ccBleed;
+                bg.height = box.offsetHeight + 2 * ccBleed;
                 drawWindow(bg, windowStyle, bg.width, bg.height,
                     boxStyleImages ? boxStyleImages.box : null);
             }
@@ -3086,7 +2637,7 @@
 
         function finishMessage() {
             blockquote.innerHTML = "";
-            setTimeout(function () { typeMessage(blockquote, units); }, POP_MS);
+            setTimeout(function () { typeMessage(blockquote, units, placeArrow); }, POP_MS);
         }
 
         function emotesReady() {
@@ -3099,6 +2650,7 @@
 
         function run(animate) {
             renderAll(blockquote, units);
+            placeArrow();
             sizeWindow();
             if (!animate) return;
             if (emotesReady()) {
@@ -3123,6 +2675,11 @@
             if (e.target && e.target.tagName === "IMG") sizeWindow();
         }, true);
 
+        newMessage._repaintBox = function () {
+            sizeWindow();
+            if (iconEl) drawIconBox(iconEl, boxStyleImages ? boxStyleImages.icon : null, msgPortrait);
+            if (arr) drawArrowFrame(arr, arr._frames[arr._frame]);
+        };
         newMessage._finish = function (animate) { run(animate); };
         return newMessage;
     }
@@ -3174,7 +2731,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "acww", "ct", "ff7", "ff8", "fft", "gs", "mc", "mmbn1", "pmd"];
+    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "mc", "mmbn1", "pmd"];
     var themeIndex = 0;
     var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
@@ -3252,7 +2809,8 @@
     }
 
     function boxStyleLabel(name) {
-        var s = name.replace(/^classic/, "").replace(/^special(\d)$/, "Special $1");
+        var s = name.replace(/^classic/, "").replace(/^special(\d)$/, "Special $1")
+            .replace(/^style(\d+)$/, "Style $1");
         if (!s) s = "Blue";
         return s.charAt(0).toUpperCase() + s.slice(1);
     }
@@ -3266,31 +2824,118 @@
         return (entry && entry.name) || "random";
     }
 
+    function repaintBoxStyle(name) {
+        for (var i = 0; i < chatHistory.length; i++) {
+            var rec = chatHistory[i];
+            if (!rec || !rec.node || !rec.node._repaintBox) continue;
+            if (effectiveBoxStyleName(rec) !== name) continue;
+            rec.node._repaintBox();
+        }
+    }
+
+    function createBoxParts(t, name, def, spec) {
+        var keys = ["tl", "t", "tr", "l", "c", "r", "bl", "b", "br"];
+        var ctcList = spec.ctc || [];
+        var obj = { _parts: true, def: spec, imgs: {}, ctc: [], ctcRects: [] };
+        var pending = keys.length + ctcList.length;
+        function done() {
+            if (--pending <= 0 && currentTheme === t) repaintBoxStyle(name);
+        }
+        keys.forEach(function (k) {
+            var im = new Image();
+            im.onload = done;
+            im.onerror = done;
+            im.src = spec.dir + k + ".png";
+            obj.imgs[k] = im;
+        });
+        ctcList.forEach(function (entry, i) {
+            var im = new Image();
+            im.onload = done;
+            im.onerror = done;
+            im.src = spec.dir + entry.file;
+            obj.ctc[i] = im;
+            obj.ctcRects[i] = { x: entry.x, y: entry.y, w: entry.w, h: entry.h };
+        });
+        var frameH = 0;
+        ctcList.forEach(function (entry) { if (entry.h > frameH) frameH = entry.h; });
+        obj._cc = {
+            pad: (def && def.pad) || 16,
+            wall: spec.wall || null,
+            bleed: spec.bleed || 0,
+            scale: (typeof spec.scale === "number" ? spec.scale : null),
+            content: spec.content || null,
+            trim: spec.trim || null,
+            corner: {
+                w: Math.max(spec.tl.w, spec.tr.w),
+                h: Math.max(spec.tl.h, spec.bl.h),
+                stackH: Math.max(spec.tl.h + spec.bl.h, spec.tr.h + spec.br.h)
+            },
+            arrow: {
+                cell: 0, h: frameH, top: 0,
+                scale: (spec.arrow && typeof spec.arrow.scale === "number") ? spec.arrow.scale : 1,
+                x: (spec.arrow && typeof spec.arrow.x === "number") ? spec.arrow.x : 0,
+                y: (spec.arrow && typeof spec.arrow.y === "number") ? spec.arrow.y : 8,
+                blink: !!(spec.arrow && spec.arrow.blink),
+                blinkMs: (spec.arrow && typeof spec.arrow.blinkMs === "number") ? spec.arrow.blinkMs : 0,
+                frames: ctcList.map(function (entry, i) {
+                    return { ctc: i, w: entry.w, h: entry.h };
+                })
+            }
+        };
+        return obj;
+    }
+
+    function activeBoxSet() {
+        var t = currentTheme;
+        if (!t) return null;
+        return t.boxSet || t.defaultBoxSet || null;
+    }
+
+    function boxSetSpec(name, set) {
+        var t = currentTheme;
+        var p = t && t.boxParts && t.boxParts[name];
+        if (!p) return null;
+        if (p.dir) return p;
+        return p[set] || p[t.defaultBoxSet] || p[Object.keys(p)[0]] || null;
+    }
+
     function boxStyleImage(name) {
         var t = currentTheme;
-        var boxKey = t.key + "::" + name;
+        var def = t.boxStyles && t.boxStyles[name];
+        var set = activeBoxSet();
+        var spec = boxSetSpec(name, set);
+        if (!def && !spec) return { box: null, icon: null };
+        var boxKey = t.key + "::" + (set || "") + "::" + name;
         var iconKey = t.key + "::icon::" + name;
+        if (spec) {
+            if (!boxCache[boxKey]) boxCache[boxKey] = createBoxParts(t, name, def, spec);
+            return { box: boxCache[boxKey], icon: null };
+        }
         if (!boxCache[boxKey]) {
             var bimg = new Image();
             bimg._pmdStyle = boxKey;
+            bimg._cc = t.ccBox ? def : null;
             bimg.onload = function () {
-                if (currentTheme === t) renderAllHistory();
+                if (currentTheme === t) repaintBoxStyle(name);
             };
             bimg.onerror = function () {};
-            bimg.src = t.boxStyles[name].box;
+            bimg.src = def.sheet || def.box;
             boxCache[boxKey] = bimg;
         }
-        if (!iconCache[iconKey]) {
-            var iimg = new Image();
-            iimg._pmdStyle = iconKey;
-            iimg.onload = function () {
-                if (currentTheme === t) renderAllHistory();
-            };
-            iimg.onerror = function () {};
-            iimg.src = t.boxStyles[name].icon;
-            iconCache[iconKey] = iimg;
+        if (def.icon) {
+            if (!iconCache[iconKey]) {
+                var iimg = new Image();
+                iimg._pmdStyle = iconKey;
+                iimg.onload = function () {
+                    if (currentTheme === t) repaintBoxStyle(name);
+                };
+                iimg.onerror = function () {};
+                iimg.src = def.icon;
+                iconCache[iconKey] = iimg;
+            }
+            return { box: boxCache[boxKey], icon: iconCache[iconKey] };
         }
-        return { box: boxCache[boxKey], icon: iconCache[iconKey] };
+        return { box: boxCache[boxKey], icon: null };
     }
 
     function effectiveBoxStyleName(record) {
@@ -3309,35 +2954,36 @@
         return name;
     }
 
-    /* File-portrait themes (pmd) load their PNGs on demand; repaint the picker and
-       the chat once loading settles so we don't re-render per image. */
     var portraitFileCache = {};
-    var portraitRepaintTimer = null;
+    var portraitWaiters = {};
 
-    function schedulePortraitRepaint() {
-        if (!currentTheme || !currentTheme.portraitFiles) return;
-        if (portraitRepaintTimer) clearTimeout(portraitRepaintTimer);
-        portraitRepaintTimer = setTimeout(function () {
-            portraitRepaintTimer = null;
-            if (!currentTheme || !currentTheme.portraitFiles) return;
-            paintPortraitThumbs();
-            renderAllHistory();
-        }, 50);
+    function onPortraitReady(src, fn) {
+        if (!src) return;
+        var img = portraitFileCache[src];
+        if (img && img.complete) { if (img.naturalWidth) fn(); return; }
+        (portraitWaiters[src] || (portraitWaiters[src] = [])).push(fn);
+    }
+
+    function flushPortraitWaiters(src) {
+        var jobs = portraitWaiters[src];
+        delete portraitWaiters[src];
+        if (!jobs) return;
+        for (var i = 0; i < jobs.length; i++) {
+            try { jobs[i](); } catch (e) {}
+        }
     }
 
     function filePortraitImage(src) {
         if (!portraitFileCache[src]) {
             var img = new Image();
-            img.onload = function () { schedulePortraitRepaint(); };
-            img.onerror = function () {};
+            img.onload = function () { flushPortraitWaiters(src); };
+            img.onerror = function () { delete portraitWaiters[src]; };
             img.src = src;
             portraitFileCache[src] = img;
         }
         return portraitFileCache[src];
     }
 
-    /* Paints one portrait into a canvas at the given scale. Callers size
-       the canvas themselves so the tile grid can pre-measure at 1:1. */
     function drawPortrait(p, canvas, scale) {
         if (!p || !canvas) return false;
         var w = Math.round(p.w * scale);
@@ -3349,7 +2995,7 @@
         if (p.src) {
             var img = filePortraitImage(p.src);
             if (!img.complete || !img.naturalWidth) return false;
-            ctx.imageSmoothingEnabled = false;
+            ctx.imageSmoothingEnabled = !!(currentTheme && currentTheme.smoothPortrait);
             ctx.drawImage(img, 0, 0, w, h);
             return true;
         }
@@ -3359,10 +3005,6 @@
         return true;
     }
 
-    /* Draws the file-based portrait icon box left of the message box for themes
-       with iconBoxPortrait: the frame PNG is nine-sliced into a fixed CSS size
-       and the portrait is painted inside it. Icon box size, slices and portrait
-       footprint come from the theme (pmd defaults keep its original look). */
     var ICON_BOX_CSS = 96;
     var PORTRAIT_CSS = 80;
 
@@ -3389,7 +3031,12 @@
         var py = Math.round((canvas.height - ph) / 2);
         if (portraitOverride) {
             var pv = document.createElement("canvas");
-            if (!drawPortrait(portraitOverride, pv, PIXEL_SCALE)) return false;
+            if (!drawPortrait(portraitOverride, pv, PIXEL_SCALE)) {
+                onPortraitReady(portraitOverride.src, function () {
+                    drawIconBox(canvas, iconOverride, portraitOverride);
+                });
+                return false;
+            }
             ctx.drawImage(pv, px, py, pw, ph);
             return true;
         }
@@ -3398,8 +3045,6 @@
         return true;
     }
 
-    /* Tiles paint blank until the atlas finishes loading, so label the cell until
-       the real pixels land. */
     function drawPortraitPlaceholder(canvas, p, scale) {
         scale = scale || 1;
         var w = Math.round(p.w * scale);
@@ -3442,9 +3087,6 @@
     var portraitTiles = {};
     var selectedPortraitUser = "";
 
-    /* Called by appendMessage on every message, so it must be incremental:
-       appending only new chatters and rewriting nothing else. The grid itself is
-       built once per theme and never rebuilt here. */
     function syncPortraitUsers() {
         if (!portraitUsersBox || !portraitUsersBox.parentNode) return;
         var users = knownChatters();
@@ -3471,9 +3113,6 @@
             portraitUsersBox.appendChild(btn);
             portraitRows[key] = { btn: btn, assign: assign };
         });
-        /* Drop chatters that have aged out of chatHistory. Their stored mapping
-           is left alone so it comes back if they reappear, but offering them here
-           would let you assign a portrait nothing can ever display. */
         for (var key in portraitRows) {
             if (!Object.prototype.hasOwnProperty.call(portraitRows, key) || live[key]) continue;
             var stale = portraitRows[key];
@@ -3494,8 +3133,6 @@
         return isShinyName(name) ? label + " (Shiny)" : label;
     }
 
-    /* Repaints every row's caption and moves the selected-state ring. Mutates
-       existing nodes only, so it is safe to call per chat message. */
     function updatePortraitSelection() {
         if (!portraitUsersBox) return;
         var map = userPortraitMap();
@@ -3511,8 +3148,6 @@
             row.assign.textContent = assignmentLabel(map[key]);
         }
         var current = sel ? (map[sel] || "__auto__") : "__auto__";
-        /* Tiles only hold base portraits; a shiny assignment still highlights
-           its base tile while the caption reports "(Shiny)". */
         var currentTileValue = (current === "__auto__" || current === "__hidden__") ?
             current : stripShinyName(current);
         for (key in portraitTiles) {
@@ -3561,8 +3196,6 @@
         portraitGridBox.className = "portrait-grid";
         wrap.appendChild(portraitGridBox);
 
-        /* Gen paging (file-based themes): one generation per page keeps the grid
-           readable; the arrows cycle with wrap-around and reset the scroll. */
         portraitGenIndex = 0;
         portraitGenLabel = null;
         if (currentTheme && currentTheme.portraitGen && PMD_PORTRAIT_GENS && PMD_PORTRAIT_GENS.length > 1) {
@@ -3593,8 +3226,6 @@
         row.appendChild(wrap);
         tunerOptionsBox.appendChild(row);
 
-        /* Wheel scrolling over a scrollable div is not dependable across CEF
-           builds, so page by row with buttons, which definitely work. */
         up.addEventListener("click", function () {
             portraitGridBox.scrollTop -= portraitGridBox.clientHeight / 3;
         });
@@ -3609,19 +3240,12 @@
         syncPortraitUsers();
     }
 
-    /* Tile metrics. The chat renders portraits in an 80x96 box for both portrait
-       themes (see the .portrait rules), so thumbnails reuse that exact ratio and
-       stay a WYSIWYG preview. TILE_W is the grid track; the 2px borders sit
-       inside it, leaving TILE_INNER for the canvas. */
     var TILE_W = 52;
     var TILE_BORDER = 2;
     var TILE_INNER = TILE_W - TILE_BORDER * 2;
     var CHAT_W = 80;
     var CHAT_H = 96;
 
-    /* Builds the AUTO / NONE / portrait tiles for the current theme. Runs on
-       theme change and again when the atlas finishes loading, since tiles paint
-       blank until atlasReady(). */
     function paintPortraitThumbs() {
         if (!portraitGridBox) return;
         portraitGridBox.style.gridTemplateColumns = "repeat(4, " + TILE_W + "px)";
@@ -3629,8 +3253,6 @@
         portraitGridBox.innerHTML = "";
         portraitTiles = {};
 
-        /* File-based themes page the deck by generation; atlas themes show their
-           whole (small) list and never build a gen row. */
         var genFilter = (currentTheme && currentTheme.portraitGen) ? portraitGenIndex + 1 : 0;
         if (portraitGenLabel && PMD_PORTRAIT_GENS) {
             portraitGenLabel.textContent = "Gen " + genFilter +
@@ -3654,8 +3276,6 @@
             portraitTiles[value] = tile;
         }
 
-        /* AUTO / NONE share the portrait tile footprint so the grid reads as one
-           uniform matrix instead of two short stubs beside taller thumbnails. */
         function plainTile(tile, text) {
             tile.className += " plain";
             var span = document.createElement("span");
@@ -3672,11 +3292,10 @@
             if (genFilter && p.gen !== genFilter) return;
             addTile(p.name, humanizeName(p.name), function (tile) {
                 var cv = document.createElement("canvas");
-                /* Intrinsic pixels match chat exactly (PIXEL_SCALE); CSS below
-                   scales the canvas into the tile box, which reproduces chat's
-                   proportions (80:96 for atlas portrait themes, square for the
-                   pmd icon-box portraits). */
-                if (!drawPortrait(p, cv, PIXEL_SCALE)) drawPortraitPlaceholder(cv, p, PIXEL_SCALE);
+                if (!drawPortrait(p, cv, PIXEL_SCALE)) {
+                    drawPortraitPlaceholder(cv, p, PIXEL_SCALE);
+                    onPortraitReady(p.src, function () { drawPortrait(p, cv, PIXEL_SCALE); });
+                }
                 cv.style.width = TILE_INNER + "px";
                 cv.style.height = (TILE_INNER *
                     (currentTheme && currentTheme.squarePortrait ? 1 : CHAT_H / CHAT_W)) + "px";
@@ -3850,6 +3469,6 @@
             }
         }
     });
-    </script>
+</script>
 </body>
 </html>
