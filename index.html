@@ -822,6 +822,23 @@
         return true;
     }
 
+    function portraitSupportsShiny(portraitName) {
+        for (var i = 0; i < PORTRAITS.length; i++) {
+            if (PORTRAITS[i].name === portraitName) return !!PORTRAITS[i].shinySrc;
+        }
+        return false;
+    }
+
+    function togglePortraitShiny(user, portraitName) {
+        var u = String(user || "").toLowerCase();
+        var cur = userPortraitMap()[u];
+        if (!cur || cur === "__auto__" || cur === "__hidden__") return false;
+        if (stripShinyName(cur) !== portraitName) return false;
+        if (!portraitSupportsShiny(portraitName)) return false;
+        setUserPortrait(user, isShinyName(cur) ? portraitName : portraitName + SHINY_SUFFIX);
+        return true;
+    }
+
     function clearUserPortrait(user) {
         var u = String(user || "").toLowerCase();
         if (!u || !currentTheme) return;
@@ -3325,7 +3342,9 @@
             tile.addEventListener("click", function () {
                 if (!selectedPortraitUser) return;
                 if (value === "__auto__") clearUserPortrait(selectedPortraitUser);
-                else setUserPortrait(selectedPortraitUser, value);
+                else if (!togglePortraitShiny(selectedPortraitUser, value)) {
+                    setUserPortrait(selectedPortraitUser, value);
+                }
                 updatePortraitSelection();
             });
             portraitGridBox.appendChild(tile);
@@ -3346,7 +3365,9 @@
         PORTRAITS.forEach(function (p) {
             if (p.name === "none") return;
             if (genFilter && p.gen !== genFilter) return;
-            addTile(p.name, humanizeName(p.name), function (tile) {
+            var tileLabel = humanizeName(p.name) +
+                (p.shinySrc ? " — click again to toggle shiny" : "");
+            addTile(p.name, tileLabel, function (tile) {
                 var cv = document.createElement("canvas");
                 if (!drawPortrait(p, cv, PIXEL_SCALE)) {
                     drawPortraitPlaceholder(cv, p, PIXEL_SCALE);
