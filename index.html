@@ -19,6 +19,7 @@
     <script src="assets/themes/default/default.js"></script>
     <script src="assets/themes/gs/gs.js"></script>
     <script src="assets/themes/pmd/pmd.js"></script>
+    <script src="assets/themes/npotn/npotn.js"></script>
     <script src="assets/themes/cc/cc.js"></script>
 
     <style>
@@ -550,6 +551,7 @@
     <link rel="stylesheet" href="assets/themes/minishcap/minishcap.css">
     <link rel="stylesheet" href="assets/themes/mmbn1/mmbn1.css">
     <link rel="stylesheet" href="assets/themes/pmd/pmd.css">
+    <link rel="stylesheet" href="assets/themes/npotn/npotn.css">
     <link rel="stylesheet" href="assets/themes/cc/cc.css">
 
 </head>
@@ -842,6 +844,7 @@
         gs: THEME_GS,
         mc: THEME_MINISHCAP,
         mmbn1: THEME_MMBN1,
+        npotn: THEME_NPOTN,
         pmd: THEME_PMD,
         cc: THEME_CC
     };
@@ -1402,14 +1405,17 @@
         var def = parts.def;
         var smoothing = ctx.imageSmoothingEnabled;
         var bleed = (typeof def.bleed === "number" ? def.bleed : 0) * s;
+        var over = def.overhang || null;
+        var overT = over && typeof over.t === "number" ? Math.max(0, Math.round(over.t * s)) : 0;
+        var overB = over && typeof over.b === "number" ? Math.max(0, Math.round(over.b * s)) : 0;
         var trim = def.trim || null;
         var trimT = trim ? Math.max(0, Math.round(trim.t || 0)) : 0;
         var trimB = trim ? Math.max(0, Math.round(trim.b || 0)) : 0;
-        if (bleed || trimT || trimB) {
+        if (bleed || trimT || trimB || overT || overB) {
             ctx.save();
-            ctx.translate(bleed, bleed - trimT);
+            ctx.translate(bleed, bleed + overT - trimT);
             w -= 2 * bleed;
-            h += trimT + trimB - 2 * bleed;
+            h += trimT + trimB - overT - overB - 2 * bleed;
         }
         if (s < 1) ctx.imageSmoothingEnabled = true;
         function ready(k) {
@@ -1520,15 +1526,28 @@
         var eo = def.eo || { t: 0, b: 0, l: 0, r: 0 };
         var eot = snap0(eo.t), eob = snap0(eo.b), eol = snap0(eo.l), eor = snap0(eo.r);
         var ov = snap0((typeof def.ov === "number" ? def.ov : 0));
+        var co = def.co || null;
+        function coDy(k) {
+            return (co && co[k] && typeof co[k].dy === "number") ? co[k].dy * s : 0;
+        }
         var runW = (w - tlW - trW) + 2 * ov;
         var runH = (h - tlH - blH) + 2 * ov;
         tileHGapless("t", edgeTSrc, def.t.h, tlW - ov, eot, runW);
         tileHGapless("b", edgeBSrc, def.b.h, blW - ov, (h - edgeBH) + eob, runW);
-        tileVGapless("l", def.l.w, edgeLSrc, eol, tlH - ov, runH);
-        tileVGapless("r", def.r.w, edgeRSrc, (w - edgeRW) + eor, trH - ov, runH);
+        // v-runs: tops tuck under the top corners; bottoms end ov under the bottom
+        // corners. tileVGapless walks the span in fixed-size steps from the top, so
+        // the run must BOTH start and end where the corners are, or the last tile's
+        // grid phase pokes past the corner's ov-tuck (bottom-right overflow). runH
+        // alone can't express that — it is left-derived (tl/bl, 1x) while tr/br are 2x.
+        var lBot = h - blH + coDy("bl"), rBot = h - brH + coDy("br");
+        var lEndY = lBot + ov;
+        var rEndY = rBot + ov;
+        var lTopY = Math.min(tlH - ov, lEndY - runH);
+        var rTopY = Math.min(trH - ov, rEndY - runH);
+        tileVGapless("l", def.l.w, edgeLSrc, eol, lTopY, lEndY - lTopY);
+        tileVGapless("r", def.r.w, edgeRSrc, (w - edgeRW) + eor, rTopY, rEndY - rTopY);
 
 
-        var co = def.co || null;
         function corner(k, dx, dy) {
             var r = def[k];
             if (!ready(k)) return;
@@ -1542,7 +1561,7 @@
         corner("br", w - brW, h - brH);
 
         if (s < 1) ctx.imageSmoothingEnabled = smoothing;
-        if (bleed || trimT || trimB) ctx.restore();
+        if (bleed || trimT || trimB || overT || overB) ctx.restore();
     }
 
     function ccBoxTileFit(parts, w, h, scaleFallback) {
@@ -2538,7 +2557,8 @@
                 var cwC = Math.max(1, Math.round(ccInfo.corner.w * ccs));
                 box.style.minWidth = (2 * cwC) + "px";
                 var stackC = Math.max(1, Math.round(ccInfo.corner.stackH * ccs));
-                box.style.minHeight = Math.max(ccPs, stackC - ccPy - ccPb - ccTrimT - ccTrimB) + "px";
+                var ccMinH = (ccContent && typeof ccContent.minH === "number") ? ccContent.minH : 0;
+                box.style.minHeight = Math.max(ccPs, ccMinH, stackC - ccPy - ccPb - ccTrimT - ccTrimB) + "px";
             }
         }
 
@@ -2600,6 +2620,11 @@
                     ((currentTheme && currentTheme.ccScale) || 1);
                 var ccBleed = (ccInfo && ccInfo.bleed) ?
                     Math.max(0, Math.round(ccInfo.bleed * ccScaleEff)) : 0;
+                var ccOver = (ccInfo && ccInfo.overhang) || null;
+                var ccOverT = ccOver && typeof ccOver.t === "number" ?
+                    Math.max(0, Math.round(ccOver.t * ccScaleEff)) : 0;
+                var ccOverB = ccOver && typeof ccOver.b === "number" ?
+                    Math.max(0, Math.round(ccOver.b * ccScaleEff)) : 0;
                 if (ccInfo && boxStyleImages && boxStyleImages.box) {
                     var ccParts = boxStyleImages.box;
                     if (newMessage._ccCap === undefined) {
@@ -2621,9 +2646,9 @@
                     }
                 }
                 bg.style.left = (box.offsetLeft - ccBleed) + "px";
-                bg.style.top = (box.offsetTop - ccBleed) + "px";
+                bg.style.top = (box.offsetTop - ccBleed - ccOverT) + "px";
                 bg.width = box.offsetWidth + 2 * ccBleed;
-                bg.height = box.offsetHeight + 2 * ccBleed;
+                bg.height = box.offsetHeight + 2 * ccBleed + ccOverT + ccOverB;
                 drawWindow(bg, windowStyle, bg.width, bg.height,
                     boxStyleImages ? boxStyleImages.box : null);
             }
@@ -2731,7 +2756,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "mc", "mmbn1", "pmd"];
+    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "mc", "mmbn1", "npotn", "pmd"];
     var themeIndex = 0;
     var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
@@ -2865,6 +2890,7 @@
             scale: (typeof spec.scale === "number" ? spec.scale : null),
             content: spec.content || null,
             trim: spec.trim || null,
+            overhang: spec.overhang || null,
             corner: {
                 w: Math.max(spec.tl.w, spec.tr.w),
                 h: Math.max(spec.tl.h, spec.bl.h),

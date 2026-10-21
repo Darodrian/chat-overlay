@@ -121,7 +121,7 @@
 
 <div id="panel">
   <h1>Chrono Cross box tuner</h1>
-  <p class="sub">Dev tool. Reuses the app's exact compositor. Tune a style, then <b>Copy spec</b> and paste into <code>assets/themes/cc/cc.js</code>.</p>
+  <p class="sub">Dev tool. Reuses the app's exact compositor. Tune a style, then <b>Copy spec</b> and paste into a theme's <code>boxParts</code> (e.g. <code>assets/themes/cc/cc.js</code> or <code>assets/themes/npotn/npotn.js</code>).</p>
 
   <fieldset>
     <legend>Style</legend>
@@ -159,6 +159,17 @@
     </div>
     <p class="hint">Pixels cut off the top and bottom of the frame. The message loses
       exactly this much height; the art is cropped, not re-flowed.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Canvas overhang (overhang)</legend>
+    <div class="grid2">
+      <div class="cell"><span>top</span><input type="number" id="overTIn" step="1" min="0"></div>
+      <div class="cell"><span>bottom</span><input type="number" id="overBIn" step="1" min="0"></div>
+    </div>
+    <p class="hint">Extra canvas above and below the frame (source px &times; scale), so
+      corner offsets can push art outside the box without getting clipped. Give at least
+      <code>|dy + 3|</code> on top and <code>dy &minus; 6</code> on the bottom.</p>
   </fieldset>
 
   <h2>Edge offset (eo)</h2>
@@ -257,6 +268,7 @@
 </div>
 
 <script src="../assets/themes/cc/cc.js"></script>
+<script src="../assets/themes/npotn/npotn.js"></script>
 <script>
 
 const PART_KEYS = ["tl", "t", "tr", "l", "c", "r", "bl", "b", "br"];
@@ -269,14 +281,17 @@ function drawCcBoxParts(ctx, parts, w, h, scale) {
   var def = parts.def;
   var smoothing = ctx.imageSmoothingEnabled;
   var bleed = (typeof def.bleed === "number" ? def.bleed : 0) * s;
+  var over = def.overhang || null;
+  var overT = over && typeof over.t === "number" ? Math.max(0, Math.round(over.t * s)) : 0;
+  var overB = over && typeof over.b === "number" ? Math.max(0, Math.round(over.b * s)) : 0;
   var trim = def.trim || null;
   var trimT = trim ? Math.max(0, Math.round(trim.t || 0)) : 0;
   var trimB = trim ? Math.max(0, Math.round(trim.b || 0)) : 0;
-  if (bleed || trimT || trimB) {
+  if (bleed || trimT || trimB || overT || overB) {
     ctx.save();
-    ctx.translate(bleed, bleed - trimT);
+    ctx.translate(bleed, bleed + overT - trimT);
     w -= 2 * bleed;
-    h += trimT + trimB - 2 * bleed;
+    h += trimT + trimB - overT - overB - 2 * bleed;
   }
   if (s < 1) ctx.imageSmoothingEnabled = true;
   function ready(k) {
@@ -385,14 +400,27 @@ function drawCcBoxParts(ctx, parts, w, h, scale) {
   var eo = def.eo || { t: 0, b: 0, l: 0, r: 0 };
   var eot = snap0(eo.t), eob = snap0(eo.b), eol = snap0(eo.l), eor = snap0(eo.r);
   var ov = snap0((typeof def.ov === "number" ? def.ov : 0));
+  var co = def.co || null;
+  function coDy(k) {
+    return (co && co[k] && typeof co[k].dy === "number") ? co[k].dy * s : 0;
+  }
   var runW = (w - tlW - trW) + 2 * ov;
   var runH = (h - tlH - blH) + 2 * ov;
   tileHGapless("t", edgeTSrc, def.t.h, tlW - ov, eot, runW);
   tileHGapless("b", edgeBSrc, def.b.h, blW - ov, (h - edgeBH) + eob, runW);
-  tileVGapless("l", def.l.w, edgeLSrc, eol, tlH - ov, runH);
-  tileVGapless("r", def.r.w, edgeRSrc, (w - edgeRW) + eor, trH - ov, runH);
+  // v-runs: tops tuck under the top corners; bottoms end ov under the bottom
+  // corners. tileVGapless walks the span in fixed-size steps from the top, so
+  // the run must BOTH start and end where the corners are, or the last tile's
+  // grid phase pokes past the corner's ov-tuck (bottom-right overflow). runH
+  // alone can't express that — it is left-derived (tl/bl, 1x) while tr/br are 2x.
+  var lBot = h - blH + coDy("bl"), rBot = h - brH + coDy("br");
+  var lEndY = lBot + ov;
+  var rEndY = rBot + ov;
+  var lTopY = Math.min(tlH - ov, lEndY - runH);
+  var rTopY = Math.min(trH - ov, rEndY - runH);
+  tileVGapless("l", def.l.w, edgeLSrc, eol, lTopY, lEndY - lTopY);
+  tileVGapless("r", def.r.w, edgeRSrc, (w - edgeRW) + eor, rTopY, rEndY - rTopY);
 
-  var co = def.co || null;
   function corner(k, dx, dy) {
     var r = def[k];
     if (!ready(k)) return;
@@ -406,7 +434,7 @@ function drawCcBoxParts(ctx, parts, w, h, scale) {
   corner("br", w - brW, h - brH);
 
   if (s < 1) ctx.imageSmoothingEnabled = smoothing;
-  if (bleed || trimT || trimB) ctx.restore();
+  if (bleed || trimT || trimB || overT || overB) ctx.restore();
 }
 
 function computeInset(spec, ccs) {
@@ -427,11 +455,13 @@ function computeInset(spec, ccs) {
   }
   var cornerW = Math.max(spec.tl.w, spec.tr.w);
   var stackH = Math.max(spec.tl.h + spec.bl.h, spec.tr.h + spec.br.h);
+  var ch = (c && typeof c.minH === "number") ? c.minH : 0;
   return {
     pad: pad, T: T, B: B, L: L, R: R, Px: Px, Py: Py, Ps: Ps,
     pl: pl, pt: pt, pr: pr, pb: pb,
     minW: 2 * cornerW,
-    minH: Math.max(Ps, stackH - Py - pb),
+    minH: Math.max(Ps, ch, stackH - Py - pb),
+    minHContent: ch,
     stackH: stackH
   };
 }
@@ -455,6 +485,7 @@ const els = {
   coBox: document.getElementById("coBox"), partsBox: document.getElementById("partsBox"),
   ovIn: document.getElementById("ovIn"), bleedIn: document.getElementById("bleedIn"),
   trimTIn: document.getElementById("trimTIn"), trimBIn: document.getElementById("trimBIn"),
+  overTIn: document.getElementById("overTIn"), overBIn: document.getElementById("overBIn"),
   scaleSnapSel: document.getElementById("scaleSnapSel"),
   centerFromWallIn: document.getElementById("centerFromWallIn"),
   readout: document.getElementById("readout"), out: document.getElementById("out"),
@@ -594,6 +625,12 @@ function buildControls() {
     cell.appendChild(numInput(() => s.content[p[0]], v => { s.content[p[0]] = v; }));
     els.contentBox.appendChild(cell);
   });
+  const minHCell = document.createElement("div");
+  minHCell.className = "cell";
+  const minHLbl = document.createElement("span"); minHLbl.textContent = "text.minH";
+  minHCell.appendChild(minHLbl);
+  minHCell.appendChild(numInput(() => s.content.minH || 0, v => { s.content.minH = Math.max(0, Math.round(v)); }));
+  els.contentBox.appendChild(minHCell);
   els.coBox.innerHTML = "";
   CORNERS.forEach(function (c) {
     s.co = s.co || {};
@@ -625,6 +662,8 @@ function buildControls() {
   els.arrowBlinkMsIn.value = (s.arrow && typeof s.arrow.blinkMs === "number") ? s.arrow.blinkMs : 400;
   els.trimTIn.value = (s.trim && s.trim.t) || 0;
   els.trimBIn.value = (s.trim && s.trim.b) || 0;
+  els.overTIn.value = (s.overhang && s.overhang.t) || 0;
+  els.overBIn.value = (s.overhang && s.overhang.b) || 0;
   buildPartRects();
   buildCtcControls();
 }
@@ -807,7 +846,7 @@ function render() {
   const ccCornerW = Math.max(1, Math.round(Math.max(spec_.tl.w, spec_.tr.w) * sc));
   const ccStackH = Math.max(1, Math.round(Math.max(spec_.tl.h + spec_.bl.h, spec_.tr.h + spec_.br.h) * sc));
   els.pvBox.style.minWidth = (2 * ccCornerW) + "px";
-  els.pvBox.style.minHeight = Math.max(ins.Ps, ccStackH - ins.Py - ins.pb - trimT - trimB) + "px";
+  els.pvBox.style.minHeight = Math.max(ins.minH, ccStackH - ins.Py - ins.pb - trimT - trimB) + "px";
 
   els.pvPreview.style.transform = "scale(" + zoom + ")";
   els.pvChat.style.setProperty("--ui-font", "'ChronoCross', 'Zpix', monospace");
@@ -826,17 +865,20 @@ function render() {
     const bw = Math.max(1, box.offsetWidth);
     const bh = Math.max(1, box.offsetHeight);
     const ccBleed = Math.max(0, Math.round((spec_.bleed || 0) * sc));
+    const oh = spec_.overhang || {};
+    const overT = (typeof oh.t === "number") ? Math.max(0, Math.round(oh.t * sc)) : 0;
+    const overB = (typeof oh.b === "number") ? Math.max(0, Math.round(oh.b * sc)) : 0;
     const bg = els.pvBg;
     bg.style.left = (-ccBleed) + "px";
-    bg.style.top = (-ccBleed) + "px";
+    bg.style.top = (-ccBleed - overT) + "px";
     bg.width = bw + 2 * ccBleed;
-    bg.height = bh + 2 * ccBleed;
+    bg.height = bh + 2 * ccBleed + overT + overB;
     const bx = bg.getContext("2d");
     bx.clearRect(0, 0, bg.width, bg.height);
     bx.imageSmoothingEnabled = false;
     drawCcBoxParts(bx, { def: spec_, imgs: entry.imgs }, bg.width, bg.height, sc);
     bx.save();
-    bx.translate(ccBleed, ccBleed);
+    bx.translate(ccBleed, ccBleed + overT);
     drawGuides(bx, bw, bh, spec_, ins, trimT, trimB);
     bx.restore();
     refreshCtcPreviews();
@@ -850,8 +892,10 @@ function render() {
       "content-in  left " + ins.pl + "  top " + ins.pt + "  right " + ins.pr + "  bottom " + ins.pb + "\n" +
       "portrait  x" + ins.Px + " y" + ins.Py + "  " + ins.Ps + "px\n" +
       "min box  " + (2 * ccCornerW) + " x " +
-        Math.max(ins.Ps, ccStackH - ins.Py - ins.pb - trimT - trimB) + "\n" +
+        Math.max(ins.minH, ccStackH - ins.Py - ins.pb - trimT - trimB) + "\n" +
       "crop  top " + trimT + "  bottom " + trimB + "\n" +
+      "overhang  t " + ((spec_.overhang && spec_.overhang.t) || 0) +
+        "  b " + ((spec_.overhang && spec_.overhang.b) || 0) + "\n" +
       "seam ov  " + (spec_.ov || 0) + "   bleed " + (spec_.bleed || 0) + "\n" +
       "measured box " + bw + " x " + bh;
 
@@ -896,10 +940,14 @@ function specToText() {
     if (s.content) {
       var c = s.content;
       L.push(P + "content: { px: " + c.px + ", py: " + c.py + ", ps: " + c.ps +
-             ", pl: " + c.pl + ", pt: " + c.pt + ", pr: " + c.pr + ", pb: " + c.pb + " },");
+             ", pl: " + c.pl + ", pt: " + c.pt + ", pr: " + c.pr + ", pb: " + c.pb +
+             ((c.minH || 0) !== 0 ? ", minH: " + c.minH : "") + " },");
     }
     if (s.trim && ((s.trim.t || 0) !== 0 || (s.trim.b || 0) !== 0)) {
       L.push(P + "trim: { t: " + (s.trim.t || 0) + ", b: " + (s.trim.b || 0) + " },");
+    }
+    if (s.overhang && ((s.overhang.t || 0) !== 0 || (s.overhang.b || 0) !== 0)) {
+      L.push(P + "overhang: { t: " + (s.overhang.t || 0) + ", b: " + (s.overhang.b || 0) + " },");
     }
     var coUsed = s.co && CORNERS.some(function (c) { var o = s.co[c]; return o && ((o.dx || 0) !== 0 || (o.dy || 0) !== 0); });
     if (coUsed) {
@@ -1156,6 +1204,15 @@ function setTrim(edge, v) {
   render();
   scheduleSave();
 }
+els.overTIn.addEventListener("input", function () { setOver("t", parseFloat(els.overTIn.value)); });
+els.overBIn.addEventListener("input", function () { setOver("b", parseFloat(els.overBIn.value)); });
+function setOver(edge, v) {
+  const s = spec();
+  s.overhang = s.overhang || { t: 0, b: 0 };
+  s.overhang[edge] = isNaN(v) ? 0 : Math.max(0, Math.round(v));
+  render();
+  scheduleSave();
+}
 if (els.scaleSnapSel) {
   els.scaleSnapSel.addEventListener("change", function () {
     const v = els.scaleSnapSel.value;
@@ -1242,12 +1299,27 @@ function bootWith(styles, source) {
   render();
 }
 
+// Wrap a theme's boxParts into the tuner's {style: {set: spec}} map. Themes whose
+// boxParts store a flat spec (identified by .dir, same test as the app's boxSetSpec)
+// get wrapped under a "default" set so spec() = CC_STYLES[style][set] stays valid.
+function mergeThemeStyles(ccBoxParts, extraBoxParts) {
+  var styles = JSON.parse(JSON.stringify(ccBoxParts));
+  if (extraBoxParts) {
+    Object.keys(extraBoxParts).forEach(function (styleName) {
+      var p = JSON.parse(JSON.stringify(extraBoxParts[styleName]));
+      styles[styleName] = (p && p.dir) ? { "default": p } : p;
+    });
+  }
+  return styles;
+}
+
 function boot() {
   portraitImg = new Image();
   portraitImg.onload = function () { render(); };
   portraitImg.src = PORTRAIT_SRC;
 
-  bootWith(JSON.parse(JSON.stringify(THEME_CC.boxParts)), "cc.js");
+  bootWith(mergeThemeStyles(THEME_CC.boxParts,
+    typeof THEME_NPOTN !== "undefined" ? THEME_NPOTN.boxParts : null), "cc.js + npotn.js");
 
   if (document.fonts && document.fonts.load) {
     document.fonts.load("30px ChronoCross").then(function () { render(); });
