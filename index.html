@@ -186,6 +186,10 @@
             display: inline-block;
         }
 
+        #chat li.emote-only img.emote {
+            height: 96px;
+        }
+
         #chat .e-stack {
             position: relative;
             display: inline-block;
@@ -2005,6 +2009,10 @@
                         base = node;
                         break;
                     }
+                    if (node.tagName === "BR") {
+                        node = node.previousSibling;
+                        continue;
+                    }
                     if (node.classList.contains("glyph-canvas") &&
                         node._txt && !/\S/.test(node._txt)) {
                         node = node.previousSibling;
@@ -2266,6 +2274,26 @@
         return units;
     }
 
+    function isLoneEmoteMessage(units) {
+        var emotes = 0;
+        for (var i = 0; i < units.length; i++) {
+            var u = units[i];
+            if (!u || u.mod) continue;
+            if (typeof u.html === "string" && u.html) {
+                if (/<img\b/.test(u.html)) {
+                    if (/\bclass="emote overlay\b/.test(u.html)) continue;
+                    emotes++;
+                    if (emotes > 1) return false;
+                    continue;
+                }
+                if (!/\S/.test(u.html.replace(/\u200b/g, ""))) continue;
+                return false;
+            }
+            if (u.glyph != null && !/^\s*$/.test(String(u.glyph).replace(/\u200b/g, ""))) return false;
+        }
+        return emotes === 1;
+    }
+
     function dropOldestMessage() {
         var rec = chatHistory[0];
         if (!rec) return;
@@ -2301,7 +2329,7 @@
         return 0;
     }
 
-    function buildNamePrefix(record, nameRow) {
+    function buildNamePrefix(record, nameRow, breakAfter) {
         var prefix = [];
         var bhtml = resolveBadgeHtml(record.extra, record.flags);
         if (bhtml) prefix.push({ html: bhtml });
@@ -2321,9 +2349,9 @@
             var tsText = " (" + hh + ":" + mm + ")";
             for (i = 0; i < tsText.length; i++) prefix.push(glyphOrTextUnit(tsText[i], nameRow));
         }
-        var suffix = ": ";
+        var suffix = breakAfter ? ":" : ": ";
         for (i = 0; i < suffix.length; i++) prefix.push(glyphOrTextUnit(suffix[i], nameRow));
-        prefix.push({ html: "\u200b" });
+        prefix.push({ html: breakAfter ? "<br>" : "\u200b" });
         return prefix;
     }
 
@@ -2352,6 +2380,8 @@
         var newMessage = document.createElement("li");
         var blockquote = document.createElement("blockquote");
         var units = buildUnits(message, extra && extra.messageEmotes);
+        var loneEmote = isLoneEmoteMessage(units);
+        if (loneEmote) newMessage.classList.add("emote-only");
 
         if (!useAtlas) {
             var username = document.createElement("span");
@@ -2396,7 +2426,7 @@
         blockquote.innerHTML = "";
 
         if (currentTheme.inlineName) {
-            units = buildNamePrefix(record, nameRowFor(flags)).concat(units);
+            units = buildNamePrefix(record, nameRowFor(flags), loneEmote).concat(units);
         } else {
             var header = document.createElement("div");
             var username = document.createElement("span");
