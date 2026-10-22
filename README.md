@@ -2,18 +2,6 @@
 
 A chat overlay for streaming with easy channel set up and multiple retro styled themes.
 
-## Usage
-
-1. In OBS, add the URL as a **Browser Source**:
-
-   `https://darodrian.github.io/chat-overlay/?channel=yourusername`
-
-2. Set the source size to minimum **650 to 800 width x Any height**.
-
-3. Replace `yourusername` in the URL with your channel name.
-
-4. Open the source's **Interact** window in OBS and press **F** to open/close the tuner menu, where you can adjust each theme's appearance.
-
 ## Credits
 
 ### Fonts
