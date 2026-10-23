@@ -1,0 +1,98 @@
+@font-face {
+    font-family: 'KHCom';
+    src: url("../../fonts/kh-com.woff2") format("woff2");
+    font-display: swap;
+}
+
+#chat.theme-khcom {
+    color: var(--ui-body-color, #52230a);
+    font-family: var(--ui-font, inherit);
+    text-shadow: var(--ui-text-shadow, none);
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+}
+
+#chat.theme-khcom li {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    max-width: 720px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    position: relative;
+    transform-origin: center;
+    animation: pop 0.18s ease-out;
+}
+
+#chat.theme-khcom li + li {
+    margin-top: 36px;
+}
+
+#chat.theme-khcom .window-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    image-rendering: pixelated;
+    z-index: 0;
+}
+
+#chat.theme-khcom .msg-box {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    padding: var(--cc-pt, 24px) var(--cc-pr, 64px) var(--cc-pb, 48px) var(--cc-pl, 240px);
+    min-height: 198px;
+    background: transparent;
+}
+
+#chat.theme-khcom .msg-box .user {
+    color: var(--ui-user-color, #52230a);
+    font-size: var(--ui-fs, 36px);
+    line-height: var(--ui-lh, 45px);
+}
+
+#chat.theme-khcom .msg-box img.badge {
+    height: 0.85em;
+    vertical-align: -0.08em;
+}
+
+#chat.theme-khcom .msg-box .message-text {
+    margin: 0;
+    color: var(--ui-body-color, #52230a);
+    font-size: var(--ui-fs, 36px);
+    line-height: var(--ui-lh, 45px);
+    white-space: normal;
+    word-break: break-word;
+}
+
+#chat.theme-khcom .msg-box .portrait {
+    position: absolute;
+    left: var(--cc-px, 30px);
+    bottom: 0;
+    width: var(--cc-pw, 198px);
+    height: auto;
+    image-rendering: pixelated;
+    z-index: 2;
+}
+
+#chat.theme-khcom .continue-arrow {
+    position: absolute;
+    right: 32px;
+    bottom: 0;
+    image-rendering: pixelated;
+    z-index: 3;
+}
+
+#chat.theme-khcom li[data-portrait-side="right"] .msg-box .portrait {
+    left: auto;
+    right: var(--cc-px, 30px);
+    transform: scaleX(-1);
+}
+
+#chat.theme-khcom li[data-portrait-side="right"] .continue-arrow {
+    left: 32px;
+    right: auto;
+}

@@ -25,6 +25,7 @@ var THEME_PMD = {
         portraitGen: true,
         squarePortrait: true,
         iconBoxPortrait: true,
+        flipPortraitOnRight: true,
         defaultBoxStyle: "classic",
         boxStyles: {
             classic: {

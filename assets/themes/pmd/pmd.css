@@ -112,3 +112,12 @@
 #chat.theme-pmd ul.align-default .msg-box {
     flex: 1 1 auto;
 }
+
+#chat.theme-pmd li[data-portrait-side="right"] {
+    flex-direction: row-reverse;
+}
+
+#chat.theme-pmd li[data-portrait-side="right"] .icon-box {
+    margin-right: 0;
+    margin-left: 8px;
+}

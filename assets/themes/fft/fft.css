@@ -117,3 +117,12 @@
 #chat.theme-fft .msg-box img.badge {
     height: 0.6em
 }
+
+#chat.theme-fft li[data-portrait-side="right"] .msg-box {
+    padding: 30px 102px 12px 12px;
+}
+
+#chat.theme-fft li[data-portrait-side="right"] .portrait {
+    left: auto;
+    right: 12px;
+}

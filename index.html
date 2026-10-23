@@ -18,6 +18,7 @@
     <script src="assets/themes/mmbn1/mmbn1.js"></script>
     <script src="assets/themes/default/default.js"></script>
     <script src="assets/themes/gs/gs.js"></script>
+    <script src="assets/themes/khcom/khcom.js"></script>
     <script src="assets/themes/pmd/pmd.js"></script>
     <script src="assets/themes/npotn/npotn.js"></script>
     <script src="assets/themes/cc/cc.js"></script>
@@ -552,6 +553,7 @@
     <link rel="stylesheet" href="assets/themes/ff7/ff7.css">
     <link rel="stylesheet" href="assets/themes/fft/fft.css">
     <link rel="stylesheet" href="assets/themes/gs/gs.css">
+    <link rel="stylesheet" href="assets/themes/khcom/khcom.css">
     <link rel="stylesheet" href="assets/themes/minishcap/minishcap.css">
     <link rel="stylesheet" href="assets/themes/mmbn1/mmbn1.css">
     <link rel="stylesheet" href="assets/themes/pmd/pmd.css">
@@ -665,6 +667,7 @@
     var currentTheme = null;
     var chatHistory = [];
     var MAX_HISTORY = 30;
+    var messageSeq = 0;
     var userPortraits = {};
     var PORTRAIT_STORE_KEY = "chatOverlayUserPortraits";
 
@@ -863,6 +866,7 @@
         ff7: THEME_FF7,
         fft: THEME_FFT,
         gs: THEME_GS,
+        khcom: THEME_KHCOM,
         mc: THEME_MINISHCAP,
         mmbn1: THEME_MMBN1,
         npotn: THEME_NPOTN,
@@ -1102,6 +1106,23 @@
                 else renderAllHistory();
             }
         },
+        portraitSide: {
+            label: "Portrait Side",
+            type: "cycle",
+            resolveValues: function () {
+                return [
+                    { label: "Left", name: "left", value: 0 },
+                    { label: "Right", name: "right", value: 1 },
+                    { label: "Alternate", name: "alternate", value: 2 }
+                ];
+            },
+            resolveDefault: function () {
+                return 0;
+            },
+            onChange: function () {
+                applyPortraitSide(true);
+            }
+        },
         userPortrait: {
             label: "Portrait",
             type: "userPortrait"
@@ -1144,7 +1165,7 @@
                 Object.keys(po.options).forEach(function (name) {
                     var o = po.options[name];
                     if (o && "x" in o && "y" in o && "w" in o && "h" in o) {
-                        PORTRAITS.push({ name: name, x: o.x, y: o.y, w: o.w, h: o.h });
+                        PORTRAITS.push({ name: name, label: o.label || null, x: o.x, y: o.y, w: o.w, h: o.h });
                     }
                 });
             }
@@ -1293,6 +1314,7 @@
         themeLabel.textContent = t.label;
         tuner.classList.toggle("wide", !!t.portrait);
         buildTunerOptions();
+        applyPortraitSide(false);
         if (currentTheme && currentTheme.boxStyles) applyBoxStyle();
         applyTunerClass();
         applyThemeFonts(t);
@@ -1610,7 +1632,7 @@
         return out;
     }
 
-    function drawWindow(canvas, style, w, h, boxOverride) {
+    function drawWindow(canvas, style, w, h, boxOverride, mirrorRight) {
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, w, h);
         if (!style || w <= 0 || h <= 0) return;
@@ -1636,7 +1658,15 @@
                     if (srcBox._parts) {
                         var ccS = (srcBox.def && typeof srcBox.def.scale === "number")
                             ? srcBox.def.scale : (currentTheme.ccScale || 1);
+                        if (currentTheme.mirrorBoxOnRight && mirrorRight) {
+                            ctx.save();
+                            ctx.translate(w, 0);
+                            ctx.scale(-1, 1);
+                        }
                         drawCcBoxParts(ctx, srcBox, w, h, ccS);
+                        if (currentTheme.mirrorBoxOnRight && mirrorRight) {
+                            ctx.restore();
+                        }
                     }
                 } else if (slices) {
                     drawNineSlice(ctx, srcBox, slices, currentTheme.boxScale || 0.5, w, h);
@@ -2320,6 +2350,8 @@
     }
 
     function appendMessage(record) {
+        if (!chatHistory.length) messageSeq = 0;
+        if (record && typeof record._seq !== "number") record._seq = messageSeq++;
         chatHistory.push(record);
         renderMessage(record, true);
         syncPortraitUsers();
@@ -2398,6 +2430,10 @@
         var blockquote = document.createElement("blockquote");
         var units = buildUnits(message, extra && extra.messageEmotes);
         var loneEmote = isLoneEmoteMessage(units);
+        var messageRight = resolveMessagePortraitSide(record);
+        if (currentTheme.portrait) {
+            newMessage.setAttribute("data-portrait-side", messageRight ? "right" : "left");
+        }
         if (loneEmote) newMessage.classList.add("emote-only");
 
         if (!useAtlas) {
@@ -2570,18 +2606,31 @@
             var ccPx, ccPy, ccPs, ccPl, ccPt, ccPr, ccPb;
             var ccHasPic = !!box.querySelector(".portrait");
             var ccContent = ccInfo.content || null;
+            var ccRight = messageRight;
             if (ccContent) {
                 ccPx = ccContent.px; ccPy = ccContent.py; ccPs = ccContent.ps;
-                ccPt = ccContent.pt; ccPr = ccContent.pr; ccPb = ccContent.pb;
-                ccPl = ccHasPic ? ccContent.pl : ccpL + 14;
+                ccPt = ccContent.pt; ccPb = ccContent.pb;
+                if (ccRight) {
+                    ccPl = ccHasPic ? ccContent.pr : ccpR + 14;
+                    ccPr = ccHasPic ? ccContent.pl : ccContent.pr;
+                } else {
+                    ccPl = ccHasPic ? ccContent.pl : ccpL + 14;
+                    ccPr = ccContent.pr;
+                }
             } else {
-                ccPx = ccpL + 6;
                 ccPy = ccpT + 4;
                 ccPs = currentTheme.portraitW || 96;
-                ccPl = ccHasPic ? ccPx + ccPs + 12 : ccpL + 14;
                 ccPt = ccPy;
-                ccPr = ccpR + 14;
                 ccPb = ccpB + 6;
+                if (ccRight) {
+                    ccPx = ccpR + 6;
+                    ccPl = ccpL + 14;
+                    ccPr = ccHasPic ? ccPx + ccPs + 12 : ccpR + 14;
+                } else {
+                    ccPx = ccpL + 6;
+                    ccPl = ccHasPic ? ccPx + ccPs + 12 : ccpL + 14;
+                    ccPr = ccpR + 14;
+                }
             }
             var ccTrimT = 0, ccTrimB = 0;
             var ccTrim = ccInfo.trim || null;
@@ -2613,7 +2662,7 @@
             portraitImg && (iconImg || (boxStyleImages && boxStyleImages.icon))) {
             var iconEl = document.createElement("canvas");
             iconEl.className = "icon-box";
-            drawIconBox(iconEl, boxStyleImages ? boxStyleImages.icon : null, msgPortrait);
+            drawIconBox(iconEl, boxStyleImages ? boxStyleImages.icon : null, msgPortrait, messageRight);
             newMessage.appendChild(iconEl);
         }
         newMessage.appendChild(bg);
@@ -2641,13 +2690,17 @@
             if (ccInfo.arrow.blink && arrowFrames.length === 1) {
                 arr._blink = { ms: ccInfo.arrow.blinkMs || 0 };
             }
-            if (typeof ccInfo.arrow.x === "number") arr.style.left = ccInfo.arrow.x + "px";
-            if (typeof ccInfo.arrow.y === "number") arr.style.top = ccInfo.arrow.y + "px";
             drawArrowFrame(arr, arrowFrames[0]);
-            var ctcAnchor = document.createElement("span");
-            ctcAnchor.className = "ctc-anchor";
-            ctcAnchor.appendChild(arr);
-            placeArrow = function () { if (ctcAnchor) blockquote.appendChild(ctcAnchor); };
+            if (currentTheme.ctcCorner) {
+                placeArrow = function () { box.appendChild(arr); };
+            } else {
+                if (typeof ccInfo.arrow.x === "number") arr.style.left = ccInfo.arrow.x + "px";
+                if (typeof ccInfo.arrow.y === "number") arr.style.top = ccInfo.arrow.y + "px";
+                var ctcAnchor = document.createElement("span");
+                ctcAnchor.className = "ctc-anchor";
+                ctcAnchor.appendChild(arr);
+                placeArrow = function () { if (ctcAnchor) blockquote.appendChild(ctcAnchor); };
+            }
         } else if (arrowFrames.length) {
             var arr2 = document.createElement("canvas");
             arr2.className = "continue-arrow";
@@ -2697,7 +2750,7 @@
                 bg.width = box.offsetWidth + 2 * ccBleed;
                 bg.height = box.offsetHeight + 2 * ccBleed + ccOverT + ccOverB;
                 drawWindow(bg, windowStyle, bg.width, bg.height,
-                    boxStyleImages ? boxStyleImages.box : null);
+                    boxStyleImages ? boxStyleImages.box : null, messageRight);
             }
             if (nameTagEl && nameTagStyle && username && username.offsetWidth) {
                 var target = (username.offsetLeft - nameTagEl.offsetLeft) + username.offsetWidth +
@@ -2749,7 +2802,7 @@
 
         newMessage._repaintBox = function () {
             sizeWindow();
-            if (iconEl) drawIconBox(iconEl, boxStyleImages ? boxStyleImages.icon : null, msgPortrait);
+            if (iconEl) drawIconBox(iconEl, boxStyleImages ? boxStyleImages.icon : null, msgPortrait, messageRight);
             if (arr) drawArrowFrame(arr, arr._frames[arr._frame]);
         };
         newMessage._finish = function (animate) { run(animate); };
@@ -2803,7 +2856,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "mc", "mmbn1", "npotn", "pmd"];
+    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "khcom", "mc", "mmbn1", "npotn", "pmd"];
     var themeIndex = 0;
     var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
@@ -2829,8 +2882,12 @@
 
     function buildTunerOptions() {
         tunerOptionsBox.innerHTML = "";
-        if (!currentTheme || !currentTheme.tuner) return;
-        currentTheme.tuner.forEach(function (key) {
+        if (!currentTheme || (!currentTheme.tuner && !currentTheme.portrait)) return;
+        var keys = (currentTheme.tuner || []).slice();
+        if (currentTheme.portrait && keys.indexOf("portraitSide") === -1) {
+            keys.push("portraitSide");
+        }
+        keys.forEach(function (key) {
             var o = THEME_TUNER[key];
             if (!o) return;
             if (o.type === "userPortrait") {
@@ -3081,7 +3138,7 @@
     var ICON_BOX_CSS = 96;
     var PORTRAIT_CSS = 80;
 
-    function drawIconBox(canvas, iconOverride, portraitOverride) {
+    function drawIconBox(canvas, iconOverride, portraitOverride, portraitRight) {
         if (!canvas) return false;
         var boxCss = currentTheme.iconBoxCss || ICON_BOX_CSS;
         var portraitCss = currentTheme.iconPortraitCss || PORTRAIT_CSS;
@@ -3102,19 +3159,30 @@
         var ph = portraitCss * PIXEL_SCALE;
         var px = Math.round((canvas.width - pw) / 2);
         var py = Math.round((canvas.height - ph) / 2);
+        function paintPortrait(src, sx, sy, sw, sh) {
+            if (currentTheme.flipPortraitOnRight && portraitRight) {
+                ctx.save();
+                ctx.translate(px + pw, py);
+                ctx.scale(-1, 1);
+                ctx.drawImage(src, sx, sy, sw, sh, 0, 0, pw, ph);
+                ctx.restore();
+            } else {
+                ctx.drawImage(src, sx, sy, sw, sh, px, py, pw, ph);
+            }
+        }
         if (portraitOverride) {
             var pv = document.createElement("canvas");
             if (!drawPortrait(portraitOverride, pv, PIXEL_SCALE)) {
                 onPortraitReady(portraitOverride.src, function () {
-                    drawIconBox(canvas, iconOverride, portraitOverride);
+                    drawIconBox(canvas, iconOverride, portraitOverride, portraitRight);
                 });
                 return false;
             }
-            ctx.drawImage(pv, px, py, pw, ph);
+            paintPortrait(pv, 0, 0, pv.width, pv.height);
             return true;
         }
         if (!portraitImg || !portraitImg.complete || !portraitImg.naturalWidth) return false;
-        ctx.drawImage(portraitImg, 0, 0, 40, 40, px, py, pw, ph);
+        paintPortrait(portraitImg, 0, 0, 40, 40);
         return true;
     }
 
@@ -3365,7 +3433,7 @@
         PORTRAITS.forEach(function (p) {
             if (p.name === "none") return;
             if (genFilter && p.gen !== genFilter) return;
-            var tileLabel = humanizeName(p.name) +
+            var tileLabel = (p.label || humanizeName(p.name)) +
                 (p.shinySrc ? " — click again to toggle shiny" : "");
             addTile(p.name, tileLabel, function (tile) {
                 var cv = document.createElement("canvas");
@@ -3380,6 +3448,24 @@
             });
         });
         updatePortraitSelection();
+    }
+
+    function resolveMessagePortraitSide(record) {
+        if (!currentTheme || !currentTheme.portrait) return false;
+        var mode = themeOptionState.portraitSide;
+        if (mode === 2) {
+            if (record && typeof record._seq !== "number") record._seq = messageSeq++;
+            return !!(record && record._seq % 2 === 1);
+        }
+        return mode === 1;
+    }
+
+    function applyPortraitSide(render) {
+        if (!chatBox) return;
+        var mode = (currentTheme && currentTheme.portrait) ? themeOptionState.portraitSide : 0;
+        chatBox.setAttribute("data-portrait-side",
+            mode === 1 ? "right" : (mode === 2 ? "alternate" : "left"));
+        if (render) renderAllHistory();
     }
 
     function applyTunerClass() {

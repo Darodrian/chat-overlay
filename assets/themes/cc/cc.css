@@ -124,6 +124,11 @@
     z-index: 3;
 }
 
+#chat.theme-cc li[data-portrait-side="right"] .msg-box .portrait {
+    left: auto;
+    right: var(--cc-px, 24px);
+}
+
 #chat.theme-cc .msg-header {
     margin: 0 0 2px 0;
 }

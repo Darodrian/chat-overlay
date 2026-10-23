@@ -83,3 +83,8 @@
     image-rendering: pixelated;
     z-index: 3;
 }
+
+#chat.theme-npotn li[data-portrait-side="right"] .msg-box .portrait {
+    left: auto;
+    right: var(--cc-px, 32px);
+}

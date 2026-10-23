@@ -120,3 +120,17 @@
     height: 0.9em;
     vertical-align: 0px;
 }
+
+#chat.theme-mmbn1 li[data-portrait-side="right"] .msg-box {
+    padding: 24px 106px 16px 16px;
+}
+
+#chat.theme-mmbn1 li[data-portrait-side="right"] .portrait {
+    left: auto;
+    right: 18px;
+}
+
+#chat.theme-mmbn1 li[data-portrait-side="right"] .continue-arrow {
+    left: 0;
+    right: auto;
+}

@@ -5,6 +5,7 @@ var THEME_NPOTN = {
         data: null,
         ccBox: true,
         ccScale: 3,
+        mirrorBoxOnRight: true,
         boxStyles: {
             default: {}
         },
