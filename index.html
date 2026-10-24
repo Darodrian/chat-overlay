@@ -21,6 +21,7 @@
     <script src="assets/themes/khcom/khcom.js"></script>
     <script src="assets/themes/pmd/pmd.js"></script>
     <script src="assets/themes/npotn/npotn.js"></script>
+    <script src="assets/themes/kam/kam.js"></script>
     <script src="assets/themes/cc/cc.js"></script>
 
     <style>
@@ -558,6 +559,7 @@
     <link rel="stylesheet" href="assets/themes/mmbn1/mmbn1.css">
     <link rel="stylesheet" href="assets/themes/pmd/pmd.css">
     <link rel="stylesheet" href="assets/themes/npotn/npotn.css">
+    <link rel="stylesheet" href="assets/themes/kam/kam.css">
     <link rel="stylesheet" href="assets/themes/cc/cc.css">
 
 </head>
@@ -670,6 +672,8 @@
     var messageSeq = 0;
     var userPortraits = {};
     var PORTRAIT_STORE_KEY = "chatOverlayUserPortraits";
+    var userBoxStyles = {};
+    var BOX_STYLE_STORE_KEY = "chatOverlayUserBoxStyles";
 
     function saveUserPortraits() {
         try {
@@ -696,10 +700,58 @@
         } catch (e) {}
     }
 
+    function saveUserBoxStyles() {
+        try {
+            localStorage.setItem(BOX_STYLE_STORE_KEY, JSON.stringify(userBoxStyles));
+        } catch (e) {}
+    }
+
+    function loadUserBoxStyles() {
+        try {
+            var raw = localStorage.getItem(BOX_STYLE_STORE_KEY);
+            if (!raw) return;
+            var parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+                Object.keys(parsed).forEach(function (tk) {
+                    var m = parsed[tk];
+                    if (m && typeof m === "object") {
+                        userBoxStyles[tk] = userBoxStyles[tk] || {};
+                        Object.keys(m).forEach(function (uk) {
+                            if (typeof m[uk] === "string") userBoxStyles[tk][uk] = m[uk];
+                        });
+                    }
+                });
+            }
+        } catch (e) {}
+    }
+
     function userPortraitMap() {
         if (!currentTheme) return {};
         if (!userPortraits[currentTheme.key]) userPortraits[currentTheme.key] = {};
         return userPortraits[currentTheme.key];
+    }
+
+    function userBoxStyleMap() {
+        if (!currentTheme) return {};
+        if (!userBoxStyles[currentTheme.key]) userBoxStyles[currentTheme.key] = {};
+        return userBoxStyles[currentTheme.key];
+    }
+
+    function getUserBoxStyle(user) {
+        var u = String(user || "").toLowerCase();
+        if (!u) return null;
+        return userBoxStyleMap()[u] || null;
+    }
+
+    function setUserBoxStyle(user, paletteName) {
+        var u = String(user || "").toLowerCase();
+        if (!u) return;
+        if (!paletteName) {
+            delete userBoxStyleMap()[u];
+        } else {
+            userBoxStyleMap()[u] = paletteName;
+        }
+        saveUserBoxStyles();
     }
 
     var CONFIG_STORE_KEY = "chatOverlayConfig";
@@ -870,6 +922,7 @@
         mc: THEME_MINISHCAP,
         mmbn1: THEME_MMBN1,
         npotn: THEME_NPOTN,
+        kam: THEME_KAM,
         pmd: THEME_PMD,
         cc: THEME_CC
     };
@@ -1029,6 +1082,26 @@
                         if (keys[i] === d) return i;
                     }
                 }
+                return 0;
+            },
+            onChange: function () {
+                applyBoxStyle();
+            }
+        },
+        userBoxStyle: {
+            label: "Box Style",
+            type: "userBoxStyle"
+        },
+        boxTone: {
+            label: "Panel Tone",
+            type: "cycle",
+            resolveValues: function () {
+                return [
+                    { label: "Dark", name: "dark", value: 0 },
+                    { label: "Light", name: "light", value: 1 }
+                ];
+            },
+            resolveDefault: function () {
                 return 0;
             },
             onChange: function () {
@@ -1218,6 +1291,18 @@
         var imgs = boxStyleImage(name);
         boxImg = imgs.box;
         iconImg = imgs.icon;
+        // kam draws its boxes with canvas (customBox). Repaint existing message
+        // boxes in place instead of tearing down and rebuilding the whole chat,
+        // which is expensive with many messages.
+        if (currentTheme.customBox && currentTheme.drawBox) {
+            for (var i = 0; i < chatHistory.length; i++) {
+                var rec = chatHistory[i];
+                if (rec && rec.node && typeof rec.node._repaintBox === "function") {
+                    rec.node._repaintBox();
+                }
+            }
+            return;
+        }
         renderAllHistory();
     }
 
@@ -1649,6 +1734,10 @@
 
         if (currentTheme.drawMode === "box") {
             var srcBox = boxOverride || boxImg;
+            if (srcBox && srcBox._customBox && currentTheme.drawBox) {
+                currentTheme.drawBox(ctx, w, h, srcBox.name);
+                return;
+            }
             if (srcBox && (srcBox._parts || (srcBox.complete && srcBox.naturalWidth > 0))) {
                 var nw = srcBox.naturalWidth, nh = srcBox.naturalHeight;
                 var bb = currentTheme.boxBands || {};
@@ -2353,8 +2442,15 @@
         if (!chatHistory.length) messageSeq = 0;
         if (record && typeof record._seq !== "number") record._seq = messageSeq++;
         chatHistory.push(record);
-        renderMessage(record, true);
+        try {
+            renderMessage(record, true);
+        } catch (e) {
+            console.warn("appendMessage failed for user", record && record.user, e);
+            chatHistory.pop();
+            return;
+        }
         syncPortraitUsers();
+        if (currentTheme && currentTheme.key === "kam") syncBoxStyleUsers();
         while (chatHistory.length > MAX_HISTORY) dropOldestMessage();
     }
 
@@ -2425,7 +2521,7 @@
     function buildMessageNode(record) {
         var user = record.user, message = record.message, flags = record.flags, extra = record.extra;
         var useAtlas = !!(currentTheme.atlas || currentTheme.boxAtlas ||
-            currentTheme.boxParts);
+            currentTheme.boxParts || currentTheme.customBox);
         var newMessage = document.createElement("li");
         var blockquote = document.createElement("blockquote");
         var units = buildUnits(message, extra && extra.messageEmotes);
@@ -2471,6 +2567,12 @@
         var boxStyleImages = boxStyleName ? boxStyleImage(boxStyleName) : null;
         var ccInfo = (currentTheme.ccBox && boxStyleImages && boxStyleImages.box) ?
             boxStyleImages.box._cc : null;
+        var msgStyle = currentTheme.messageStyle ? currentTheme.messageStyle(boxStyleName) : null;
+        if (msgStyle) {
+            if (msgStyle.body) newMessage.style.setProperty("--ui-body-color", msgStyle.body);
+            if (msgStyle.user) newMessage.style.setProperty("--ui-user-color", msgStyle.user);
+            if (msgStyle.shadow) newMessage.style.setProperty("--ui-text-shadow", msgStyle.shadow);
+        }
 
         box.className = "msg-box";
         bg.className = "window-bg";
@@ -2593,6 +2695,10 @@
         }
 
         box.appendChild(blockquote);
+
+        if (currentTheme.decorateMessage) {
+            currentTheme.decorateMessage(box, record, boxStyleName, portrait || null);
+        }
 
         if (ccInfo) {
             var ccs = (ccInfo && typeof ccInfo.scale === "number") ? ccInfo.scale :
@@ -2810,6 +2916,9 @@
     }
 
     function renderAllHistory() {
+        for (var i = 0; i < chatHistory.length; i++) {
+            if (chatHistory[i]) delete chatHistory[i]._boxStyleName;
+        }
         chat.innerHTML = "";
         var start = Math.max(0, chatHistory.length - MAX_HISTORY);
         for (var i = start; i < chatHistory.length; i++) {
@@ -2856,7 +2965,7 @@
     var tuner = document.getElementById("tuner");
     var chatBox = document.getElementById("chat");
     var themeLabel = document.getElementById("tuner-theme");
-    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "khcom", "mc", "mmbn1", "npotn", "pmd"];
+    var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "khcom", "kam", "mc", "mmbn1", "npotn", "pmd"];
     var themeIndex = 0;
     var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
     var tunerMode = DEFAULT_OPTIONS.mode;
@@ -2882,12 +2991,121 @@
 
     function buildTunerOptions() {
         tunerOptionsBox.innerHTML = "";
-        if (!currentTheme || (!currentTheme.tuner && !currentTheme.portrait)) return;
-        var keys = (currentTheme.tuner || []).slice();
-        if (currentTheme.portrait && keys.indexOf("portraitSide") === -1) {
-            keys.push("portraitSide");
+        boxStyleUsersBox = null;
+        boxStyleGridBox = null;
+        boxStyleRows = {};
+        boxStyleTiles = {};
+        if (!currentTheme) return;
+        if (currentTheme.key === "khcom" || currentTheme.key === "npotn") {
+            var kKeys = (currentTheme.tuner || []).slice();
+            if (kKeys.indexOf("portraitSide") === -1 && currentTheme.portrait) kKeys.push("portraitSide");
+            kKeys.forEach(function (key) {
+                var o = THEME_TUNER[key];
+                if (!o) return;
+                if (o.type === "userPortrait") {
+                    buildPortraitPicker();
+                    return;
+                }
+                if (o.type === "cycle") {
+                    var vals = o.resolveValues();
+                    var row = document.createElement("div");
+                    row.className = "tuner-row";
+                    var label = document.createElement("label");
+                    label.textContent = o.label;
+                    var prev = document.createElement("button");
+                    prev.textContent = "◀";
+                    var next = document.createElement("button");
+                    next.textContent = "▶";
+                    var out = document.createElement("output");
+                    out.id = "tuner-option-" + key;
+                    row.appendChild(label);
+                    row.appendChild(prev);
+                    row.appendChild(out);
+                    row.appendChild(next);
+                    tunerOptionsBox.appendChild(row);
+                    var restored = restoreThemeOption(key, o.resolveDefault());
+                    if (typeof restored !== "number" || restored < 0 || restored >= vals.length) restored = 0;
+                    themeOptionState[key] = restored;
+                    function render() {
+                        var idx = themeOptionState[key] || 0;
+                        out.textContent = (vals[idx] && vals[idx].label) || "";
+                    }
+                    render();
+                    prev.addEventListener("click", function () {
+                        themeOptionState[key] = (themeOptionState[key] + vals.length - 1) % vals.length;
+                        persistThemeOption(key);
+                        render();
+                        if (typeof o.onChange === "function") o.onChange();
+                    });
+                    next.addEventListener("click", function () {
+                        themeOptionState[key] = (themeOptionState[key] + 1) % vals.length;
+                        persistThemeOption(key);
+                        render();
+                        if (typeof o.onChange === "function") o.onChange();
+                    });
+                }
+            });
+            return;
         }
-        keys.forEach(function (key) {
+        if (currentTheme.key === "kam") {
+            var keys = ["userPortrait", "boxTone", "userBoxStyle", "portraitSide"];
+            keys.forEach(function (key) {
+                var o = THEME_TUNER[key];
+                if (!o) return;
+                if (o.type === "userPortrait") {
+                    buildPortraitPicker();
+                    return;
+                }
+                if (o.type === "userBoxStyle") {
+                    buildBoxStylePicker();
+                    return;
+                }
+                if (o.type === "cycle") {
+                    var vals = o.resolveValues();
+                    var row = document.createElement("div");
+                    row.className = "tuner-row";
+                    var label = document.createElement("label");
+                    label.textContent = o.label;
+                    var prev = document.createElement("button");
+                    prev.textContent = "◀";
+                    var next = document.createElement("button");
+                    next.textContent = "▶";
+                    var out = document.createElement("output");
+                    out.id = "tuner-option-" + key;
+                    row.appendChild(label);
+                    row.appendChild(prev);
+                    row.appendChild(out);
+                    row.appendChild(next);
+                    tunerOptionsBox.appendChild(row);
+                    var restored = restoreThemeOption(key, o.resolveDefault());
+                    if (typeof restored !== "number" || restored < 0 || restored >= vals.length) restored = 0;
+                    themeOptionState[key] = restored;
+                    function render() {
+                        var idx = themeOptionState[key] || 0;
+                        out.textContent = (vals[idx] && vals[idx].label) || "";
+                    }
+                    render();
+                    prev.addEventListener("click", function () {
+                        themeOptionState[key] = (themeOptionState[key] + vals.length - 1) % vals.length;
+                        persistThemeOption(key);
+                        render();
+                        if (typeof o.onChange === "function") o.onChange();
+                    });
+                    next.addEventListener("click", function () {
+                        themeOptionState[key] = (themeOptionState[key] + 1) % vals.length;
+                        persistThemeOption(key);
+                        render();
+                        if (typeof o.onChange === "function") o.onChange();
+                    });
+                }
+            });
+            return;
+        }
+        if (!currentTheme.tuner && !currentTheme.portrait && !currentTheme.boxStyles) return;
+        var k = (currentTheme.tuner || []).slice();
+        if (currentTheme.boxStyles && k.indexOf("boxStyle") === -1) k.push("boxStyle");
+        if (currentTheme.portrait && k.indexOf("portraitSide") === -1) k.push("portraitSide");
+        k.forEach(function (key) {
             var o = THEME_TUNER[key];
             if (!o) return;
             if (o.type === "userPortrait") {
@@ -2922,13 +3140,13 @@
                 themeOptionState[key] = (themeOptionState[key] + vals.length - 1) % vals.length;
                 persistThemeOption(key);
                 render();
-                o.onChange();
+                if (typeof o.onChange === "function") o.onChange();
             });
             next.addEventListener("click", function () {
                 themeOptionState[key] = (themeOptionState[key] + 1) % vals.length;
                 persistThemeOption(key);
                 render();
-                o.onChange();
+                if (typeof o.onChange === "function") o.onChange();
             });
         });
     }
@@ -3034,9 +3252,13 @@
         var def = t.boxStyles && t.boxStyles[name];
         var set = activeBoxSet();
         var spec = boxSetSpec(name, set);
-        if (!def && !spec) return { box: null, icon: null };
+        if (!def && !spec && !t.customBox) return { box: null, icon: null };
         var boxKey = t.key + "::" + (set || "") + "::" + name;
         var iconKey = t.key + "::icon::" + name;
+        if (t.customBox) {
+            if (!boxCache[boxKey]) boxCache[boxKey] = { _customBox: true, name: name };
+            return { box: boxCache[boxKey], icon: null };
+        }
         if (spec) {
             if (!boxCache[boxKey]) boxCache[boxKey] = createBoxParts(t, name, def, spec);
             return { box: boxCache[boxKey], icon: null };
@@ -3070,6 +3292,57 @@
 
     function effectiveBoxStyleName(record) {
         if (!currentTheme || !currentTheme.boxStyles) return null;
+        if (record._boxStyleName) return record._boxStyleName;
+        if (currentTheme.key === "kam") {
+            var userKey = record && record.user ? String(record.user).toLowerCase() : "";
+            var assigned = userKey ? getUserBoxStyle(userKey) : null;
+            if (assigned && assigned !== "__auto__") {
+                if (currentTheme.boxStyles[assigned]) {
+                    record._boxStyleName = assigned;
+                    return record._boxStyleName;
+                }
+            }
+            if (assigned === "__auto__" || !assigned) {
+                if (!assigned && userKey) {
+                    var map = userBoxStyleMap();
+                    var used = {};
+                    Object.keys(map).forEach(function (u) {
+                        var n = map[u];
+                        if (n && n !== "__auto__" && currentTheme.boxStyles[n]) used[n] = true;
+                    });
+                    var keys = Object.keys(currentTheme.boxStyles);
+                    var pool = keys.filter(function (k) { return !used[k]; });
+                    var pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : keys[Math.floor(Math.random() * keys.length)];
+                    setUserBoxStyle(userKey, pick);
+                    record._boxStyleName = pick;
+                    return record._boxStyleName;
+                }
+                var name = boxStyleSelectionName();
+                if (name === "random") {
+                    var keys2 = Object.keys(currentTheme.boxStyles);
+                    var pool2 = (keys2.length > 1 && lastRandomBoxStyleName) ?
+                        keys2.filter(function (k) { return k !== lastRandomBoxStyleName; }) : keys2;
+                    name = pool2[Math.floor(Math.random() * pool2.length)];
+                    record._boxStyleName = name;
+                    lastRandomBoxStyleName = name;
+                    return record._boxStyleName;
+                }
+                record._boxStyleName = name;
+                return record._boxStyleName;
+            }
+            var name2 = boxStyleSelectionName();
+            if (name2 === "random") {
+                var keys3 = Object.keys(currentTheme.boxStyles);
+                var pool3 = (keys3.length > 1 && lastRandomBoxStyleName) ?
+                    keys3.filter(function (k) { return k !== lastRandomBoxStyleName; }) : keys3;
+                name2 = pool3[Math.floor(Math.random() * pool3.length)];
+                record._boxStyleName = name2;
+                lastRandomBoxStyleName = name2;
+                return record._boxStyleName;
+            }
+            record._boxStyleName = name2;
+            return record._boxStyleName;
+        }
         var name = boxStyleSelectionName();
         if (name === "random") {
             if (record._boxStyleName) return record._boxStyleName;
@@ -3079,9 +3352,10 @@
             name = pool[Math.floor(Math.random() * pool.length)];
             record._boxStyleName = name;
             lastRandomBoxStyleName = name;
-            return name;
+            return record._boxStyleName;
         }
-        return name;
+        record._boxStyleName = name;
+        return record._boxStyleName;
     }
 
     var portraitFileCache = {};
@@ -3265,6 +3539,182 @@
         }
         if (!selectedPortraitUser && users.length) selectedPortraitUser = users[0];
         updatePortraitSelection();
+    }
+
+    var boxStyleUsersBox = null;
+    var boxStyleGridBox = null;
+    var boxStyleRows = {};
+    var boxStyleTiles = {};
+    var selectedBoxStyleUser = "";
+
+    function syncBoxStyleUsers() {
+        if (!boxStyleUsersBox || !boxStyleUsersBox.parentNode) return;
+        var users = knownChatters();
+        var live = {};
+        users.forEach(function (u) {
+            var key = u.toLowerCase();
+            live[key] = true;
+            if (boxStyleRows[key]) return;
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "portrait-user";
+            btn.dataset.user = u;
+            var name = document.createElement("span");
+            name.className = "pu-name";
+            name.textContent = u;
+            var assign = document.createElement("span");
+            assign.className = "pu-assign";
+            btn.appendChild(name);
+            btn.appendChild(assign);
+            btn.addEventListener("click", function () {
+                selectedBoxStyleUser = u;
+                updateBoxStyleSelection();
+            });
+            boxStyleUsersBox.appendChild(btn);
+            boxStyleRows[key] = { btn: btn, assign: assign };
+        });
+        for (var key in boxStyleRows) {
+            if (!Object.prototype.hasOwnProperty.call(boxStyleRows, key) || live[key]) continue;
+            var stale = boxStyleRows[key];
+            if (stale.btn.parentNode) stale.btn.parentNode.removeChild(stale.btn);
+            delete boxStyleRows[key];
+        }
+        if (selectedBoxStyleUser && !boxStyleRows[selectedBoxStyleUser.toLowerCase()]) {
+            selectedBoxStyleUser = "";
+        }
+        if (!selectedBoxStyleUser && users.length) selectedBoxStyleUser = users[0];
+        if (selectedBoxStyleUser) {
+            for (var k in boxStyleRows) {
+                if (!Object.prototype.hasOwnProperty.call(boxStyleRows, k)) continue;
+                var row2 = boxStyleRows[k];
+                var act = k === String(selectedBoxStyleUser).toLowerCase();
+                if (act !== (row2.btn.className.indexOf("active") !== -1)) {
+                    row2.btn.className = act ? "portrait-user active" : "portrait-user";
+                }
+            }
+        }
+        updateBoxStyleSelection();
+    }
+
+    function assignmentLabelBoxStyle(name) {
+        if (!name || name === "__auto__") return "Auto (use global)";
+        var bs = currentTheme && currentTheme.boxStyles;
+        if (bs && bs[name]) {
+            return boxStyleLabel(name);
+        }
+        return "Auto (use global)";
+    }
+
+    function updateBoxStyleSelection() {
+        if (!boxStyleUsersBox) return;
+        var map = userBoxStyleMap();
+        var sel = String(selectedBoxStyleUser || "").toLowerCase();
+        var key;
+        for (key in boxStyleRows) {
+            if (!Object.prototype.hasOwnProperty.call(boxStyleRows, key)) continue;
+            var row = boxStyleRows[key];
+            var isActive = key === sel;
+            if (isActive !== (row.btn.className.indexOf("active") !== -1)) {
+                row.btn.className = isActive ? "portrait-user active" : "portrait-user";
+            }
+            row.assign.textContent = assignmentLabelBoxStyle(map[key]);
+        }
+        var current = sel ? (map[sel] || "__auto__") : "__auto__";
+        var currentTileValue = current === "__auto__" ? "__auto__" : current;
+        for (key in boxStyleTiles) {
+            if (!Object.prototype.hasOwnProperty.call(boxStyleTiles, key)) continue;
+            var tile = boxStyleTiles[key];
+            var on = !!selectedBoxStyleUser && tile.dataset.value === currentTileValue;
+            if (on !== (tile.className.indexOf("selected") !== -1)) {
+                tile.className = "portrait-tile" + (on ? " selected" : "");
+            }
+        }
+        if (boxStyleGridBox) {
+            var title = boxStyleGridBox.querySelector(".portrait-grid-head .pg-title");
+            if (title) {
+                title.textContent = selectedBoxStyleUser
+                    ? selectedBoxStyleUser + " — " + assignmentLabelBoxStyle(current)
+                    : "no chatter yet";
+            }
+        }
+    }
+
+    function buildBoxStylePicker() {
+        var row = document.createElement("div");
+        row.className = "portrait-picker";
+
+        boxStyleUsersBox = document.createElement("div");
+        boxStyleUsersBox.className = "portrait-users";
+        row.appendChild(boxStyleUsersBox);
+
+        var wrap = document.createElement("div");
+        wrap.className = "portrait-grid-wrap";
+        var head = document.createElement("div");
+        head.className = "portrait-grid-head";
+        var title = document.createElement("span");
+        title.className = "pg-title";
+        head.appendChild(title);
+        var grid = document.createElement("div");
+        grid.className = "portrait-grid";
+        wrap.appendChild(head);
+        wrap.appendChild(grid);
+        boxStyleGridBox = wrap;
+        row.appendChild(wrap);
+        tunerOptionsBox.appendChild(row);
+
+        boxStyleTiles = {};
+
+        var autoTile = document.createElement("button");
+        autoTile.type = "button";
+        autoTile.className = "portrait-tile";
+        autoTile.dataset.value = "__auto__";
+        autoTile.innerHTML = "<span class='pt-label'>Auto (use global)</span>";
+        autoTile.addEventListener("click", function () {
+            if (!selectedBoxStyleUser) return;
+            setUserBoxStyle(selectedBoxStyleUser, "__auto__");
+            for (var j = 0; j < chatHistory.length; j++) {
+                var rec2 = chatHistory[j];
+                if (rec2 && rec2.user && String(rec2.user).toLowerCase() === String(selectedBoxStyleUser).toLowerCase()) {
+                    delete rec2._boxStyleName;
+                }
+            }
+            updateBoxStyleSelection();
+            renderAllHistory();
+        });
+        boxStyleTiles["__auto__"] = autoTile;
+        grid.appendChild(autoTile);
+
+        var bs = currentTheme && currentTheme.boxStyles;
+        if (bs && typeof bs === "object") {
+            Object.keys(bs).forEach(function (name) {
+                var tile = document.createElement("button");
+                tile.type = "button";
+                tile.className = "portrait-tile";
+                tile.dataset.value = name;
+                var label = document.createElement("span");
+                label.className = "pt-label";
+                label.textContent = boxStyleLabel(name);
+                tile.appendChild(label);
+                tile.addEventListener("click", function () {
+                    if (!selectedBoxStyleUser) return;
+                    setUserBoxStyle(selectedBoxStyleUser, name);
+                    for (var j = 0; j < chatHistory.length; j++) {
+                        var rec2 = chatHistory[j];
+                        if (rec2 && rec2.user && String(rec2.user).toLowerCase() === String(selectedBoxStyleUser).toLowerCase()) {
+                            delete rec2._boxStyleName;
+                        }
+                    }
+                    updateBoxStyleSelection();
+                    renderAllHistory();
+                });
+                boxStyleTiles[name] = tile;
+                grid.appendChild(tile);
+            });
+        } else {
+            title.textContent = "no box styles";
+        }
+
+        syncBoxStyleUsers();
     }
 
     function assignmentLabel(name) {
@@ -3622,6 +4072,7 @@
     });
 
     loadUserPortraits();
+    loadUserBoxStyles();
     hydrateConfig();
     applyTheme(THEME_ORDER[themeIndex]);
 

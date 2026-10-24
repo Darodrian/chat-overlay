@@ -1,0 +1,120 @@
+#chat.theme-kam {
+    color: var(--ui-body-color, #f6d1f4);
+    font-family: var(--ui-font, 'Zpix', monospace);
+    font-size: var(--ui-fs, 20px);
+    line-height: var(--ui-lh, 28px);
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+}
+
+#chat.theme-kam li {
+    position: relative;
+    display: block;
+    width: max-content;
+    max-width: 560px;
+    background: transparent;
+    border: none;
+    text-shadow: var(--ui-text-shadow, 2px 2px 0 #000000);
+    transform-origin: center;
+    animation: pop 0.18s ease-out;
+}
+
+#chat.theme-kam li + li {
+    margin-top: 28px;
+}
+
+#chat.theme-kam .window-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    image-rendering: pixelated;
+    z-index: 0;
+}
+
+#chat.theme-kam .msg-box {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    min-width: 320px;
+    min-height: 136px;
+    max-width: 560px;
+    padding: 18px 60px 26px 116px;
+    background: transparent;
+    border: none;
+}
+
+#chat.theme-kam li[data-portrait-side="right"] .msg-box {
+    padding: 18px 116px 26px 60px;
+}
+
+#chat.theme-kam .message-text {
+    margin: 0;
+    color: var(--ui-body-color, #f6d1f4);
+    font-size: var(--ui-fs, 20px);
+    line-height: var(--ui-lh, 28px);
+    white-space: normal;
+    word-break: break-word;
+}
+
+#chat.theme-kam .user {
+    color: var(--ui-user-color, #e53a79);
+}
+
+#chat.theme-kam .timestamp {
+    color: var(--ui-user-color, #e53a79);
+    opacity: 0.65;
+    font-size: 0.8em;
+}
+
+#chat.theme-kam img.badge {
+    height: 0.85em;
+    vertical-align: -0.08em;
+}
+
+#chat.theme-kam .portrait {
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    width: 84px;
+    height: 94px;
+    image-rendering: pixelated;
+    z-index: 2;
+}
+
+#chat.theme-kam li[data-portrait-side="right"] .portrait {
+    left: auto;
+    right: 18px;
+}
+
+#chat.theme-kam .kam-phone {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    width: 36px;
+    height: 36px;
+    image-rendering: pixelated;
+    z-index: 3;
+}
+
+#chat.theme-kam li[data-portrait-side="right"] .kam-phone {
+    right: auto;
+    left: 16px;
+}
+
+#chat.theme-kam .kam-player {
+    position: absolute;
+    right: 16px;
+    bottom: -22px;
+    width: 44px;
+    height: 40px;
+    image-rendering: pixelated;
+    z-index: 4;
+    pointer-events: none;
+}
+
+#chat.theme-kam li[data-portrait-side="right"] .kam-player {
+    right: auto;
+    left: 16px;
+}
