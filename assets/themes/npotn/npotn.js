@@ -19,7 +19,7 @@ var THEME_NPOTN = {
                 eo: { t: 0, b: 0, l: 0, r: 0 },
                 ov: 5, scale: 3, centerFromWall: true,
                 wall: { t: 8, b: 8, l: 8, r: 16 },
-                content: { px: 30, py: 32, ps: 120, pl: 162, pt: 24, pr: 64, pb: 40, minH: 136 },
+                content: { px: 30, py: 32, ps: 90, pl: 136, pt: 32, pr: 90, pb: 40, minH: 100 },
                 overhang: { t: 7, b: 7 },
                 co: { tl: { dx: 0, dy: 0 }, tr: { dx: 0, dy: -8 }, bl: { dx: 0, dy: 0 }, br: { dx: 0, dy: 10 } },
                 arrow: { scale: 3, x: 4, y: 4, blink: true, blinkMs: 400 },
@@ -28,9 +28,9 @@ var THEME_NPOTN = {
                 ]
             }
         },
-        fontFamily: "Zpix",
+        fontFamily: "ComingSoon",
         fontStack: "monospace",
-        fontSize: 24,
+        fontSize: 32,
         lineHeight: 32,
         bodyColor: "#000000",
         usernameColor: "#b05800",

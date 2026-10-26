@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'ComingSoon';
+    src: url("../../fonts/ComingSoon-Regular.woff2") format("woff2");
+    font-display: swap;
+}
+
 #chat.theme-npotn {
     color: var(--ui-body-color, #000000);
     font-family: var(--ui-font, inherit);
