@@ -188,6 +188,12 @@
             display: inline-block;
         }
 
+        #chat img.emote.gif {
+            max-width: 128px;
+            width: auto;
+            height: auto;
+        }
+
         #chat li.emote-only img.emote {
             height: 96px;
         }
@@ -2206,6 +2212,11 @@
         return ranges;
     }
 
+    function gifEmoteUnit(url) {
+        if (/\.gifv$/i.test(url)) url = url.slice(0, -4) + "gif";
+        return emoteImg(url).replace("class=\"emote\"", "class=\"emote gif\"");
+    }
+
     function twitchEmoteUnit(range) {
         var url = "https://static-cdn.jtvnw.net/emoticons/v2/" +
             range.id + "/default/dark/3.0";
@@ -2525,6 +2536,9 @@
         var newMessage = document.createElement("li");
         var blockquote = document.createElement("blockquote");
         var units = buildUnits(message, extra && extra.messageEmotes);
+        if (record.gifUrl) {
+            units = [{ html: gifEmoteUnit(record.gifUrl) }];
+        }
         var loneEmote = isLoneEmoteMessage(units);
         var messageRight = resolveMessagePortraitSide(record);
         if (currentTheme.portrait) {
@@ -2934,11 +2948,21 @@
         loadSevenTvChannel(extra.roomId);
         loadBttvChannel(extra.roomId);
         if (user.toLowerCase() === "streamelements") return;
+
+        var gifUrl = null;
+        if (extra && extra.userState && extra.userState.gifs) {
+            var parts = String(extra.userState.gifs).split("|");
+            if (parts.length >= 3) {
+                gifUrl = parts.slice(2).join("|");
+            }
+        }
+
         appendMessage({
             user: user,
             message: message,
             flags: flags,
             extra: extra,
+            gifUrl: gifUrl,
             ts: Date.now()
         });
     }
