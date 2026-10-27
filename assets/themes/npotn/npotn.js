@@ -7,12 +7,32 @@ var THEME_NPOTN = {
         ccScale: 3,
         mirrorBoxOnRight: true,
         boxStyles: {
-            default: {}
+            default: {},
+            custom: {
+                usernameColor: "#5c00ff",
+                fontFamily: "ComingSoon"
+            }
         },
         defaultBoxStyle: "default",
         boxParts: {
             default: {
-                dir: "assets/themes/npotn/box/",
+                dir: "assets/themes/npotn/box/default/",
+                tl: { x: 0, y: 0, w: 8, h: 8 }, t: { x: 0, y: 0, w: 8, h: 8 }, tr: { x: 0, y: 0, w: 16, h: 16 },
+                l: { x: 0, y: 0, w: 8, h: 8 }, c: { x: 0, y: 0, w: 8, h: 8 }, r: { x: 0, y: 0, w: 16, h: 8 },
+                bl: { x: 0, y: 0, w: 8, h: 8 }, b: { x: 0, y: 0, w: 8, h: 8 }, br: { x: 0, y: 0, w: 16, h: 16 },
+                eo: { t: 0, b: 0, l: 0, r: 0 },
+                ov: 5, scale: 3, centerFromWall: true,
+                wall: { t: 8, b: 8, l: 8, r: 16 },
+                content: { px: 30, py: 32, ps: 90, pl: 136, pt: 32, pr: 90, pb: 40, minH: 100 },
+                overhang: { t: 7, b: 7 },
+                co: { tl: { dx: 0, dy: 0 }, tr: { dx: 0, dy: -8 }, bl: { dx: 0, dy: 0 }, br: { dx: 0, dy: 10 } },
+                arrow: { scale: 3, x: 4, y: 4, blink: true, blinkMs: 400 },
+                ctc: [
+                    { file: "ctc.png", x: 0, y: 0, w: 12, h: 8 }
+                ]
+            },
+            custom: {
+                dir: "assets/themes/npotn/box/custom/",
                 tl: { x: 0, y: 0, w: 8, h: 8 }, t: { x: 0, y: 0, w: 8, h: 8 }, tr: { x: 0, y: 0, w: 16, h: 16 },
                 l: { x: 0, y: 0, w: 8, h: 8 }, c: { x: 0, y: 0, w: 8, h: 8 }, r: { x: 0, y: 0, w: 16, h: 8 },
                 bl: { x: 0, y: 0, w: 8, h: 8 }, b: { x: 0, y: 0, w: 8, h: 8 }, br: { x: 0, y: 0, w: 16, h: 16 },
@@ -28,12 +48,12 @@ var THEME_NPOTN = {
                 ]
             }
         },
-        fontFamily: "ComingSoon",
+        fontFamily: "Zpix",
         fontStack: "monospace",
-        fontSize: 46,
+        fontSize: 38,
         lineHeight: 38,
         bodyColor: "#000000",
-        usernameColor: "#5c00ff",
+        usernameColor: "#d98004",
         fontWeight: 900,
         textShadow: "1px 1px 2px rgba(0, 0, 0, 0.5)",
         drawMode: "box",
@@ -65,5 +85,5 @@ var THEME_NPOTN = {
             "shikamaru", "shino", "shukaku", "tayuya-1", "tayuya-2", "tazuna",
             "temari", "tenten", "teuchi", "tonton", "tsunade", "zabuza", "zaku"
         ],
-        tuner: ["userPortrait"]
+        tuner: ["boxStyle", "userPortrait"]
     };

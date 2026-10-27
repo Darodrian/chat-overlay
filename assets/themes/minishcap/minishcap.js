@@ -667,8 +667,8 @@ var THEME_MINISHCAP = {
         fontStack: "'ZpixBig', monospace",
         atlasFallback: "#$%&()*+/:;<=>?@[]^_`{|}~",
         zpixFallback: "&\\",
-        fontSize: 16,
-        lineHeight: 32,
+        fontSize: 20,
+        lineHeight: 38,
         continueArrow: true,
         inlineName: true,
         boxBands: { top: 5 / 48, bot: 5 / 48 }

@@ -8,7 +8,7 @@ var THEME_PMD = {
         boxScale: 0.4,
         fontFamily: "PMDFont",
         fontStack: "'Zpix', monospace",
-        fontSize: 18,
+        fontSize: 26,
         lineHeight: 32,
         mapApostrophe: false,
         bodyColor: "#ffffff",

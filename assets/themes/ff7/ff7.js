@@ -824,7 +824,7 @@ var THEME_FF7 = {
         mapApostrophe: true,
         fontFamily: "Reactor7",
         fontStack: "'Zpix', monospace",
-        fontSize: 32,
-        lineHeight: 32,
+        fontSize: 38,
+        lineHeight: 28,
         textShadow: "2px 2px 0 #000",
     };

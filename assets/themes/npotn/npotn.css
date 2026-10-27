@@ -17,7 +17,7 @@
     display: flex;
     flex-direction: column;
     width: max-content;
-    max-width: 550px;
+    max-width: min(90vw, 1000px);
     box-sizing: border-box;
     background: transparent;
     border: none;
@@ -43,13 +43,16 @@
     position: relative;
     z-index: 1;
     padding: var(--cc-pt, 30px) var(--cc-pr, 58px) var(--cc-pb, 30px) var(--cc-pl, 164px);
-    min-height: 180px;
+    min-height: 160px !important;
     background: transparent;
+    box-sizing: border-box;
 }
 
 #chat.theme-npotn .msg-box .user {
     color: var(--ui-user-color, #b05800);
-    font-size: 38px;
+    font-size: var(--ui-fs, 38px);
+    font-weight: var(--ui-fw, inherit);
+    line-height: var(--ui-lh, inherit);
 }
 
 #chat.theme-npotn .msg-box img.badge {
@@ -60,7 +63,8 @@
 #chat.theme-npotn .msg-box .message-text {
     margin: 0;
     color: var(--ui-body-color, #000000);
-    font-size: 36px;
+    font-size: var(--ui-fs, 36px);
+    font-weight: var(--ui-fw, inherit);
     line-height: var(--ui-lh, 32px);
     white-space: normal;
     word-break: break-word;

@@ -6,5 +6,8 @@ var THEME_DEFAULT = {
         windowBorder: 0,
         drawMode: null,
         userRows: null,
-        mapApostrophe: false
+        mapApostrophe: false,
+        fontFamily: "Zpix",
+        fontStack: "monospace",
+        fontSize: 32,
     };

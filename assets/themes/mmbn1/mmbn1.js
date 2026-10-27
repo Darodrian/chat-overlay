@@ -1115,7 +1115,7 @@ var THEME_MMBN1 = {
         mapApostrophe: true,
         fontFamily: "BN5DSEUFontThin",
         fontStack: "'Zpix', monospace",
-        fontSize: 24,
+        fontSize: 26,
         lineHeight: 32,
         bodyColor: "#2e3434",
         usernameColor: "#2e3434",

@@ -493,7 +493,7 @@ var THEME_CT = {
         userRows: null,
         mapApostrophe: false,
         fontFamily: "ChronoType",
-        fontSize: 32,
+        fontSize: 38,
         lineHeight: 32,
         textShadow: "2px 2px 0 #000",
         tuner: ["windowStyle"]

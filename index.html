@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -64,7 +64,7 @@
         #chat {
             width: 100%;
             min-width: 650px;
-            max-width: 800px;
+            max-width: 90vw;
             height: 100vh;
             overflow-x: hidden;
             overflow-y: hidden;
@@ -157,6 +157,13 @@
         #chat .user.broadcaster { color: var(--ui-broadcaster); }
 
 
+        #chat .user,
+        #chat .message-text {
+            font-family: var(--ui-font, inherit);
+            font-size: var(--ui-fs, inherit);
+            font-weight: var(--ui-fw, inherit);
+        }
+
         #chat img.badge {
             height: 1em;
             width: auto;
@@ -183,18 +190,18 @@
         }
 
         #chat img.emote {
-            height: 48px;
+            height: 42px;
             vertical-align: middle;
             display: inline-block;
         }
 
         #chat img.emote.gif {
-            height: 300px !important;
+            height: var(--ui-gif-h, 112px) !important;
             width: auto;
         }
 
         #chat li.emote-only img.emote {
-            height: 200px;
+            height: var(--ui-emote-only-h, 92px);
         }
 
         #chat .e-stack {
@@ -289,21 +296,21 @@
 
         #chat ul.align-default li { width: 100%; max-width: none; }
 
-        #chat ul.align-center li { margin-left: auto; margin-right: auto; }
+        #chat ul.align-center li { margin-left: auto; margin-right: auto; width: fit-content; max-width: min(90vw, 1000px); }
 
-        #chat ul.align-right li { margin-left: auto; margin-right: 0; }
+        #chat ul.align-right li { margin-left: auto; margin-right: 0; width: fit-content; max-width: min(90vw, 1000px); }
 
-        #chat ul.align-alternate li:nth-child(odd) { margin-left: 0; margin-right: auto; }
+        #chat ul.align-alternate li:nth-child(odd) { margin-left: 0; margin-right: auto; width: fit-content; max-width: min(90vw, 1000px); }
 
-        #chat ul.align-alternate li:nth-child(even) { margin-left: auto; margin-right: 0; }
+        #chat ul.align-alternate li:nth-child(even) { margin-left: auto; margin-right: 0; width: fit-content; max-width: min(90vw, 1000px); }
 
-        #chat ul.align-center .msg-content { margin-left: auto; margin-right: auto; width: fit-content; }
+        #chat ul.align-center .msg-content { margin-left: auto; margin-right: auto; width: fit-content; max-width: 100%; }
 
-        #chat ul.align-right .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; }
+        #chat ul.align-right .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; max-width: 100%; }
 
-        #chat ul.align-alternate li:nth-child(odd)  .msg-content { margin-left: 0;    margin-right: auto; width: fit-content; }
+        #chat ul.align-alternate li:nth-child(odd)  .msg-content { margin-left: 0;    margin-right: auto; width: fit-content; max-width: 100%; }
 
-        #chat ul.align-alternate li:nth-child(even) .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; }
+        #chat ul.align-alternate li:nth-child(even) .msg-content { margin-left: auto; margin-right: 0;    width: fit-content; max-width: 100%; }
 
         #tuner {
             position: fixed;
@@ -365,6 +372,43 @@
         #tuner button:active { transform: translate(2px, 2px); box-shadow: none; }
 
         #tuner .tuner-toggle { width: 60px; }
+
+        #tuner-toggle-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 6px 0;
+        }
+
+        #tuner-toggle-panel .tuner-toggle-btn {
+            width: 100%;
+            height: 34px;
+            padding: 0 6px;
+            background: #54514a;
+            border: 2px solid #33312c;
+            box-shadow: 2px 2px 0 #050505;
+            color: #f4f1ea;
+            font-family: inherit;
+            font-size: 11px;
+            line-height: 1.1;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        #tuner-toggle-panel .tuner-toggle-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        #tuner-toggle-panel .tuner-toggle-btn.on {
+            background: #8b8578;
+            border-color: #5c594e;
+            color: #ffffff;
+        }
 
         #tuner input[type="range"] {
             flex: 1;
@@ -499,6 +543,23 @@
             background: #f0c040;
         }
 
+        #tuner .portrait-tile .pt-palette {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2px;
+            margin: 3px 0 0 0;
+            padding: 0;
+        }
+
+        #tuner .portrait-tile .pt-palette-sq {
+            width: 5px;
+            height: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.45);
+            box-sizing: border-box;
+            image-rendering: pixelated;
+        }
+
         #tuner .portrait-tile canvas {
             display: block;
             image-rendering: pixelated;
@@ -535,6 +596,47 @@
             line-height: 1.2;
         }
 
+
+        #tuner .portrait-tabs {
+            display: flex;
+            gap: 2px;
+            margin-left: 10px;
+        }
+
+        #tuner .portrait-tab {
+            width: auto;
+            height: 22px;
+            padding: 0 8px;
+            background: #33312c;
+            border: 2px solid #33312c;
+            box-shadow: none;
+            color: #8b8578;
+            font-family: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #tuner .portrait-tab.active {
+            background: #54514a;
+            border-color: #33312c;
+            color: #f4f1ea;
+            box-shadow: 2px 2px 0 #050505;
+        }
+
+        #tuner .portrait-tab:active {
+            transform: translate(1px, 1px);
+            box-shadow: none;
+        }
+
+        #tuner .portrait-grid-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
 
         #tuner .portrait-gen-row {
             display: flex;
@@ -576,7 +678,7 @@
     <div id="setup-notice">
         <div class="setup-box">
             <h1>Chat Overlay setup</h1>
-            <p>Add this page as a <b>Browser Source</b> in OBS — width: 650 to 800 px — height: any, the overlay fills the window</p>
+            <p>Add this page as a <b>Browser Source</b> in OBS â€” width: 650 to 800 px â€” height: any, the overlay fills the window</p>
             <p>Replace <code>yourusername</code> in the URL with your channel name</p>
             <p>In OBS open the <b>Interact</b> window and press <b>F</b> for the tuner menu</p>
         </div>
@@ -589,39 +691,11 @@
             <output id="tuner-theme">Default</output>
             <button id="theme-next">▶</button>
         </div>
+        <div id="tuner-portrait-section"></div>
         <div id="tuner-options"></div>
+        <div id="tuner-toggle-panel"></div>
         <div class="tuner-row">
-            <label for="tuner-mode">Alignment</label>
-            <button id="tuner-prev">◀</button>
-            <output id="tuner-mode">Default</output>
-            <button id="tuner-next">▶</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-dim">Dim</label>
-            <button id="tuner-dim" class="tuner-toggle">On</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-role-badges">Role Badges</label>
-            <button id="tuner-role-badges" class="tuner-toggle">On</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-badges">Badges</label>
-            <button id="tuner-badges" class="tuner-toggle">On</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-timestamps">Timestamps</label>
-            <button id="tuner-timestamps" class="tuner-toggle">Off</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-bg">Background</label>
-            <button id="tuner-bg" class="tuner-toggle">Off</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-fade">Fade Out</label>
-            <button id="tuner-fade" class="tuner-toggle">Off</button>
-        </div>
-        <div class="tuner-row">
-            <label for="tuner-fade-secs">Seconds</label>
+            <label for="tuner-fade-secs">Fade Out Seconds</label>
             <input id="tuner-fade-secs" type="range" min="5" max="120" step="5" value="30">
             <output id="tuner-fade-secs-out">30s</output>
         </div>
@@ -810,13 +884,6 @@
         }
         var t = c.toggles;
         if (t && typeof t === "object") {
-            if (typeof t.mode === "number" && t.mode >= 0 && t.mode < TUNER_MODES.length) tunerMode = t.mode;
-            if (typeof t.dim === "boolean") dimOn = t.dim;
-            if (typeof t.roleBadges === "boolean") roleBadgesOn = t.roleBadges;
-            if (typeof t.badges === "boolean") badgesOn = t.badges;
-            if (typeof t.timestamps === "boolean") timestampsOn = t.timestamps;
-            if (typeof t.bg === "boolean") bgOn = t.bg;
-            if (typeof t.fade === "boolean") fadeOn = t.fade;
             if (typeof t.fadeSeconds === "number") {
                 fadeSeconds = Math.min(120, Math.max(5, t.fadeSeconds));
             }
@@ -826,14 +893,15 @@
     }
 
     function writeTogglesToConfig() {
+        saveThemeState();
         currentConfig().toggles = {
-            mode: tunerMode,
-            dim: dimOn,
-            roleBadges: roleBadgesOn,
-            badges: badgesOn,
-            timestamps: timestampsOn,
-            bg: bgOn,
-            fade: fadeOn,
+            mode: themeState.tunerMode,
+            dim: themeState.dim,
+            roleBadges: themeState.roleBadges,
+            badges: themeState.badges,
+            timestamps: themeState.timestamps,
+            bg: themeState.bg,
+            fade: themeState.fade,
             fadeSeconds: fadeSeconds
         };
     }
@@ -1027,6 +1095,86 @@
     }
 
     var THEME_TUNER = {
+        fontSize: {
+            label: "Font Size",
+            type: "cycle",
+            resolveValues: function () {
+                return [
+                    { label: "Smaller", name: "smaller", value: -3 },
+                    { label: "Small", name: "small", value: -2 },
+                    { label: "Normal", name: "normal", value: 0 },
+                    { label: "Large", name: "large", value: 2 },
+                    { label: "Larger", name: "larger", value: 4 },
+                    { label: "XL", name: "xl", value: 6 }
+                ];
+            },
+            resolveDefault: function () {
+                return 2;
+            },
+            onChange: function () {
+                if (currentTheme) applyThemeFonts(currentTheme);
+                renderAllHistory();
+            }
+        },
+        fontWeight: {
+            label: "Font Weight",
+            type: "cycle",
+            resolveValues: function () {
+                return [
+                    { label: "Regular", name: "regular", value: 400 },
+                    { label: "Bold", name: "bold", value: 700 }
+                ];
+            },
+            resolveDefault: function () {
+                return 0;
+            },
+            onChange: function () {
+                if (currentTheme) applyThemeFonts(currentTheme);
+                renderAllHistory();
+            }
+        },
+        emoteSize: {
+            label: "Emote Size",
+            type: "cycle",
+            resolveValues: function () {
+                return [
+                    { label: "Smaller", name: "smaller", value: 0.7 },
+                    { label: "Small", name: "small", value: 0.85 },
+                    { label: "Normal", name: "normal", value: 1 },
+                    { label: "Large", name: "large", value: 1.2 },
+                    { label: "Larger", name: "larger", value: 1.4 },
+                    { label: "XL", name: "xl", value: 1.6 }
+                ];
+            },
+            resolveDefault: function () {
+                return 2;
+            },
+            onChange: function () {
+                applyEmoteSizes();
+                renderAllHistory();
+            }
+        },
+        gifSize: {
+            label: "GIF Size",
+            type: "cycle",
+            resolveValues: function () {
+                return [
+                    { label: "Smaller", name: "smaller", value: 0.7 },
+                    { label: "Small", name: "small", value: 0.85 },
+                    { label: "Normal", name: "normal", value: 1 },
+                    { label: "Large", name: "large", value: 1.3 },
+                    { label: "Larger", name: "larger", value: 1.6 },
+                    { label: "XL", name: "xl", value: 2.0 }
+                ];
+            },
+            resolveDefault: function () {
+                return 2;
+            },
+            onChange: function () {
+                applyEmoteSizes();
+                renderAllHistory();
+            }
+        },
         windowStyle: {
             label: "Window Style",
             type: "cycle",
@@ -1075,7 +1223,9 @@
                         });
                     });
                 }
-                vals.push({ label: "Random", name: "random", value: null });
+                if (currentTheme.key !== "npotn") {
+                    vals.push({ label: "Random", name: "random", value: null });
+                }
                 return vals;
             },
             resolveDefault: function () {
@@ -1129,6 +1279,7 @@
                         });
                     });
                 }
+                vals.push({ label: "Random", name: "random", value: null });
                 return vals;
             },
             resolveDefault: function () {
@@ -1179,6 +1330,7 @@
                 currentTheme.portraitBase = entry.value;
                 currentTheme.boxSet = entry.name;
                 loadThemeData(currentTheme.data);
+                buildPortraitPicker();
                 buildTunerOptions();
                 if (currentTheme.boxStyles) applyBoxStyle();
                 else renderAllHistory();
@@ -1286,6 +1438,28 @@
         themeLoaded = true;
     }
 
+    function effectiveUsernameColor() {
+        var t = currentTheme;
+        if (!t) return "#f4f1ea";
+        var name = boxStyleSelectionName();
+        if (name && name !== "random" && name !== "__auto__") {
+            var bs = t.boxStyles && t.boxStyles[name];
+            if (bs && bs.usernameColor) return bs.usernameColor;
+        }
+        return t.usernameColor || "#f4f1ea";
+    }
+
+    function effectiveFontFamily() {
+        var t = currentTheme;
+        if (!t) return "inherit";
+        var name = boxStyleSelectionName();
+        if (name && name !== "random" && name !== "__auto__") {
+            var bs = t.boxStyles && t.boxStyles[name];
+            if (bs && bs.fontFamily) return bs.fontFamily;
+        }
+        return t.fontFamily || "inherit";
+    }
+
     function applyBoxStyle() {
         if (!currentTheme || !currentTheme.boxStyles) return;
         var name = boxStyleSelectionName();
@@ -1293,6 +1467,8 @@
             renderAllHistory();
             return;
         }
+        document.documentElement.style.setProperty("--ui-user-color", effectiveUsernameColor());
+        document.documentElement.style.setProperty("--ui-font", "'" + effectiveFontFamily() + "', " + (currentTheme.fontStack || "monospace"));
         var imgs = boxStyleImage(name);
         boxImg = imgs.box;
         iconImg = imgs.icon;
@@ -1314,7 +1490,9 @@
     function applyTheme(key) {
         var t = THEMES[key];
         if (!t) return;
+        saveThemeState();
         currentTheme = t;
+        loadThemeState();
         themeLoaded = false;
         startBlink();
         if (t.portraitSets) {
@@ -1394,31 +1572,104 @@
             portraitImg = null;
         }
         applyTunerMode();
-        applyDim();
-        applyBadges();
-        applyRoleBadges();
-        applyTimestamps();
-        applyBg();
-        applyFade();
+        // Apply restored per-theme toggle state directly (do not invert)
+        updateToggleBtn("dim", themeState.dim);
+        updateToggleBtn("badges", themeState.badges);
+        updateToggleBtn("roleBadges", themeState.roleBadges);
+        updateToggleBtn("timestamps", themeState.timestamps);
+        updateToggleBtn("bg", themeState.bg);
+        updateToggleBtn("fade", themeState.fade);
+        applyTunerClass();
+        renderAllHistory();
+        syncExpireTimer();
+        updateFadeSecondsVisibility();
         applyFadeSeconds();
         themeLabel.textContent = t.label;
         tuner.classList.toggle("wide", !!t.portrait);
+        if (t.portrait) {
+            buildPortraitPicker();
+        } else {
+            var portraitSection = document.getElementById("tuner-portrait-section");
+            if (portraitSection) portraitSection.innerHTML = "";
+        }
         buildTunerOptions();
+        if (currentTheme) {
+            if (usesRealFontTheme(currentTheme)) {
+                if (typeof themeState.fontSize !== "number") themeState.fontSize = THEME_TUNER.fontSize.resolveDefault();
+                if (typeof themeState.fontWeight !== "number") themeState.fontWeight = THEME_TUNER.fontWeight.resolveDefault();
+            } else {
+                delete themeState.fontSize;
+                delete themeState.fontWeight;
+            }
+            if (typeof themeState.emoteSize !== "number") themeState.emoteSize = THEME_TUNER.emoteSize.resolveDefault();
+            if (typeof themeState.gifSize !== "number") themeState.gifSize = THEME_TUNER.gifSize.resolveDefault();
+        }
+        buildTogglePanel();
         applyPortraitSide(false);
         if (currentTheme && currentTheme.boxStyles) applyBoxStyle();
         applyTunerClass();
         applyThemeFonts(t);
+        applyEmoteSizes();
         renderAllHistory();
+    }
+
+    function usesRealFontTheme(t) {
+        return !!(t && t.fontFamily && t.fontFamily !== "inherit");
+    }
+
+    function applyEmoteSizes() {
+        var root = document.documentElement.style;
+        var eIdx = themeState.emoteSize;
+        var gIdx = themeState.gifSize;
+        var eVals = THEME_TUNER.emoteSize.resolveValues();
+        var gVals = THEME_TUNER.gifSize.resolveValues();
+        var eMult = 1;
+        var gMult = 1;
+        if (typeof eIdx === "number" && eVals[eIdx] && typeof eVals[eIdx].value === "number") eMult = eVals[eIdx].value;
+        if (typeof gIdx === "number" && gVals[gIdx] && typeof gVals[gIdx].value === "number") gMult = gVals[gIdx].value;
+        root.setProperty("--ui-emote-h", Math.round(28 * eMult) + "px");
+        root.setProperty("--ui-emote-only-h", Math.round(112 * eMult) + "px");
+        root.setProperty("--ui-gif-h", Math.round(56 * gMult) + "px");
     }
 
     function applyThemeFonts(t) {
         var root = document.documentElement.style;
-        var fs = t.fontSize || 24;
-        root.setProperty("--ui-font", t.fontFamily ? "'" + t.fontFamily + "', " + (t.fontStack || "monospace") : "inherit");
-        root.setProperty("--ui-fs", fs + "px");
+        t = t || currentTheme;
+        if (!t) return;
+        var baseFs = typeof t.fontSize === "number" ? t.fontSize : 24;
+        var fs = baseFs;
+        if (usesRealFontTheme(t)) {
+            var fsIdx = themeState.fontSize;
+            var fsVals = THEME_TUNER.fontSize.resolveValues();
+            if (typeof fsIdx === "number" && fsVals[fsIdx] && typeof fsVals[fsIdx].value === "number") {
+                fs = baseFs + fsVals[fsIdx].value;
+            }
+        }
+        var baseFw = typeof t.fontWeight === "number" ? t.fontWeight : (t.fontWeight === "bold" ? 700 : 400);
+        var fw = baseFw;
+        if (usesRealFontTheme(t)) {
+            var fwIdx = themeState.fontWeight;
+            var fwVals = THEME_TUNER.fontWeight.resolveValues();
+            if (typeof fwIdx === "number" && fwVals[fwIdx] && typeof fwVals[fwIdx].value === "number") {
+                fw = fwVals[fwIdx].value;
+            } else {
+                fw = baseFw;
+            }
+        } else {
+            fw = baseFw;
+        }
+        if (usesRealFontTheme(t)) {
+            root.setProperty("--ui-font", "'" + effectiveFontFamily() + "', " + (t.fontStack || "monospace"));
+            root.setProperty("--ui-fs", fs + "px");
+            root.setProperty("--ui-fw", fw);
+        } else {
+            root.removeProperty("--ui-font");
+            root.removeProperty("--ui-fs");
+            root.removeProperty("--ui-fw");
+        }
         root.setProperty("--ui-lh", (t.lineHeight || Math.round(fs * 1.35)) + "px");
         root.setProperty("--ui-body-color", t.bodyColor || "#ffffff");
-        root.setProperty("--ui-user-color", t.usernameColor || "#f4f1ea");
+        root.setProperty("--ui-user-color", effectiveUsernameColor());
         root.setProperty("--ui-text-shadow", t.textShadow || "none");
         if (!t.fontFamily || !document.fonts || !document.fonts.load) return;
         if (document.fonts.check("16px " + t.fontFamily)) return;
@@ -1671,7 +1922,7 @@
         // corners. tileVGapless walks the span in fixed-size steps from the top, so
         // the run must BOTH start and end where the corners are, or the last tile's
         // grid phase pokes past the corner's ov-tuck (bottom-right overflow). runH
-        // alone can't express that — it is left-derived (tl/bl, 1x) while tr/br are 2x.
+        // alone can't express that â€” it is left-derived (tl/bl, 1x) while tr/br are 2x.
         var lBot = h - blH + coDy("bl"), rBot = h - brH + coDy("br");
         var lEndY = lBot + ov;
         var rEndY = rBot + ov;
@@ -2497,7 +2748,7 @@
         } else {
             for (i = 0; i < user.length; i++) prefix.push(glyphOrTextUnit(user[i], nameRow));
         }
-        if (timestampsOn) {
+        if (themeState.timestamps) {
             var now = new Date(record.ts || Date.now());
             var hh = String(now.getHours()).padStart(2, "0");
             var mm = String(now.getMinutes()).padStart(2, "0");
@@ -2558,6 +2809,7 @@
             var mm = String(now.getMinutes()).padStart(2, "0");
             timestamp.className = "timestamp";
             timestamp.innerText = hh + ":" + mm;
+            blockquote.className = "message-text";
             blockquote.innerHTML = "";
             var content = document.createElement("div");
             content.className = "msg-content";
@@ -2630,7 +2882,7 @@
 
             header.appendChild(username);
 
-            if (timestampsOn) {
+            if (themeState.timestamps) {
                 var ts = document.createElement("span");
                 ts.className = "timestamp";
                 var now2 = new Date(record.ts || Date.now());
@@ -2991,26 +3243,48 @@
     var THEME_ORDER = ["default", "acww", "cc", "ct", "ff7", "ff8", "fft", "gs", "khcom", "kam", "mc", "mmbn1", "npotn", "pmd"];
     var themeIndex = 0;
     var TUNER_MODES = ["Default", "Left", "Center", "Right", "Alternate"];
-    var tunerMode = DEFAULT_OPTIONS.mode;
-    var tunerLabel = document.getElementById("tuner-mode");
-    var dimOn = DEFAULT_OPTIONS.dim;
-    var dimBtn = document.getElementById("tuner-dim");
-    var badgesOn = DEFAULT_OPTIONS.badges;
-    var badgesBtn = document.getElementById("tuner-badges");
-    var roleBadgesOn = DEFAULT_OPTIONS.roleBadges;
-    var roleBadgesBtn = document.getElementById("tuner-role-badges");
-    var timestampsOn = DEFAULT_OPTIONS.timestamps;
-    var timestampsBtn = document.getElementById("tuner-timestamps");
-    var bgOn = DEFAULT_OPTIONS.bg;
-    var bgBtn = document.getElementById("tuner-bg");
-    var fadeOn = DEFAULT_OPTIONS.fade;
-    var fadeBtn = document.getElementById("tuner-fade");
+    var themeState = {};
     var fadeSeconds = DEFAULT_OPTIONS.fadeSeconds;
     var fadeSecsInput = document.getElementById("tuner-fade-secs");
     var fadeSecsOut = document.getElementById("tuner-fade-secs-out");
     var FADE_MS = 800;
     var expireTimer = null;
     var tunerOptionsBox = document.getElementById("tuner-options");
+
+    function themeStateKey() {
+        return currentTheme ? currentTheme.key : null;
+    }
+
+    function loadThemeState() {
+        themeState = {};
+        var key = themeStateKey();
+        if (!key) return;
+        var c = currentConfig();
+        if (c.themeState && typeof c.themeState[key] === "object") {
+            themeState = Object.assign({}, c.themeState[key]);
+        }
+        // Apply defaults for missing values
+        if (typeof themeState.dim !== "boolean") themeState.dim = DEFAULT_OPTIONS.dim;
+        if (typeof themeState.badges !== "boolean") themeState.badges = DEFAULT_OPTIONS.badges;
+        if (typeof themeState.roleBadges !== "boolean") themeState.roleBadges = DEFAULT_OPTIONS.roleBadges;
+        if (typeof themeState.timestamps !== "boolean") themeState.timestamps = DEFAULT_OPTIONS.timestamps;
+        if (typeof themeState.bg !== "boolean") themeState.bg = DEFAULT_OPTIONS.bg;
+        if (typeof themeState.fade !== "boolean") themeState.fade = DEFAULT_OPTIONS.fade;
+        if (typeof themeState.tunerMode !== "number") themeState.tunerMode = DEFAULT_OPTIONS.mode;
+        if (typeof themeState.fontSize !== "number") themeState.fontSize = THEME_TUNER.fontSize.resolveDefault();
+        if (typeof themeState.fontWeight !== "number") themeState.fontWeight = THEME_TUNER.fontWeight.resolveDefault();
+        if (typeof themeState.emoteSize !== "number") themeState.emoteSize = THEME_TUNER.emoteSize.resolveDefault();
+        if (typeof themeState.gifSize !== "number") themeState.gifSize = THEME_TUNER.gifSize.resolveDefault();
+        if (typeof themeState.portraitSide !== "number") themeState.portraitSide = 0;
+    }
+
+    function saveThemeState() {
+        var key = themeStateKey();
+        if (!key) return;
+        var c = currentConfig();
+        if (!c.themeState || typeof c.themeState !== "object") c.themeState = {};
+        c.themeState[key] = Object.assign({}, themeState);
+    }
 
     function buildTunerOptions() {
         tunerOptionsBox.innerHTML = "";
@@ -3019,16 +3293,56 @@
         boxStyleRows = {};
         boxStyleTiles = {};
         if (!currentTheme) return;
+        var globalKeys = [];
+        globalKeys.forEach(function (key) {
+            var o = THEME_TUNER[key];
+            if (!o) return;
+            if (key === "userPortrait" || key === "portraitSide") return;
+            if ((key === "fontSize" || key === "fontWeight") && !usesRealFontTheme(currentTheme)) return;
+            var vals = o.resolveValues();
+            var row = document.createElement("div");
+            row.className = "tuner-row";
+            var label = document.createElement("label");
+            label.textContent = o.label;
+            var prev = document.createElement("button");
+            prev.textContent = "◀";
+            var next = document.createElement("button");
+            next.textContent = "▶";
+            var out = document.createElement("output");
+            out.id = "tuner-option-" + key;
+            row.appendChild(label);
+            row.appendChild(prev);
+            row.appendChild(out);
+            row.appendChild(next);
+            tunerOptionsBox.appendChild(row);
+            var restored = restoreThemeOption(key, o.resolveDefault());
+            if (typeof restored !== "number" || restored < 0 || restored >= vals.length) restored = 0;
+            themeOptionState[key] = restored;
+            function render() {
+                var idx = themeOptionState[key] || 0;
+                out.textContent = (vals[idx] && vals[idx].label) || "";
+            }
+            render();
+            prev.addEventListener("click", function () {
+                themeOptionState[key] = (themeOptionState[key] + vals.length - 1) % vals.length;
+                persistThemeOption(key);
+                render();
+                if (typeof o.onChange === "function") o.onChange();
+            });
+            next.addEventListener("click", function () {
+                themeOptionState[key] = (themeOptionState[key] + 1) % vals.length;
+                persistThemeOption(key);
+                render();
+                if (typeof o.onChange === "function") o.onChange();
+            });
+        });
         if (currentTheme.key === "khcom" || currentTheme.key === "npotn") {
             var kKeys = (currentTheme.tuner || []).slice();
             if (kKeys.indexOf("portraitSide") === -1 && currentTheme.portrait) kKeys.push("portraitSide");
             kKeys.forEach(function (key) {
                 var o = THEME_TUNER[key];
                 if (!o) return;
-                if (o.type === "userPortrait") {
-                    buildPortraitPicker();
-                    return;
-                }
+                if (key === "userPortrait" || key === "portraitSide") return;
                 if (o.type === "cycle") {
                     var vals = o.resolveValues();
                     var row = document.createElement("div");
@@ -3075,10 +3389,7 @@
             keys.forEach(function (key) {
                 var o = THEME_TUNER[key];
                 if (!o) return;
-                if (o.type === "userPortrait") {
-                    buildPortraitPicker();
-                    return;
-                }
+                if (key === "userPortrait" || key === "portraitSide") return;
                 if (o.type === "userBoxStyle") {
                     buildBoxStylePicker();
                     return;
@@ -3131,10 +3442,7 @@
         k.forEach(function (key) {
             var o = THEME_TUNER[key];
             if (!o) return;
-            if (o.type === "userPortrait") {
-                buildPortraitPicker();
-                return;
-            }
+            if (key === "userPortrait" || key === "portraitSide") return;
             var vals = o.resolveValues();
             var row = document.createElement("div");
             row.className = "tuner-row";
@@ -3175,7 +3483,7 @@
     }
 
     function humanizeName(name) {
-        return name.replace(/[_-]/g, " ").replace(/(^|[^\w'’])(\w)/g, function (m, p, c) { return p + c.toUpperCase(); });
+        return name.replace(/[_-]/g, " ").replace(/(^|[^\w'â€™])(\w)/g, function (m, p, c) { return p + c.toUpperCase(); });
     }
 
     function boxStyleLabel(name) {
@@ -3547,6 +3855,10 @@
             btn.addEventListener("click", function () {
                 selectedPortraitUser = u;
                 updatePortraitSelection();
+                if (boxStyleUsersBox === portraitUsersBox) {
+                    selectedBoxStyleUser = u;
+                    updateBoxStyleSelection();
+                }
             });
             portraitUsersBox.appendChild(btn);
             portraitRows[key] = { btn: btn, assign: assign };
@@ -3572,12 +3884,24 @@
 
     function syncBoxStyleUsers() {
         if (!boxStyleUsersBox || !boxStyleUsersBox.parentNode) return;
+        var shared = (boxStyleUsersBox === portraitUsersBox);
         var users = knownChatters();
         var live = {};
         users.forEach(function (u) {
             var key = u.toLowerCase();
             live[key] = true;
             if (boxStyleRows[key]) return;
+            var existingBtn = boxStyleUsersBox.querySelector('[data-user="' + u + '"]');
+            if (existingBtn) {
+                boxStyleRows[key] = { btn: existingBtn, assign: existingBtn.querySelector(".pu-assign") };
+                if (!shared) {
+                    existingBtn.addEventListener("click", function () {
+                        selectedBoxStyleUser = u;
+                        updateBoxStyleSelection();
+                    });
+                }
+                return;
+            }
             var btn = document.createElement("button");
             btn.type = "button";
             btn.className = "portrait-user";
@@ -3599,7 +3923,7 @@
         for (var key in boxStyleRows) {
             if (!Object.prototype.hasOwnProperty.call(boxStyleRows, key) || live[key]) continue;
             var stale = boxStyleRows[key];
-            if (stale.btn.parentNode) stale.btn.parentNode.removeChild(stale.btn);
+            if (!shared && stale.btn.parentNode) stale.btn.parentNode.removeChild(stale.btn);
             delete boxStyleRows[key];
         }
         if (selectedBoxStyleUser && !boxStyleRows[selectedBoxStyleUser.toLowerCase()]) {
@@ -3663,28 +3987,187 @@
     }
 
     function buildBoxStylePicker() {
-        var row = document.createElement("div");
-        row.className = "portrait-picker";
+        var bs = currentTheme && currentTheme.boxStyles;
+        if (!bs || typeof bs !== "object") return;
+
+        var shared = !!portraitUsersBox;
+
+        if (shared) {
+            boxStyleUsersBox = portraitUsersBox;
+            var row = portraitUsersBox.parentNode;
+            var wrap = row.querySelector(".portrait-grid-wrap");
+            var head = wrap.querySelector(".portrait-grid-head");
+            var existingGrid = wrap.querySelector(".portrait-grid");
+            boxStyleGridBox = wrap;
+
+            // Tab bar
+            var tabBar = document.createElement("div");
+            tabBar.className = "portrait-tabs";
+
+            var tabPortrait = document.createElement("button");
+            tabPortrait.type = "button";
+            tabPortrait.className = "portrait-tab active";
+            tabPortrait.textContent = "Portrait";
+            var tabBox = document.createElement("button");
+            tabBox.type = "button";
+            tabBox.className = "portrait-tab";
+            tabBox.textContent = "Box Style";
+            tabBar.appendChild(tabPortrait);
+            tabBar.appendChild(tabBox);
+            head.appendChild(tabBar);
+
+            // Container for both grids
+            var gridContainer = document.createElement("div");
+            gridContainer.className = "portrait-grid-container";
+            wrap.appendChild(gridContainer);
+
+            // Move existing portrait grid into container
+            existingGrid.style.display = "grid";
+            gridContainer.appendChild(existingGrid);
+
+            // Box style grid (hidden by default)
+            var boxGrid = document.createElement("div");
+            boxGrid.className = "portrait-grid box-style-grid";
+            boxGrid.style.display = "none";
+            gridContainer.appendChild(boxGrid);
+
+            tabPortrait.addEventListener("click", function () {
+                tabPortrait.className = "portrait-tab active";
+                tabBox.className = "portrait-tab";
+                existingGrid.style.display = "grid";
+                boxGrid.style.display = "none";
+                var title = head.querySelector(".pg-title");
+                if (title) {
+                    title.textContent = selectedPortraitUser
+                        ? selectedPortraitUser + " — " + assignmentLabel(userPortraitMap()[String(selectedPortraitUser).toLowerCase()])
+                        : "no chatter yet";
+                }
+            });
+            tabBox.addEventListener("click", function () {
+                tabBox.className = "portrait-tab active";
+                tabPortrait.className = "portrait-tab";
+                existingGrid.style.display = "none";
+                boxGrid.style.display = "grid";
+                var title = head.querySelector(".pg-title");
+                if (title) {
+                    title.textContent = selectedBoxStyleUser
+                        ? selectedBoxStyleUser + " — " + assignmentLabelBoxStyle((userBoxStyleMap())[String(selectedBoxStyleUser).toLowerCase()])
+                        : "no chatter yet";
+                }
+            });
+
+            buildBoxStyleTiles(boxGrid);
+            syncBoxStyleUsers();
+            return;
+        }
+
+        // Standalone box style picker (no portrait picker)
+        var row2 = document.createElement("div");
+        row2.className = "portrait-picker";
 
         boxStyleUsersBox = document.createElement("div");
         boxStyleUsersBox.className = "portrait-users";
-        row.appendChild(boxStyleUsersBox);
+        row2.appendChild(boxStyleUsersBox);
 
-        var wrap = document.createElement("div");
-        wrap.className = "portrait-grid-wrap";
-        var head = document.createElement("div");
-        head.className = "portrait-grid-head";
-        var title = document.createElement("span");
-        title.className = "pg-title";
-        head.appendChild(title);
-        var grid = document.createElement("div");
-        grid.className = "portrait-grid";
-        wrap.appendChild(head);
-        wrap.appendChild(grid);
-        boxStyleGridBox = wrap;
-        row.appendChild(wrap);
-        tunerOptionsBox.appendChild(row);
+        var wrap2 = document.createElement("div");
+        wrap2.className = "portrait-grid-wrap";
+        var head2 = document.createElement("div");
+        head2.className = "portrait-grid-head";
+        var title2 = document.createElement("span");
+        title2.className = "pg-title";
+        head2.appendChild(title2);
+        var grid2 = document.createElement("div");
+        grid2.className = "portrait-grid";
+        wrap2.appendChild(head2);
+        wrap2.appendChild(grid2);
+        boxStyleGridBox = wrap2;
+        row2.appendChild(wrap2);
+        tunerOptionsBox.appendChild(row2);
 
+        boxStyleTiles = {};
+
+        var autoTile = document.createElement("button");
+        autoTile.type = "button";
+        autoTile.className = "portrait-tile";
+        autoTile.dataset.value = "__auto__";
+        autoTile.innerHTML = "<span class='pt-label'>Auto (use global)</span>";
+        autoTile.addEventListener("click", function () {
+            if (!selectedBoxStyleUser) return;
+            setUserBoxStyle(selectedBoxStyleUser, "__auto__");
+            for (var j = 0; j < chatHistory.length; j++) {
+                var rec2 = chatHistory[j];
+                if (rec2 && rec2.user && String(rec2.user).toLowerCase() === String(selectedBoxStyleUser).toLowerCase()) {
+                    delete rec2._boxStyleName;
+                }
+            }
+            updateBoxStyleSelection();
+            renderAllHistory();
+        });
+        boxStyleTiles["__auto__"] = autoTile;
+        grid2.appendChild(autoTile);
+
+        if (bs && typeof bs === "object") {
+            Object.keys(bs).forEach(function (name) {
+                buildBoxStyleTile(grid2, name);
+            });
+        } else {
+            title2.textContent = "no box styles";
+        }
+
+        syncBoxStyleUsers();
+    }
+
+    function boxStylePaletteColors(name) {
+        var t = currentTheme;
+        var bs = t && t.boxStyles;
+        var def = (bs && bs[name]) || null;
+        if (!def || def.palette === undefined) return null;
+        var pal = (t && t.palettes && t.palettes[def.palette]) || null;
+        if (!pal || !pal.colors || !pal.colors.length) return null;
+        return pal.colors;
+    }
+
+    function buildBoxStyleTile(grid, name) {
+        var tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "portrait-tile";
+        tile.dataset.value = name;
+
+        var colors = boxStylePaletteColors(name);
+        if (colors) {
+            var swatch = document.createElement("div");
+            swatch.className = "pt-palette";
+            colors.forEach(function (c) {
+                var sq = document.createElement("span");
+                sq.className = "pt-palette-sq";
+                sq.style.backgroundColor = c;
+                swatch.appendChild(sq);
+            });
+            tile.appendChild(swatch);
+        }
+
+        var label = document.createElement("span");
+        label.className = "pt-label";
+        label.textContent = boxStyleLabel(name);
+        tile.appendChild(label);
+
+        tile.addEventListener("click", function () {
+            if (!selectedBoxStyleUser) return;
+            setUserBoxStyle(selectedBoxStyleUser, name);
+            for (var j = 0; j < chatHistory.length; j++) {
+                var rec2 = chatHistory[j];
+                if (rec2 && rec2.user && String(rec2.user).toLowerCase() === String(selectedBoxStyleUser).toLowerCase()) {
+                    delete rec2._boxStyleName;
+                }
+            }
+            updateBoxStyleSelection();
+            renderAllHistory();
+        });
+        boxStyleTiles[name] = tile;
+        grid.appendChild(tile);
+    }
+
+    function buildBoxStyleTiles(grid) {
         boxStyleTiles = {};
 
         var autoTile = document.createElement("button");
@@ -3710,34 +4193,9 @@
         var bs = currentTheme && currentTheme.boxStyles;
         if (bs && typeof bs === "object") {
             Object.keys(bs).forEach(function (name) {
-                var tile = document.createElement("button");
-                tile.type = "button";
-                tile.className = "portrait-tile";
-                tile.dataset.value = name;
-                var label = document.createElement("span");
-                label.className = "pt-label";
-                label.textContent = boxStyleLabel(name);
-                tile.appendChild(label);
-                tile.addEventListener("click", function () {
-                    if (!selectedBoxStyleUser) return;
-                    setUserBoxStyle(selectedBoxStyleUser, name);
-                    for (var j = 0; j < chatHistory.length; j++) {
-                        var rec2 = chatHistory[j];
-                        if (rec2 && rec2.user && String(rec2.user).toLowerCase() === String(selectedBoxStyleUser).toLowerCase()) {
-                            delete rec2._boxStyleName;
-                        }
-                    }
-                    updateBoxStyleSelection();
-                    renderAllHistory();
-                });
-                boxStyleTiles[name] = tile;
-                grid.appendChild(tile);
+                buildBoxStyleTile(grid, name);
             });
-        } else {
-            title.textContent = "no box styles";
         }
-
-        syncBoxStyleUsers();
     }
 
     function assignmentLabel(name) {
@@ -3780,6 +4238,8 @@
     }
 
     function buildPortraitPicker() {
+        var portraitSection = document.getElementById("tuner-portrait-section");
+        if (portraitSection) portraitSection.innerHTML = "";
         var row = document.createElement("div");
         row.className = "portrait-picker";
 
@@ -3794,16 +4254,6 @@
         portraitGridTitle = document.createElement("span");
         portraitGridTitle.className = "pg-title";
         head.appendChild(portraitGridTitle);
-        var pager = document.createElement("span");
-        var up = document.createElement("button");
-        up.type = "button";
-        up.textContent = "▲";
-        var down = document.createElement("button");
-        down.type = "button";
-        down.textContent = "▼";
-        pager.appendChild(up);
-        pager.appendChild(down);
-        head.appendChild(pager);
         wrap.appendChild(head);
 
         portraitGridBox = document.createElement("div");
@@ -3838,14 +4288,8 @@
         }
 
         row.appendChild(wrap);
-        tunerOptionsBox.appendChild(row);
-
-        up.addEventListener("click", function () {
-            portraitGridBox.scrollTop -= portraitGridBox.clientHeight / 3;
-        });
-        down.addEventListener("click", function () {
-            portraitGridBox.scrollTop += portraitGridBox.clientHeight / 3;
-        });
+        if (portraitSection) portraitSection.appendChild(row);
+        else tunerOptionsBox.appendChild(row);
 
         portraitRows = {};
         portraitTiles = {};
@@ -3907,7 +4351,7 @@
             if (p.name === "none") return;
             if (genFilter && p.gen !== genFilter) return;
             var tileLabel = (p.label || humanizeName(p.name)) +
-                (p.shinySrc ? " — click again to toggle shiny" : "");
+                (p.shinySrc ? " â€” click again to toggle shiny" : "");
             addTile(p.name, tileLabel, function (tile) {
                 var cv = document.createElement("canvas");
                 if (!drawPortrait(p, cv, PIXEL_SCALE)) {
@@ -3925,7 +4369,7 @@
 
     function resolveMessagePortraitSide(record) {
         if (!currentTheme || !currentTheme.portrait) return false;
-        var mode = themeOptionState.portraitSide;
+        var mode = themeState.portraitSide;
         if (mode === 2) {
             if (record && typeof record._seq !== "number") record._seq = messageSeq++;
             return !!(record && record._seq % 2 === 1);
@@ -3935,58 +4379,72 @@
 
     function applyPortraitSide(render) {
         if (!chatBox) return;
-        var mode = (currentTheme && currentTheme.portrait) ? themeOptionState.portraitSide : 0;
+        var mode = (currentTheme && currentTheme.portrait) ? themeState.portraitSide : 0;
         chatBox.setAttribute("data-portrait-side",
             mode === 1 ? "right" : (mode === 2 ? "alternate" : "left"));
         if (render) renderAllHistory();
     }
 
     function applyTunerClass() {
-        chatBox.className = "theme-" + currentTheme.key + (bgOn ? "" : " no-bg");
-        chat.className = (["align-default", "", "align-center", "align-right", "align-alternate"][tunerMode] ||
-            "") + (dimOn ? " dim-past" : "") + (badgesOn ? "" : " hide-badges") +
-            (roleBadgesOn ? "" : " hide-role-badges") +
-            (timestampsOn ? "" : " hide-timestamps") + (fadeOn ? " fade-expire" : "");
+        chatBox.className = "theme-" + currentTheme.key + (themeState.bg ? "" : " no-bg");
+        chat.className = (["align-default", "", "align-center", "align-right", "align-alternate"][themeState.tunerMode] ||
+            "") + (themeState.dim ? " dim-past" : "") + (themeState.badges ? "" : " hide-badges") +
+            (themeState.roleBadges ? "" : " hide-role-badges") +
+            (themeState.timestamps ? "" : " hide-timestamps") + (themeState.fade ? " fade-expire" : "");
     }
 
     function applyTunerMode() {
-        tunerLabel.textContent = TUNER_MODES[tunerMode];
         applyTunerClass();
         renderAllHistory();
     }
 
     function applyDim() {
-        dimBtn.textContent = dimOn ? "On" : "Off";
+        themeState.dim = !themeState.dim;
+        updateToggleBtn("dim", themeState.dim);
         applyTunerClass();
     }
 
     function applyBadges() {
-        badgesBtn.textContent = badgesOn ? "On" : "Off";
+        themeState.badges = !themeState.badges;
+        updateToggleBtn("badges", themeState.badges);
         applyTunerClass();
         renderAllHistory();
     }
 
     function applyRoleBadges() {
-        roleBadgesBtn.textContent = roleBadgesOn ? "On" : "Off";
+        themeState.roleBadges = !themeState.roleBadges;
+        updateToggleBtn("roleBadges", themeState.roleBadges);
         applyTunerClass();
         renderAllHistory();
     }
 
     function applyTimestamps() {
-        timestampsBtn.textContent = timestampsOn ? "On" : "Off";
+        themeState.timestamps = !themeState.timestamps;
+        updateToggleBtn("timestamps", themeState.timestamps);
         applyTunerClass();
         renderAllHistory();
     }
 
     function applyBg() {
-        bgBtn.textContent = bgOn ? "On" : "Off";
+        themeState.bg = !themeState.bg;
+        updateToggleBtn("bg", themeState.bg);
         applyTunerClass();
     }
 
     function applyFade() {
-        fadeBtn.textContent = fadeOn ? "On" : "Off";
+        themeState.fade = !themeState.fade;
+        updateToggleBtn("fade", themeState.fade);
         applyTunerClass();
         syncExpireTimer();
+        updateFadeSecondsVisibility();
+    }
+
+    function updateToggleBtn(name, isOn) {
+        var btn = document.querySelector("#tuner-toggle-panel .tuner-toggle-btn[data-toggle='" + name + "']");
+        if (btn) {
+            btn.textContent = (name.charAt(0).toUpperCase() + name.slice(1)) + ": " + (isOn ? "On" : "Off");
+            btn.classList.toggle("on", isOn);
+        }
     }
 
     function applyFadeSeconds() {
@@ -3995,9 +4453,9 @@
     }
 
     function syncExpireTimer() {
-        if (fadeOn && !expireTimer) {
+        if (themeState.fade && !expireTimer) {
             expireTimer = setInterval(expireLoop, 250);
-        } else if (!fadeOn && expireTimer) {
+        } else if (!themeState.fade && expireTimer) {
             clearInterval(expireTimer);
             expireTimer = null;
         }
@@ -4039,54 +4497,6 @@
         persistThemeSelection();
     });
 
-    document.getElementById("tuner-prev").addEventListener("click", function () {
-        tunerMode = (tunerMode + TUNER_MODES.length - 1) % TUNER_MODES.length;
-        applyTunerMode();
-        persistToggles();
-    });
-
-    document.getElementById("tuner-next").addEventListener("click", function () {
-        tunerMode = (tunerMode + 1) % TUNER_MODES.length;
-        applyTunerMode();
-        persistToggles();
-    });
-
-    dimBtn.addEventListener("click", function () {
-        dimOn = !dimOn;
-        applyDim();
-        persistToggles();
-    });
-
-    badgesBtn.addEventListener("click", function () {
-        badgesOn = !badgesOn;
-        applyBadges();
-        persistToggles();
-    });
-
-    roleBadgesBtn.addEventListener("click", function () {
-        roleBadgesOn = !roleBadgesOn;
-        applyRoleBadges();
-        persistToggles();
-    });
-
-    timestampsBtn.addEventListener("click", function () {
-        timestampsOn = !timestampsOn;
-        applyTimestamps();
-        persistToggles();
-    });
-
-    bgBtn.addEventListener("click", function () {
-        bgOn = !bgOn;
-        applyBg();
-        persistToggles();
-    });
-
-    fadeBtn.addEventListener("click", function () {
-        fadeOn = !fadeOn;
-        applyFade();
-        persistToggles();
-    });
-
     fadeSecsInput.addEventListener("input", function () {
         fadeSeconds = parseInt(fadeSecsInput.value, 10) || 30;
         applyFadeSeconds();
@@ -4094,18 +4504,131 @@
         scheduleConfigSave();
     });
 
-    loadUserPortraits();
-    loadUserBoxStyles();
-    hydrateConfig();
-    applyTheme(THEME_ORDER[themeIndex]);
+    function updateFadeSecondsVisibility() {
+        var row = document.getElementById("tuner-fade-secs");
+        if (row) row.parentElement.style.display = themeState.fade ? "" : "none";
+    }
 
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "f" || e.key === "F") {
-            if (tuner) {
-                tuner.classList.toggle("show");
-            }
+    function buildTogglePanel() {
+        var panel = document.getElementById("tuner-toggle-panel");
+        if (!panel) return;
+        panel.innerHTML = "";
+        function makeToggle(name, label, stateRef, applyFn) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "tuner-toggle-btn" + (stateRef() ? " on" : "");
+            btn.dataset.toggle = name;
+            btn.textContent = label + ": " + (stateRef() ? "On" : "Off");
+            btn.addEventListener("click", function () {
+                applyFn();
+                btn.classList.toggle("on", stateRef());
+                btn.textContent = label + ": " + (stateRef() ? "On" : "Off");
+                persistToggles();
+            });
+            panel.appendChild(btn);
         }
-    });
+        function makeCycle(name, label, vals, getIdx, setIdx, applyFn) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "tuner-toggle-btn";
+            btn.dataset.toggle = name;
+            function render() {
+                var idx = getIdx();
+                var v = vals[idx] ? (vals[idx].label || vals[idx].name || idx) : idx;
+                btn.textContent = label + ": " + v;
+            }
+            btn.addEventListener("click", function () {
+                var idx = getIdx();
+                var nextIdx = (idx + 1) % vals.length;
+                setIdx(nextIdx);
+                render();
+                applyFn();
+                persistToggles();
+            });
+            render();
+            panel.appendChild(btn);
+        }
+        // Toggle buttons
+        makeToggle("dim", "Dim", function () { return themeState.dim; }, applyDim);
+        makeToggle("badges", "Badges", function () { return themeState.badges; }, applyBadges);
+        makeToggle("roleBadges", "Role Badges", function () { return themeState.roleBadges; }, applyRoleBadges);
+        makeToggle("timestamps", "Timestamps", function () { return themeState.timestamps; }, applyTimestamps);
+        makeToggle("bg", "Background", function () { return themeState.bg; }, applyBg);
+        makeToggle("fade", "Fade Out", function () { return themeState.fade; }, applyFade);
+        // Font controls (only for real-font themes)
+        if (usesRealFontTheme(currentTheme)) {
+            // Bold is a 2-state cycle rendered as a toggle-style button
+            makeToggle("fontWeight", "Bold", function () {
+                return (themeState.fontWeight !== undefined ? themeState.fontWeight : 0) === 1;
+            }, function () {
+                themeState.fontWeight = (themeState.fontWeight !== undefined ? themeState.fontWeight : 0) === 1 ? 0 : 1;
+                if (currentTheme) applyThemeFonts(currentTheme);
+                renderAllHistory();
+            });
+            makeCycle("fontSize", "Font", THEME_TUNER.fontSize.resolveValues(),
+                function () { return themeState.fontSize !== undefined ? themeState.fontSize : 2; },
+                function (idx) { themeState.fontSize = idx; },
+                function () { if (currentTheme) applyThemeFonts(currentTheme); renderAllHistory(); }
+            );
+        }
+        makeCycle("emoteSize", "Emote", THEME_TUNER.emoteSize.resolveValues(),
+            function () { return themeState.emoteSize !== undefined ? themeState.emoteSize : 2; },
+            function (idx) { themeState.emoteSize = idx; },
+            function () { applyEmoteSizes(); renderAllHistory(); }
+        );
+        makeCycle("gifSize", "GIF", THEME_TUNER.gifSize.resolveValues(),
+            function () { return themeState.gifSize !== undefined ? themeState.gifSize : 2; },
+            function (idx) { themeState.gifSize = idx; },
+            function () { applyEmoteSizes(); renderAllHistory(); }
+        );
+        // Alignment cycle button
+        makeCycle("tunerMode", "Alignment", TUNER_MODES.map(function (m, i) { return { label: m, value: i }; }),
+            function () { return themeState.tunerMode; },
+            function (idx) { themeState.tunerMode = idx; applyTunerMode(); },
+            function () { applyTunerMode(); }
+        );
+        // Portrait side cycle button (only for themes with portraits)
+        if (currentTheme && currentTheme.portrait) {
+            makeCycle("portraitSide", "Portrait Side", [
+                { label: "Left", value: 0 },
+                { label: "Right", value: 1 },
+                { label: "Alternate", value: 2 }
+            ],
+                function () { return themeState.portraitSide !== undefined ? themeState.portraitSide : 0; },
+                function (idx) { themeState.portraitSide = idx; applyPortraitSide(true); },
+                function () { applyPortraitSide(true); }
+            );
+        }
+        updateFadeSecondsVisibility();
+    }
+
+    console.log("Tuner init starting...");
+    try {
+        loadUserPortraits();
+        loadUserBoxStyles();
+        hydrateConfig();
+        applyTheme(THEME_ORDER[themeIndex]);
+        applyEmoteSizes();
+        buildTogglePanel();
+        console.log("Tuner init complete, tuner element:", !!tuner);
+    } catch (e) {
+        console.error("Tuner init fatal error:", e);
+    }
+
+    try {
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "f" || e.key === "F") {
+                console.log("Keydown F pressed, tuner:", !!tuner);
+                if (tuner) {
+                    tuner.classList.toggle("show");
+                }
+            }
+        });
+        console.log("Keydown listener registered");
+    } catch (e) {
+        console.error("Keydown listener error:", e);
+    }
 </script>
 </body>
 </html>
+

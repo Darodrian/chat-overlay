@@ -12,7 +12,7 @@
     position: relative;
     display: block;
     width: max-content;
-    max-width: 560px;
+    max-width: min(90vw, 1000px);
     background: transparent;
     border: none;
     text-shadow: var(--ui-text-shadow, 2px 2px 0 #000000);
@@ -39,7 +39,7 @@
     box-sizing: border-box;
     min-width: 320px;
     min-height: 136px;
-    max-width: 560px;
+    max-width: min(90vw, 1000px);
     padding: 18px 60px 26px 116px;
     background: transparent;
     border: none;
